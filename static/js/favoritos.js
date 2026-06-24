@@ -1,132 +1,171 @@
 // static/js/favorites.js
 
-// ============================================================
-// PRODUCTOS (inyectados desde Django)
-// ============================================================
+// Obtener los datos de productos desde el script JSON
 var allProducts = [];
 
-// ============================================================
-// FAVORITOS
-// ============================================================
-function getFavorites() {
-    try {
-        return JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
-    } catch (e) {
-        return [];
-    }
-}
-
-function saveFavorites(favs) {
-    localStorage.setItem('angelow_favorites', JSON.stringify(favs));
-    updateFavBadge();
-}
-
-function updateFavBadge() {
-    var favs = getFavorites();
-    var count = favs.length;
-    var badge = document.getElementById('favBadgeHeader');
-    if (badge) {
-        badge.textContent = count;
-        badge.style.display = count > 0 ? 'flex' : 'none';
-    }
-    var favCount = document.getElementById('favCount');
-    if (favCount) {
-        favCount.textContent = count + ' productos';
-    }
-}
-
-function removeFavorite(productId) {
-    if (confirm('¿Quieres eliminar este producto de tus favoritos?')) {
-        var favs = getFavorites();
-        var index = favs.indexOf(productId);
-        if (index > -1) {
-            favs.splice(index, 1);
-            saveFavorites(favs);
-            renderFavorites();
-            showToast('Eliminado de favoritos', 'info');
-        }
-    }
-}
-
-function renderFavorites() {
-    var favs = getFavorites();
+function loadFavorites() {
+    var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
     var grid = document.getElementById('favoritesGrid');
     var empty = document.getElementById('emptyFavorites');
-    
-    if (favs.length === 0) {
+    var countSpan = document.getElementById('favCount');
+
+    if (countSpan) {
+        countSpan.textContent = favorites.length;
+    }
+
+    if (favorites.length === 0) {
         grid.innerHTML = '';
         grid.classList.add('d-none');
         empty.classList.remove('d-none');
-        updateFavBadge();
         return;
     }
-    
+
     grid.classList.remove('d-none');
     empty.classList.add('d-none');
-    
+
+    // Usar allProducts desde el script JSON
+    var favProducts = allProducts.filter(function(p) {
+        return favorites.includes(p.id);
+    });
+
+    if (favProducts.length === 0) {
+        grid.innerHTML = '';
+        grid.classList.add('d-none');
+        empty.classList.remove('d-none');
+        return;
+    }
+
     var html = '';
-    var count = 0;
-    for (var i = 0; i < allProducts.length; i++) {
-        var p = allProducts[i];
-        if (favs.indexOf(p.id) !== -1) {
-            count++;
-            var stockClass = p.stock > 10 ? 'text-success' : (p.stock > 0 ? 'text-warning' : 'text-danger');
-            var stockText = p.stock > 10 ? 'En stock' : (p.stock > 0 ? 'Últimas unidades' : 'Sin stock');
-            
-            html += '<div class="col-lg-3 col-md-4 col-6">';
-            html += '<div class="card h-100 shadow-sm product-card" onclick="window.location.href=\'/tienda/producto/' + p.slug + '/\'">';
-            html += '<div class="card-img-top" style="height: 180px; overflow: hidden; background: #EDF4FC; position: relative;">';
-            html += '<img src="' + p.imagen + '" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="' + p.nombre + '" loading="lazy">';
-            html += '<span class="badge bg-danger position-absolute top-0 end-0 m-2" style="background: #FF6B6B !important;"><i class="fas fa-heart"></i></span>';
-            html += '</div>';
-            html += '<div class="card-body">';
-            html += '<h6 class="card-title text-truncate" style="font-weight: 600; color: #1E3A8A;">' + p.nombre + '</h6>';
-            html += '<p class="card-text text-muted small">' + p.categoria + '</p>';
-            html += '<div class="d-flex justify-content-between align-items-center">';
-            html += '<span class="fw-bold" style="color: #5E9DE6; font-size: 18px;">$' + p.precio.toLocaleString() + '</span>';
-            html += '<button class="btn btn-sm btn-outline-danger btn-remove-fav" onclick="event.stopPropagation(); removeFavorite(' + p.id + ')" data-product-id="' + p.id + '"><i class="fas fa-trash-alt"></i></button>';
-            html += '</div>';
-            html += '<div class="mt-2 small ' + stockClass + '"><i class="fas fa-circle" style="font-size: 8px;"></i> ' + stockText + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
+    for (var i = 0; i < favProducts.length; i++) {
+        var product = favProducts[i];
+        var price = product.precio_oferta || product.precio;
+        var oldPrice = product.precio_oferta ? product.precio : null;
+        
+        var stockHtml = '';
+        if (product.stock > 10) {
+            stockHtml = '<span class="in-stock"><i class="fas fa-check-circle"></i> En stock</span>';
+        } else if (product.stock > 0) {
+            stockHtml = '<span class="low-stock"><i class="fas fa-exclamation-circle"></i> Solo ' + product.stock + ' unidades</span>';
+        } else {
+            stockHtml = '<span class="out-of-stock"><i class="fas fa-times-circle"></i> Sin stock</span>';
         }
+
+        var oldPriceHtml = oldPrice ? '<span class="old-price">$' + oldPrice.toLocaleString() + '</span>' : '';
+
+        html += '<div class="fav-product-card" data-id="' + product.id + '" style="animation-delay: ' + (i * 0.05) + 's">';
+        html += '<img src="' + product.imagen + '" class="card-img-top" alt="' + product.nombre + '" loading="lazy" onerror="this.src=\'/static/img/productos/default.jpg\'">';
+        html += '<div class="card-body">';
+        html += '<h3 class="product-name">' + product.nombre + '</h3>';
+        html += '<p class="product-category">' + product.categoria + '</p>';
+        html += '<div class="product-price">' + oldPriceHtml + '$' + price.toLocaleString() + '</div>';
+        html += '<div class="product-stock">' + stockHtml + '</div>';
+        html += '<div class="card-actions">';
+        html += '<button class="btn-cart" onclick="addToCart(' + product.id + ', event)" ' + (product.stock === 0 ? 'disabled' : '') + '>';
+        html += '<i class="fas fa-shopping-cart"></i> Agregar';
+        html += '</button>';
+        html += '<button class="btn-remove-fav" onclick="removeFavorite(' + product.id + ', \'' + product.nombre + '\', event)" title="Quitar de favoritos">';
+        html += '<i class="fas fa-heart-broken"></i>';
+        html += '<span class="remove-text">Quitar</span>';
+        html += '</button>';
+        html += '</div>';
+        html += '<div style="position:absolute; inset:0; cursor:pointer; z-index:1;" onclick="window.location.href=\'/tienda/producto/' + product.slug + '/\'"></div>';
+        html += '</div>';
+        html += '</div>';
+    }
+    grid.innerHTML = html;
+}
+
+function removeFavorite(productId, productName, event) {
+    if (event) event.stopPropagation();
+    
+    var card = event.target.closest('.fav-product-card');
+    var btn = event.target.closest('.btn-remove-fav');
+    
+    if (btn) {
+        btn.classList.add('removing');
     }
     
-    grid.innerHTML = html;
-    updateFavBadge(count);
+    if (card) {
+        card.classList.add('removing');
+    }
+    
+    setTimeout(function() {
+        var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+        var index = favorites.indexOf(productId);
+        
+        if (index !== -1) {
+            favorites.splice(index, 1);
+            localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
+            
+            showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+            loadFavorites();
+            updateHeaderBadges();
+            window.dispatchEvent(new Event('storage'));
+        }
+    }, 400);
 }
 
-// ============================================================
-// TOAST NOTIFICATIONS
-// ============================================================
-function showToast(message, type) {
-    type = type || 'info';
+function addToCart(productId, event) {
+    if (event) event.stopPropagation();
+    showToast('success', 'fa-shopping-cart', 'Producto agregado al carrito');
+}
+
+function showToast(type, icon, message) {
     var container = document.getElementById('toastContainer');
-    var colors = {
-        success: '#10b981',
-        error: '#ef4444',
-        warning: '#f59e0b',
-        info: '#5E9DE6'
-    };
-    var icons = {
-        success: 'fa-check-circle',
-        error: 'fa-exclamation-circle',
-        warning: 'fa-exclamation-triangle',
-        info: 'fa-info-circle'
-    };
+    if (!container) return;
     
     var toast = document.createElement('div');
-    toast.style.cssText = 'background: white; border-radius: 12px; padding: 14px 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; border-left: 4px solid ' + (colors[type] || colors.info) + '; animation: slideIn 0.3s ease; min-width: 260px; max-width: 380px;';
-    toast.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '" style="color: ' + (colors[type] || colors.info) + '; font-size: 18px;"></i><span style="color: #1E3A8A; font-size: 14px; font-weight: 500;">' + message + '</span><button onclick="this.parentElement.remove()" style="background:none; border:none; font-size:18px; cursor:pointer; color:#94a3b8; margin-left:auto;">×</button>';
+    toast.className = 'toast-item ' + type;
+    toast.innerHTML = '<i class="fas ' + icon + '"></i><span style="flex:1;">' + message + '</span><button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+    
     container.appendChild(toast);
-    setTimeout(function() { toast.remove(); }, 3500);
+    
+    setTimeout(function() {
+        if (toast.parentElement) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            toast.style.transition = 'all 0.3s ease';
+            setTimeout(function() {
+                if (toast.parentElement) toast.remove();
+            }, 300);
+        }
+    }, 3000);
 }
 
-// ============================================================
-// INICIALIZACIÓN
-// ============================================================
+function updateHeaderBadges() {
+    try {
+        var favs = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+        var count = favs.length;
+        
+        var favBadge = document.getElementById('favBadgeHeader');
+        if (favBadge) {
+            favBadge.textContent = count;
+            favBadge.style.display = count > 0 ? 'flex' : 'none';
+        }
+        
+        var favBadgeDropdown = document.getElementById('favBadgeDropdown');
+        if (favBadgeDropdown) {
+            favBadgeDropdown.textContent = count;
+            favBadgeDropdown.style.display = count > 0 ? 'inline' : 'none';
+        }
+    } catch(e) {}
+}
+
+// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    renderFavorites();
-    updateFavBadge();
+    // Obtener datos de productos desde el script JSON
+    var productosScript = document.getElementById('productos-data');
+    if (productosScript) {
+        allProducts = JSON.parse(productosScript.textContent);
+    }
+    loadFavorites();
+    updateHeaderBadges();
+});
+
+// Escuchar cambios desde otras pestañas
+window.addEventListener('storage', function(e) {
+    if (e.key === 'angelow_favorites') {
+        loadFavorites();
+        updateHeaderBadges();
+    }
 });
