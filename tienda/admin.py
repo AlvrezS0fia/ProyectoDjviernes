@@ -1,212 +1,143 @@
+# tienda/admin.py
+
 from django.contrib import admin
-from django.utils.html import format_html
+from django.contrib.auth import get_user_model
 from .models import Categoria, Producto, Carrito, CarritoItem, Favorito
 
-# ==================== INLINE ====================
-class CarritoItemInline(admin.TabularInline):
-    model = CarritoItem
-    extra = 0
-    fields = ('producto', 'talla', 'cantidad', 'subtotal_display')
-    readonly_fields = ('subtotal_display',)
-    autocomplete_fields = ('producto',)
-    show_change_link = True
+# Obtener el modelo de usuario personalizado
+Usuario = get_user_model()
 
-    def subtotal_display(self, obj):
-        if obj.pk:
-            return f"${obj.subtotal():,.0f} COP"
-        return "—"
-    subtotal_display.short_description = 'Subtotal'
+# ============================================================
+# REGISTRAR EL MODELO USUARIO EN EL ADMIN (Si no está registrado)
+# ============================================================
 
-# ==================== CATEGORÍA ====================
+# Verificar si el modelo Usuario ya está registrado
+if not admin.site.is_registered(Usuario):
+    from django.contrib.auth.admin import UserAdmin
+    
+    @admin.register(Usuario)
+    class UsuarioAdmin(UserAdmin):
+        list_display = ['username', 'email', 'rol', 'first_name', 'last_name', 'is_active']
+        list_filter = ['rol', 'is_active']
+        search_fields = ['username', 'email', 'first_name', 'last_name']
+        fieldsets = UserAdmin.fieldsets + (
+            ('Información Adicional', {
+                'fields': ('rol', 'telefono', 'direccion', 'fecha_nacimiento')
+            }),
+        )
+        add_fieldsets = UserAdmin.add_fieldsets + (
+            ('Información Adicional', {
+                'fields': ('rol', 'telefono', 'direccion', 'fecha_nacimiento')
+            }),
+        )
+
+# ============================================================
+# ADMIN DE CATEGORÍAS
+# ============================================================
+
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'slug', 'cantidad_productos', 'creada')
-    search_fields = ('nombre', 'slug')
-    ordering = ('nombre',)
-    list_per_page = 30
+    list_display = ['nombre', 'slug', 'icono', 'es_activa', 'orden', 'fecha_creacion']
+    list_filter = ['es_activa']
+    search_fields = ['nombre', 'descripcion']
+    prepopulated_fields = {'slug': ('nombre',)}
+    list_editable = ['orden', 'es_activa']
+    list_per_page = 25
 
-    fieldsets = (
-        ('Información básica', {
-            'fields': ('nombre',),
-            'description': 'El slug se genera automáticamente desde el nombre.'
-        }),
-    )
-    readonly_fields = ('slug',)
 
-    def cantidad_productos(self, obj):
-        return obj.productos.count()
-    cantidad_productos.short_description = 'Productos'
-    cantidad_productos.admin_order_field = 'nombre'
+# ============================================================
+# ADMIN DE PRODUCTOS
+# ============================================================
 
-    def creada(self, obj):
-        return obj.pk is not None
-    creada.short_description = 'Estado'
-    creada.boolean = True
-
-# ==================== PRODUCTO ====================
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'categoria', 'subcategoria', 'precio', 'stock', 'precio_formateado', 'stock_badge', 'rating', 'reseñas')
-    list_filter = ('categoria', 'subcategoria', 'stock')
-    search_fields = ('nombre', 'descripcion', 'subcategoria', 'categoria__nombre')
-    ordering = ('-id',)
-    list_editable = ('precio', 'stock', 'subcategoria')
+    list_display = [
+        'nombre', 
+        'categoria', 
+        'precio', 
+        'precio_oferta',
+        'stock', 
+        'es_destacado',
+        'esta_activo',
+        'rating',
+        'fecha_creacion'
+    ]
+    list_filter = ['categoria', 'es_destacado', 'esta_activo', 'stock']
+    search_fields = ['nombre', 'descripcion', 'subcategoria']
+    prepopulated_fields = {'slug': ('nombre',)}
+    list_editable = ['precio', 'precio_oferta', 'stock', 'es_destacado', 'esta_activo']
+    readonly_fields = ['fecha_creacion', 'fecha_actualizacion']
     list_per_page = 25
-
+    
     fieldsets = (
-        ('Información del producto', {
-            'fields': ('categoria', 'subcategoria', 'nombre'),
-            'description': 'Datos básicos del producto. El slug se genera automáticamente.'
+        ('Información Básica', {
+            'fields': ('nombre', 'slug', 'categoria', 'subcategoria')
         }),
-        ('Imagen', {
-            'fields': ('imagen_principal', 'imagenes'),
-            'description': 'Imagen principal del producto y galería adicional (URLs).'
+        ('Precios y Stock', {
+            'fields': ('precio', 'precio_oferta', 'stock', 'stock_minimo')
         }),
-        ('Contenido', {
-            'fields': ('descripcion', 'caracteristicas'),
-            'description': 'Descripción detallada y lista de características del producto.'
+        ('Descripción y Detalles', {
+            'fields': ('descripcion', 'caracteristicas', 'tallas')
         }),
-        ('Precio e inventario', {
-            'fields': ('precio', 'stock', 'tallas'),
-            'description': 'Precio en COP, cantidad disponible y tallas ofrecidas.'
+        ('Imágenes', {
+            'fields': ('imagen_principal', 'imagenes')
         }),
-        ('Valoración', {
-            'fields': ('rating', 'reseñas'),
-            'classes': ('collapse',),
-            'description': 'Datos de calificación calculados automáticamente.'
+        ('Rating y Visibilidad', {
+            'fields': ('rating', 'reseñas', 'es_destacado', 'es_nuevo', 'esta_activo')
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion'),
+            'classes': ('collapse',)
         }),
     )
-    readonly_fields = ('slug',)
 
-    actions = ['aumentar_precio_10', 'aumentar_precio_15', 'restablecer_stock', 'marcar_sin_stock']
 
-    def precio_formateado(self, obj):
-        return f"${obj.precio:,.0f} COP"
-    precio_formateado.short_description = 'Precio (formateado)'
-    precio_formateado.admin_order_field = 'precio'
+# ============================================================
+# ADMIN DE CARRITO
+# ============================================================
 
-    def stock_badge(self, obj):
-        if obj.stock == 0:
-            return format_html('<span class="stock-badge-low" style="color:#dc3545; font-weight:bold;">Agotado</span>')
-        elif obj.stock < 10:
-            return format_html('<span class="stock-badge-low" style="color:#fd7e14; font-weight:bold;">Bajo ({})</span>', obj.stock)
-        elif obj.stock < 30:
-            return format_html('<span class="stock-badge-mid" style="color:#ffc107; font-weight:bold;">Medio ({})</span>', obj.stock)
-        else:
-            return format_html('<span class="stock-badge-ok" style="color:#28a745; font-weight:bold;">Disponible ({})</span>', obj.stock)
-    stock_badge.short_description = 'Stock'
-    stock_badge.admin_order_field = 'stock'
-
-    def aumentar_precio_10(self, request, queryset):
-        for p in queryset:
-            p.precio = float(p.precio) * 1.10
-            p.save(update_fields=['precio'])
-        self.message_user(request, f"Precio aumentado un 10% en {queryset.count()} productos.")
-    aumentar_precio_10.short_description = "Aumentar precio 10%"
-
-    def aumentar_precio_15(self, request, queryset):
-        for p in queryset:
-            p.precio = float(p.precio) * 1.15
-            p.save(update_fields=['precio'])
-        self.message_user(request, f"Precio aumentado un 15% en {queryset.count()} productos.")
-    aumentar_precio_15.short_description = "Aumentar precio 15%"
-
-    def restablecer_stock(self, request, queryset):
-        count = queryset.update(stock=0)
-        self.message_user(request, f"Stock restablecido a 0 en {count} productos. Recuerda actualizar el inventario.")
-    restablecer_stock.short_description = "Restablecer stock (marcar agotado)"
-
-    def marcar_sin_stock(self, request, queryset):
-        count = queryset.filter(stock=0).count()
-        self.message_user(request, f"{count} producto(s) sin stock disponible.", level='warning')
-    marcar_sin_stock.short_description = "Ver productos sin stock"
-
-# ==================== CARRITO ====================
 @admin.register(Carrito)
 class CarritoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'usuario', 'email_usuario', 'total_items', 'total_valor', 'creado')
-    search_fields = ('usuario__username', 'usuario__email', 'usuario__first_name', 'usuario__last_name')
-    list_filter = ('creado',)
-    inlines = [CarritoItemInline]
-    ordering = ('-creado',)
-    date_hierarchy = 'creado'
-    list_per_page = 20
+    list_display = ['usuario', 'creado', 'actualizado', 'get_total', 'get_total_items']
+    list_filter = ['creado', 'actualizado']
+    search_fields = ['usuario__username', 'usuario__email']
+    readonly_fields = ['creado', 'actualizado']
+    raw_id_fields = ['usuario']  # <--- Usar raw_id_fields
 
-    readonly_fields = ('total_items', 'total_valor', 'creado')
-    fields = ('usuario',)
+    def get_total(self, obj):
+        return f"${obj.get_total():,.0f}"
+    get_total.short_description = 'Total'
 
-    def email_usuario(self, obj):
-        return obj.usuario.email
-    email_usuario.short_description = 'Email'
-    email_usuario.admin_order_field = 'usuario__email'
+    def get_total_items(self, obj):
+        return obj.get_total_items()
+    get_total_items.short_description = 'Items'
 
-    def total_items(self, obj):
-        return sum(item.cantidad for item in obj.items.all())
-    total_items.short_description = 'Items'
 
-    def total_valor(self, obj):
-        total = sum(item.subtotal() for item in obj.items.all())
-        return f"${total:,.0f} COP"
-    total_valor.short_description = 'Valor total'
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('usuario').prefetch_related('items')
-
-# ==================== CARRITO ITEM ====================
 @admin.register(CarritoItem)
 class CarritoItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'carrito', 'producto', 'talla', 'cantidad', 'subtotal_columna')
-    list_filter = ('talla',)
-    search_fields = ('producto__nombre', 'carrito__usuario__username')
-    ordering = ('-id',)
-    list_per_page = 30
-    autocomplete_fields = ('carrito', 'producto')
+    list_display = ['carrito', 'producto', 'talla', 'cantidad', 'subtotal']
+    list_filter = ['talla', 'fecha_agregado']
+    search_fields = ['producto__nombre', 'carrito__usuario__username']
+    raw_id_fields = ['carrito', 'producto']  # <--- Usar raw_id_fields
+    readonly_fields = ['fecha_agregado']
 
-    fieldsets = (
-        ('Relaciones', {
-            'fields': ('carrito', 'producto'),
-        }),
-        ('Detalles del item', {
-            'fields': ('talla', 'cantidad'),
-            'description': 'Talla seleccionada y cantidad del producto.'
-        }),
-    )
+    def subtotal(self, obj):
+        return f"${obj.subtotal():,.0f}"
+    subtotal.short_description = 'Subtotal'
 
-    def subtotal_columna(self, obj):
-        return f"${obj.subtotal():,.0f} COP"
-    subtotal_columna.short_description = 'Subtotal'
-    subtotal_columna.admin_order_field = 'producto__precio'
 
-# ==================== FAVORITO ====================
+# ============================================================
+# ADMIN DE FAVORITOS - CORREGIDO
+# ============================================================
+
 @admin.register(Favorito)
 class FavoritoAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'producto', 'categoria', 'precio_producto', 'agregado')
-    list_filter = ('agregado', 'producto__categoria')
-    search_fields = ('usuario__username', 'usuario__email', 'producto__nombre', 'producto__categoria__nombre')
-    ordering = ('-agregado',)
+    list_display = ['usuario', 'producto', 'agregado']
+    list_filter = ['agregado']
+    search_fields = ['usuario__username', 'usuario__email', 'producto__nombre']
+    raw_id_fields = ['usuario', 'producto']  # <--- Usar raw_id_fields en lugar de autocomplete_fields
+    readonly_fields = ['agregado']
     list_per_page = 25
-    date_hierarchy = 'agregado'
-    autocomplete_fields = ('usuario', 'producto')
-    readonly_fields = ('agregado',)
-
-    fieldsets = (
-        ('Relaciones', {
-            'fields': ('usuario', 'producto'),
-            'description': 'Usuario que marcó el producto como favorito.'
-        }),
-        ('Información del sistema', {
-            'fields': ('agregado',),
-            'classes': ('collapse',),
-            'description': 'Fecha en que se agregó a favoritos.'
-        }),
-    )
-
-    def categoria(self, obj):
-        return obj.producto.categoria.nombre
-    categoria.short_description = 'Categoría'
-    categoria.admin_order_field = 'producto__categoria__nombre'
-
-    def precio_producto(self, obj):
-        return f"${obj.producto.precio:,.0f} COP"
-    precio_producto.short_description = 'Precio'
-    precio_producto.admin_order_field = 'producto__precio'
+    
+    # ELIMINADO: autocomplete_fields = ['usuario']  # <--- Esto causaba el error
+    

@@ -7,10 +7,12 @@ Aplicando principios SOLID, DRY y seguridad (4 capas)
 """
 
 from django.db import models
-from django.conf import settings  # <--- IMPORTANTE: Usar settings.AUTH_USER_MODEL
+from django.conf import settings
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models.signals import post_save, post_delete  # <--- AGREGADO
+from django.dispatch import receiver  # <--- AGREGADO
 import re
 import logging
 
@@ -24,7 +26,6 @@ logger = logging.getLogger('website.security')
 def validate_no_special_chars(value):
     """
     Valida que no contenga caracteres especiales peligrosos
-    Permite: letras, números, espacios, guiones, puntos y acentos
     """
     if not re.match(r'^[a-zA-Z0-9\s\-_áéíóúÁÉÍÓÚñÑ.]+$', value):
         raise ValidationError(
@@ -61,7 +62,7 @@ def validate_tallas(value):
     return value
 
 # ============================================================
-# 2. MODELO CATEGORÍA (Single Responsibility - SRP)
+# 2. MODELO CATEGORÍA
 # ============================================================
 
 class Categoria(models.Model):
@@ -142,7 +143,7 @@ class Categoria(models.Model):
 
 
 # ============================================================
-# 3. MODELO PRODUCTO (Single Responsibility - SRP)
+# 3. MODELO PRODUCTO
 # ============================================================
 
 class Producto(models.Model):
@@ -150,9 +151,7 @@ class Producto(models.Model):
     Modelo para productos de la tienda
     """
     
-    # ============================================================
     # INFORMACIÓN BÁSICA
-    # ============================================================
     nombre = models.CharField(
         max_length=200,
         validators=[validate_no_special_chars],
@@ -180,9 +179,7 @@ class Producto(models.Model):
         help_text='Subcategoría del producto'
     )
     
-    # ============================================================
     # PRECIO Y DESCRIPCIÓN
-    # ============================================================
     precio = models.DecimalField(
         max_digits=10,
         decimal_places=0,
@@ -209,9 +206,7 @@ class Producto(models.Model):
         help_text='Lista de características del producto'
     )
     
-    # ============================================================
     # INVENTARIO Y TALLAS
-    # ============================================================
     tallas = models.JSONField(
         default=list,
         validators=[validate_tallas],
@@ -228,9 +223,7 @@ class Producto(models.Model):
         help_text='Stock mínimo para alerta'
     )
     
-    # ============================================================
     # IMÁGENES
-    # ============================================================
     imagen_principal = models.ImageField(
         upload_to='productos/',
         blank=True,
@@ -244,9 +237,7 @@ class Producto(models.Model):
         help_text='Lista de URLs de imágenes adicionales'
     )
     
-    # ============================================================
     # RATING Y RESEÑAS
-    # ============================================================
     rating = models.FloatField(
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(5)],
@@ -258,9 +249,7 @@ class Producto(models.Model):
         help_text='Número total de reseñas'
     )
     
-    # ============================================================
     # VISIBILIDAD Y DESTACADO
-    # ============================================================
     es_destacado = models.BooleanField(
         default=False,
         help_text='Indica si el producto está destacado'
@@ -276,9 +265,7 @@ class Producto(models.Model):
         help_text='Indica si el producto está activo'
     )
     
-    # ============================================================
     # METADATOS
-    # ============================================================
     fecha_creacion = models.DateTimeField(
         auto_now_add=True,
         help_text='Fecha de creación'
@@ -309,10 +296,6 @@ class Producto(models.Model):
     def __str__(self):
         return f"{self.nombre} - ${self.precio}"
 
-    # ============================================================
-    # MÉTODOS DEL MODELO
-    # ============================================================
-    
     def get_precio_final(self):
         """Retorna el precio con oferta si existe, sino el precio normal"""
         return self.precio_oferta if self.precio_oferta else self.precio
@@ -374,7 +357,7 @@ class Producto(models.Model):
 
 
 # ============================================================
-# 4. MODELO CARRITO (Single Responsibility - SRP)
+# 4. MODELO CARRITO
 # ============================================================
 
 class Carrito(models.Model):
@@ -382,9 +365,8 @@ class Carrito(models.Model):
     Modelo para el carrito de compras de cada usuario
     """
     
-    # CORREGIDO: Usar settings.AUTH_USER_MODEL
     usuario = models.OneToOneField(
-        settings.AUTH_USER_MODEL,  # <--- CAMBIADO
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='carrito',
         help_text='Usuario propietario del carrito'
@@ -399,11 +381,7 @@ class Carrito(models.Model):
         auto_now=True,
         help_text='Última actualización del carrito'
     )
-    
-    # ============================================================
-    # MÉTODOS DEL MODELO
-    # ============================================================
-    
+
     def __str__(self):
         return f"Carrito de {self.usuario.username}"
     
@@ -435,7 +413,7 @@ class Carrito(models.Model):
 
 
 # ============================================================
-# 5. MODELO CARRITO ITEM (Single Responsibility - SRP)
+# 5. MODELO CARRITO ITEM
 # ============================================================
 
 class CarritoItem(models.Model):
@@ -499,7 +477,7 @@ class CarritoItem(models.Model):
 
 
 # ============================================================
-# 6. MODELO FAVORITO (Single Responsibility - SRP)
+# 6. MODELO FAVORITO
 # ============================================================
 
 class Favorito(models.Model):
@@ -507,9 +485,8 @@ class Favorito(models.Model):
     Modelo para productos favoritos de los usuarios
     """
     
-    # CORREGIDO: Usar settings.AUTH_USER_MODEL
     usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,  # <--- CAMBIADO
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='favoritos',
         help_text='Usuario que marcó el favorito'
@@ -545,7 +522,7 @@ class Favorito(models.Model):
 # 7. SEÑALES PARA AUDITORÍA (Capa 4)
 # ============================================================
 
-from django.db.models.signals import post_save, post_delete
+# AHORA receiver ESTÁ IMPORTADO CORRECTAMENTE
 
 @receiver(post_save, sender=Producto)
 def producto_post_save(sender, instance, created, **kwargs):
@@ -560,7 +537,7 @@ def carrito_item_post_save(sender, instance, created, **kwargs):
     """Registra cambios en el carrito"""
     if created:
         logger.info(
-            f'Item agregado al carrito: {instance.usuario.username} - '
+            f'Item agregado al carrito: {instance.carrito.usuario.username} - '
             f'{instance.producto.nombre} x {instance.cantidad}'
         )
 
@@ -568,6 +545,6 @@ def carrito_item_post_save(sender, instance, created, **kwargs):
 def carrito_item_post_delete(sender, instance, **kwargs):
     """Registra eliminación de items del carrito"""
     logger.info(
-        f'Item eliminado del carrito: {instance.usuario.username} - '
+        f'Item eliminado del carrito: {instance.carrito.usuario.username} - '
         f'{instance.producto.nombre}'
     )

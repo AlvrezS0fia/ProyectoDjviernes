@@ -1,52 +1,82 @@
+# website/admin.py
+
 from django.contrib import admin
-from .models import Record
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth import get_user_model
+from .models import Usuario, PerfilUsuario, Record, ActividadUsuario
+
+# ============================================================
+# ADMIN DE USUARIO PERSONALIZADO
+# ============================================================
+
+@admin.register(Usuario)
+class UsuarioAdmin(UserAdmin):
+    list_display = ['username', 'email', 'rol', 'first_name', 'last_name', 'is_active', 'date_joined']
+    list_filter = ['rol', 'is_active', 'date_joined']
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+    fieldsets = UserAdmin.fieldsets + (
+        ('Información Adicional', {
+            'fields': ('rol', 'telefono', 'direccion', 'fecha_nacimiento')
+        }),
+        ('Seguridad', {
+            'fields': ('intentos_fallidos', 'bloqueado_hasta'),
+            'classes': ('collapse',)
+        }),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Información Adicional', {
+            'fields': ('rol', 'telefono', 'direccion', 'fecha_nacimiento')
+        }),
+    )
+
+
+@admin.register(PerfilUsuario)
+class PerfilUsuarioAdmin(admin.ModelAdmin):
+    list_display = ['usuario', 'fecha_actualizacion']
+    search_fields = ['usuario__username', 'usuario__email']
+    readonly_fields = ['fecha_actualizacion']
 
 
 @admin.register(Record)
 class RecordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nombre_completo', 'email', 'phone_number', 'created_at')
-    search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'city')
-    ordering = ('-created_at',)
+    # CORREGIDO: 'phone_number' -> 'phone' (el campo en el modelo es 'phone')
+    list_display = [
+        'id', 
+        'first_name', 
+        'last_name', 
+        'email', 
+        'phone',        # <--- CAMBIADO: era 'phone_number'
+        'city', 
+        'state', 
+        'created_at'
+    ]
+    list_filter = ['city', 'state', 'created_at', 'is_active']
+    search_fields = ['first_name', 'last_name', 'email', 'phone']
+    readonly_fields = ['created_at', 'updated_at']
     list_per_page = 25
-    date_hierarchy = 'created_at'
-
+    
     fieldsets = (
-        ('Información personal', {
-            'fields': ('first_name', 'last_name', 'email', 'phone_number'),
-            'description': 'Nombre completo y datos de contacto del usuario.'
+        ('Información Personal', {
+            'fields': ('first_name', 'last_name', 'email', 'phone')
         }),
-        ('Ubicación', {
-            'fields': ('address', 'city', 'state', 'zip_code'),
-            'description': 'Dirección y datos de localización.'
+        ('Dirección', {
+            'fields': ('address', 'city', 'state', 'zip_code')
         }),
-        ('Datos del sistema', {
-            'fields': ('created_at',),
-            'classes': ('collapse',),
-            'description': 'Fecha de registro del usuario. Generada automáticamente.'
+        ('Auditoría', {
+            'fields': ('usuario', 'updated_by', 'is_active', 'notas'),
+            'classes': ('collapse',)
+        }),
+        ('Fechas', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
         }),
     )
-    readonly_fields = ('created_at',)
 
-    actions = ['exportar_registros_csv', 'marcar_sin_ciudad']
 
-    def nombre_completo(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
-    nombre_completo.short_description = 'Nombre completo'
-    nombre_completo.admin_order_field = 'last_name'
-
-    def exportar_registros_csv(self, request, queryset):
-        import csv
-        from django.http import HttpResponse
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="registros.csv"'
-        writer = csv.writer(response)
-        writer.writerow(['ID', 'Nombre', 'Apellido', 'Email', 'Teléfono', 'Dirección', 'Ciudad', 'Estado', 'Código Postal', 'Fecha Registro'])
-        for r in queryset:
-            writer.writerow([r.id, r.first_name, r.last_name, r.email, r.phone_number, r.address, r.city, r.state, r.zip_code, r.created_at])
-        return response
-    exportar_registros_csv.short_description = "📥 Exportar registros a CSV"
-
-    def marcar_sin_ciudad(self, request, queryset):
-        count = queryset.filter(city__isnull=True).count()
-        self.message_user(request, f"{count} registro(s) sin ciudad detectados.", level='warning')
-    marcar_sin_ciudad.short_description = "⚠️ Ver registros sin ciudad"
+@admin.register(ActividadUsuario)
+class ActividadUsuarioAdmin(admin.ModelAdmin):
+    list_display = ['usuario', 'tipo', 'descripcion', 'fecha']
+    list_filter = ['tipo', 'fecha']
+    search_fields = ['usuario__username', 'descripcion']
+    readonly_fields = ['fecha']
+    list_per_page = 50
