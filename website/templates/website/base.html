@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ANGELOW - CRM & Tienda{% endblock %}</title>
+    <title>{% block title %}ANGELOW - Moda Infantil{% endblock %}</title>
     
     {% load static %}
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'img/favico.ico' %}">
-    <link rel="icon" type="image/png" href="{% static 'img/favico.ico' %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favico.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/favico.ico' %}">
     
     <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
@@ -22,115 +22,75 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     
     <style>
-        .alert {
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8FBFE;
+            color: #1E3A8A;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        .alert-custom {
             border-radius: 12px;
             border-left: 4px solid #3b82f6;
         }
-        .alert-success {
+        .alert-custom.alert-success {
             border-left-color: #10b981;
         }
-        .alert-danger {
+        .alert-custom.alert-danger {
             border-left-color: #ef4444;
         }
-        .alert-warning {
+        .alert-custom.alert-warning {
             border-left-color: #f59e0b;
         }
-        .alert-info {
+        .alert-custom.alert-info {
             border-left-color: #3b82f6;
         }
         
-        .navbar-custom {
-            background: linear-gradient(135deg, #5E9DE6 0%, #7FBBF2 100%);
-            box-shadow: 0 4px 20px rgba(94, 157, 230, 0.25);
+        /* Toast animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
-        .navbar-brand img {
-            height: 40px;
-            width: auto;
-            margin-right: 10px;
+        /* Estilos para badges del header */
+        .badge-header {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #FF6B6B;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            line-height: 1;
+        }
+        .badge-header.cart-badge {
+            background: #5E9DE6;
         }
     </style>
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'website:home' %}">
-                <img src="{% static 'img/logo.png' %}" alt="ANGELOW Logo">
-                ANGELOW
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'website:dashboard' %}">
-                                <i class="fas fa-home"></i> Inicio
-                            </a>
-                        </li>
-                        {% if user.rol == 'admin' %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="crmDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-users-cog"></i> CRM
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="{% url 'clientes:cliente_list' %}"><i class="fas fa-list"></i> Clientes</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'clientes:cliente_create' %}"><i class="fas fa-plus"></i> Nuevo Cliente</a></li>
-                                </ul>
-                            </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tienda:lista_productos' %}">
-                                <i class="fas fa-store"></i> Tienda
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tienda:ver_carrito' %}">
-                                <i class="fas fa-shopping-cart"></i> Carrito
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ user.get_nombre_completo|default:user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'website:perfil' %}"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{% url 'website:logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tienda:lista_productos' %}">
-                                <i class="fas fa-store"></i> Tienda
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-light btn-sm px-4" href="{% url 'website:login' %}" style="border-radius: 50px;">
-                                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-light btn-sm px-4" href="{% url 'website:register' %}" style="border-radius: 50px; color: #5E9DE6; font-weight: 600;">
-                                <i class="fas fa-user-plus"></i> Registrarse
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <!-- HEADER -->
+    {% include 'website/partials/navbar.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
     <main>
         {% if messages %}
             <div class="container mt-3">
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm alert-custom" role="alert">
                         <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -158,7 +118,7 @@
                             <i class="fas fa-envelope" style="color: #7FBBF2; width: 18px;"></i> info@angelow.com
                         </p>
                         <p style="color: #cbd5e1; font-size: 14px; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                            <i class="fas fa-map-marker-alt" style="color: #7FBBF2; width: 18px;"></i> Bogotá, Colombia
+                            <i class="fas fa-map-marker-alt" style="color: #7FBBF2; width: 18px;"></i> Medellín, Colombia
                         </p>
                     </div>
                 </div>
@@ -191,7 +151,7 @@
 
                 <div>
                     <div style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="{% static 'img/logo.png' %}" alt="ANGELOW" style="width: 70px; height: 70px; object-fit: contain; border-radius: 50%; background: white; padding: 8px; margin-bottom: 12px;">
+                        <img src="{% static 'img/general/logos.png' %}" alt="ANGELOW" style="width: 70px; height: 70px; object-fit: contain; border-radius: 50%; background: white; padding: 8px; margin-bottom: 12px;">
                         <div style="font-size: 22px; font-weight: 900; color: #7FBBF2; letter-spacing: -0.5px;">ANGELOW</div>
                         <p style="color: #94a3b8; font-size: 13px; margin-top: 6px;">Ropa infantil de calidad con amor y estilo</p>
                     </div>
@@ -208,6 +168,54 @@
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Script para sincronizar badges entre páginas -->
+    <script>
+    // ============================================================
+    // Sincronizar badges desde localStorage
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Actualizar badge de favoritos
+        function updateFavBadge() {
+            try {
+                var favs = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+                var badge = document.getElementById('favBadgeHeader');
+                if (badge) {
+                    badge.textContent = favs.length;
+                    badge.style.display = favs.length > 0 ? 'flex' : 'none';
+                }
+            } catch(e) {}
+        }
+        
+        // Actualizar badge del carrito
+        function updateCartBadge() {
+            try {
+                var cart = JSON.parse(localStorage.getItem('angelow_cart') || '[]');
+                var total = 0;
+                for (var i = 0; i < cart.length; i++) {
+                    total = total + (cart[i].quantity || 1);
+                }
+                var badge = document.getElementById('cartBadgeHeader');
+                if (badge) {
+                    badge.textContent = total;
+                    badge.style.display = total > 0 ? 'flex' : 'none';
+                }
+            } catch(e) {}
+        }
+        
+        updateFavBadge();
+        updateCartBadge();
+    });
+    
+    // Escuchar cambios en localStorage desde otras páginas/tabs
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'angelow_favorites' || e.key === 'angelow_cart') {
+            // Recargar la página para actualizar badges
+            location.reload();
+        }
+    });
+    </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

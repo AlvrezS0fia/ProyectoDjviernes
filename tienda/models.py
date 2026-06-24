@@ -11,8 +11,8 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models.signals import post_save, post_delete  # <--- AGREGADO
-from django.dispatch import receiver  # <--- AGREGADO
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 import re
 import logging
 
@@ -305,22 +305,45 @@ class Producto(models.Model):
         if self.imagen_principal:
             return self.imagen_principal.url
         
-        # Placeholder por categoría
+        # Mapeo de imágenes por nombre de producto usando tus archivos
         mapping = {
-            'Conjunto Deportivo': '/static/images/productos/conjunto_deportivo.png',
-            'Jogger Premium': '/static/images/productos/conjunto_jogger.png',
-            'Vestido Verano': '/static/images/productos/vestido_verano.png',
-            'Body Bebé': '/static/images/productos/conjunto_size.png',
-            'Set Bebé': '/static/images/productos/conjunto_size.png',
+            'conjunto deportivo': 'conjunto_Deportive.png',
+            'deportivo': 'conjunto_Deportive.png',
+            'conjunto size': 'conjunto_size.png',
+            'size': 'conjunto_size.png',
+            'jogger': 'conjunto_jhogger.png',
+            'jogger premium': 'conjunto_jhogger.png',
+            'vestido': 'vestido_verano.png',
+            'vestido verano': 'vestido_verano.png',
+            'body': 'conjunto_size.png',
+            'body niño': 'conjunto_size.png',
+            'conjunto infantil': 'conjunto_Deportive.png',
+            'set bebe': 'conjunto_size.png',
+            'set bebé': 'conjunto_size.png',
+            'set falda': 'vestido_verano.png',
+            'body negro': 'conjunto_size.png',
         }
         
-        # Buscar por categoría
-        if self.categoria:
-            for key, url in mapping.items():
-                if key.lower() in self.categoria.nombre.lower():
-                    return url
+        nombre_lower = self.nombre.lower()
+        for key, filename in mapping.items():
+            if key in nombre_lower:
+                return f'/static/img/productos/{filename}'
         
-        return '/static/images/placeholder.png'
+        # Si tiene categoría, buscar por categoría
+        if self.categoria:
+            cat_mapping = {
+                'niños': 'conjunto_Deportive.png',
+                'niñas': 'vestido_verano.png',
+                'bebés': 'conjunto_size.png',
+                'bebes': 'conjunto_size.png',
+            }
+            cat_lower = self.categoria.nombre.lower()
+            for key, filename in cat_mapping.items():
+                if key in cat_lower:
+                    return f'/static/img/productos/{filename}'
+        
+        # Imagen por defecto
+        return '/static/img/productos/default.jpg'
     
     def tiene_stock(self):
         """Verifica si el producto tiene stock disponible"""
@@ -521,8 +544,6 @@ class Favorito(models.Model):
 # ============================================================
 # 7. SEÑALES PARA AUDITORÍA (Capa 4)
 # ============================================================
-
-# AHORA receiver ESTÁ IMPORTADO CORRECTAMENTE
 
 @receiver(post_save, sender=Producto)
 def producto_post_save(sender, instance, created, **kwargs):

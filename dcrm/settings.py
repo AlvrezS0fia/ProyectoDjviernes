@@ -172,7 +172,7 @@ AUTH_USER_MODEL = 'website.Usuario'
 
 # URLs de autenticación
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/accounts/dashboard/'
+LOGIN_REDIRECT_URL = '/'  # <--- Redirige a la página principal (home)
 LOGOUT_REDIRECT_URL = '/'
 
 # ============================================================

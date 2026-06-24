@@ -1,73 +1,214 @@
-<!-- tienda/templates/tienda/lista_productos.html -->
-{% extends 'website/base.html' %}
+<!-- website/templates/website/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ANGELOW - Moda Infantil{% endblock %}</title>
+    
+    {% load static %}
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favico.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favico.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/favico.ico' %}">
+    
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8FBFE;
+            color: #1E3A8A;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        .alert-custom {
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        .alert-custom.alert-success {
+            border-left-color: #10b981;
+        }
+        .alert-custom.alert-danger {
+            border-left-color: #ef4444;
+        }
+        .alert-custom.alert-warning {
+            border-left-color: #f59e0b;
+        }
+        .alert-custom.alert-info {
+            border-left-color: #3b82f6;
+        }
+        
+        /* Toast animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Badges del header */
+        .badge-header {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #FF6B6B;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            line-height: 1;
+        }
+        .badge-header.cart-badge {
+            background: #5E9DE6;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- HEADER -->
+    {% include 'website/partials/navbar.html' %}
 
-{% block title %}Catálogo - ANGELOW{% endblock %}
-
-{% block content %}
-<h2 class="fw-bold mb-4" style="color: #1E3A8A;">
-    <i class="fas fa-store me-2" style="color: #5E9DE6;"></i> Nuestros Productos
-</h2>
-
-<div class="row">
-    <!-- Filtros -->
-    <div class="col-lg-3 col-md-4 mb-4">
-        <div class="card">
-            <div class="card-header" style="background: #EDF4FC;">
-                <i class="fas fa-filter me-2"></i> Filtros
-            </div>
-            <div class="card-body">
-                <form method="GET">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Buscar</label>
-                        <input type="text" name="q" class="form-control" placeholder="Buscar productos..." value="{{ busqueda }}">
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm alert-custom" role="alert">
+                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Categoría</label>
-                        <select name="categoria" class="form-select">
-                            <option value="">Todas</option>
-                            {% for categoria in categorias %}
-                                <option value="{{ categoria.slug }}" {% if categoria_activa == categoria.slug %}selected{% endif %}>
-                                    {{ categoria.nombre }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search me-2"></i> Filtrar
-                    </button>
-                </form>
+                {% endfor %}
             </div>
-        </div>
-    </div>
+        {% endif %}
 
-    <!-- Productos -->
-    <div class="col-lg-9 col-md-8">
-        <div class="row g-4">
-            {% for producto in productos %}
-                <div class="col-xl-3 col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-img-top" style="height: 200px; overflow: hidden; background: #EDF4FC;">
-                            <img src="{{ producto.get_imagen_principal_url }}" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="{{ producto.nombre }}">
-                        </div>
-                        <div class="card-body">
-                            <h6 class="card-title text-truncate">{{ producto.nombre }}</h6>
-                            <p class="card-text text-muted small">{{ producto.categoria.nombre }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold" style="color: #1E3A8A;">${{ producto.precio|floatformat:0 }}</span>
-                                <a href="{% url 'tienda:detalle_producto' producto.slug %}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                            </div>
-                        </div>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer style="background: #1E3A8A; color: white; padding: 50px 20px 25px; margin-top: auto;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; text-align: center; align-items: start;">
+                
+                <div>
+                    <h3 style="font-size: 16px; color: #7FBBF2; margin-bottom: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">Contacto</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <p style="color: #cbd5e1; font-size: 14px; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <i class="fas fa-phone" style="color: #7FBBF2; width: 18px;"></i> +57 300 123 4567
+                        </p>
+                        <p style="color: #cbd5e1; font-size: 14px; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <i class="fas fa-envelope" style="color: #7FBBF2; width: 18px;"></i> info@angelow.com
+                        </p>
+                        <p style="color: #cbd5e1; font-size: 14px; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <i class="fas fa-map-marker-alt" style="color: #7FBBF2; width: 18px;"></i> Medellín, Colombia
+                        </p>
                     </div>
                 </div>
-            {% empty %}
-                <div class="col-12 text-center py-5">
-                    <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
-                    <h4>No hay productos disponibles</h4>
+
+                <div>
+                    <h3 style="font-size: 16px; color: #7FBBF2; margin-bottom: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">Síguenos</h3>
+                    <div style="display: flex; justify-content: center; gap: 14px;">
+                        <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+                           onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+                           onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                            <i class="fab fa-instagram" style="color: white; font-size: 18px;"></i>
+                        </a>
+                        <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+                           onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+                           onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                            <i class="fab fa-facebook-f" style="color: white; font-size: 18px;"></i>
+                        </a>
+                        <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+                           onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+                           onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                            <i class="fab fa-tiktok" style="color: white; font-size: 18px;"></i>
+                        </a>
+                        <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+                           onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+                           onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                            <i class="fab fa-youtube" style="color: white; font-size: 18px;"></i>
+                        </a>
+                    </div>
                 </div>
-            {% endfor %}
+
+                <div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="{% static 'img/general/logos.png' %}" alt="ANGELOW" style="width: 70px; height: 70px; object-fit: contain; border-radius: 50%; background: white; padding: 8px; margin-bottom: 12px;">
+                        <div style="font-size: 22px; font-weight: 900; color: #7FBBF2; letter-spacing: -0.5px;">ANGELOW</div>
+                        <p style="color: #94a3b8; font-size: 13px; margin-top: 6px;">Ropa infantil de calidad con amor y estilo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);">
+                <p style="color: #94a3b8; font-size: 13px; margin: 0;">
+                    &copy; 2026 ANGELOW. Todos los derechos reservados.
+                </p>
+            </div>
         </div>
-    </div>
-</div>
-{% endblock %}
+    </footer>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Script para sincronizar badges -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function updateFavBadge() {
+            try {
+                var favs = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+                var badge = document.getElementById('favBadgeHeader');
+                if (badge) {
+                    badge.textContent = favs.length;
+                    badge.style.display = favs.length > 0 ? 'flex' : 'none';
+                }
+            } catch(e) {}
+        }
+        
+        function updateCartBadge() {
+            try {
+                var cart = JSON.parse(localStorage.getItem('angelow_cart') || '[]');
+                var total = 0;
+                for (var i = 0; i < cart.length; i++) {
+                    total = total + (cart[i].quantity || 1);
+                }
+                var badge = document.getElementById('cartBadgeHeader');
+                if (badge) {
+                    badge.textContent = total;
+                    badge.style.display = total > 0 ? 'flex' : 'none';
+                }
+            } catch(e) {}
+        }
+        
+        updateFavBadge();
+        updateCartBadge();
+    });
+    
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'angelow_favorites' || e.key === 'angelow_cart') {
+            location.reload();
+        }
+    });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

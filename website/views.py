@@ -14,11 +14,12 @@ from django.core.cache import cache
 from django.utils import timezone
 from django.conf import settings
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.db import models  # <--- IMPORTAR models
 import logging
-import re
+import json
 
 # Importaciones del proyecto
 from .forms import RegisterForm, LoginForm, RecordForm, PerfilUsuarioForm
@@ -44,34 +45,71 @@ def role_required(allowed_roles=[]):
                     return view_func(request, *args, **kwargs)
                 else:
                     messages.error(request, 'No tienes permisos para acceder a esta sección.')
-                    return redirect('website:dashboard')
+                    return redirect('website:home')
             else:
                 return redirect('website:login')
         return wrapper_func
     return decorator
 
 # ============================================================
-# 2. VISTA DE INICIO (HOME)
+# 2. VISTA DE INICIO (HOME) - CON TODOS LOS PRODUCTOS
 # ============================================================
 
 @never_cache
 def home(request):
     """
-    Vista principal del sitio
-    Redirige al dashboard si el usuario está autenticado
+    Vista principal del sitio - Página de inicio con todos los productos
     """
-    if request.user.is_authenticated:
-        return redirect('website:dashboard')
+    # Obtener query de búsqueda
+    query = request.GET.get('q', '').strip()
     
-    # Productos destacados para la página de inicio
-    productos_destacados = Producto.objects.filter(
-        es_destacado=True,
-        esta_activo=True,
-        stock__gt=0
-    ).order_by('-rating')[:6]
+    # TODOS los productos activos
+    productos = Producto.objects.filter(esta_activo=True)
+    
+    # Filtrar por búsqueda si existe
+    if query:
+        productos = productos.filter(
+            models.Q(nombre__icontains=query) |
+            models.Q(subcategoria__icontains=query) |
+            models.Q(categoria__nombre__icontains=query) |
+            models.Q(descripcion__icontains=query)
+        )
+    
+    productos = productos.order_by('-fecha_creacion')
+    
+    # Productos destacados para sección especial
+    productos_destacados = productos.filter(es_destacado=True)[:4]
+    
+    # IDs de productos favoritos para el usuario
+    favoritos_ids = []
+    if request.user.is_authenticated:
+        favoritos_ids = list(Favorito.objects.filter(
+            usuario=request.user
+        ).values_list('producto_id', flat=True))
+    
+    # Convertir productos a JSON para JavaScript
+    productos_json = []
+    for p in productos:
+        productos_json.append({
+            'id': p.id,
+            'nombre': p.nombre,
+            'slug': p.slug,
+            'precio': float(p.precio),
+            'stock': p.stock,
+            'tallas': p.tallas,
+            'categoria': {'nombre': p.categoria.nombre},
+            'subcategoria': p.subcategoria,
+            'imagen_principal': p.imagen_principal.url if p.imagen_principal else None,
+            'es_destacado': p.es_destacado,
+            'precio_oferta': float(p.precio_oferta) if p.precio_oferta else None,
+        })
     
     context = {
+        'productos': productos,
         'productos_destacados': productos_destacados,
+        'productos_json': json.dumps(productos_json),
+        'busqueda': query,
+        'favoritos_ids': favoritos_ids,
     }
     return render(request, 'website/home.html', context)
 
@@ -87,17 +125,17 @@ def login_view(request):
     
     Capas de seguridad:
     - Capa 1: Autenticación de usuario
-    - Capa 2: Limitador de intentos (Capa 2)
+    - Capa 2: Limitador de intentos
     - Capa 3: Validación CSRF
     - Capa 4: Auditoría de intentos
     """
     # Redirigir si ya está autenticado
     if request.user.is_authenticated:
-        return redirect('website:dashboard')
+        return redirect('website:home')
     
     # Obtener IP del cliente
     ip = request.META.get('REMOTE_ADDR', 'unknown')
-    key = f'login_attempts_{ip}'
+    key = 'login_attempts_' + ip
     
     # Verificar intentos fallidos (Capa 2)
     attempts = cache.get(key, 0)
@@ -107,10 +145,10 @@ def login_view(request):
         
         # Verificar límite de intentos
         if attempts >= settings.LOGIN_ATTEMPTS_LIMIT:
-            logger.warning(f'Demasiados intentos de login desde IP: {ip}')
+            logger.warning('Demasiados intentos de login desde IP: ' + ip)
             messages.error(
                 request,
-                f'Demasiados intentos fallidos. Espera {settings.LOGIN_ATTEMPTS_TIMEOUT // 60} minutos.'
+                'Demasiados intentos fallidos. Espera ' + str(settings.LOGIN_ATTEMPTS_TIMEOUT // 60) + ' minutos.'
             )
             return render(request, 'website/login.html', {'form': form})
         
@@ -125,7 +163,7 @@ def login_view(request):
                 # Verificar si el usuario está activo
                 if not user.is_active:
                     messages.error(request, 'Esta cuenta está deshabilitada.')
-                    logger.warning(f'Intento de login a cuenta deshabilitada: {username} - IP: {ip}')
+                    logger.warning('Intento de login a cuenta deshabilitada: ' + username + ' - IP: ' + ip)
                     return render(request, 'website/login.html', {'form': form})
                 
                 # Verificar si el usuario está bloqueado
@@ -133,9 +171,9 @@ def login_view(request):
                     tiempo_restante = (user.bloqueado_hasta - timezone.now()).seconds // 60
                     messages.error(
                         request,
-                        f'Cuenta bloqueada temporalmente. Espera {tiempo_restante} minutos.'
+                        'Cuenta bloqueada temporalmente. Espera ' + str(tiempo_restante) + ' minutos.'
                     )
-                    logger.warning(f'Intento de login a cuenta bloqueada: {username} - IP: {ip}')
+                    logger.warning('Intento de login a cuenta bloqueada: ' + username + ' - IP: ' + ip)
                     return render(request, 'website/login.html', {'form': form})
                 
                 # Login exitoso
@@ -151,33 +189,30 @@ def login_view(request):
                 request.session['user_agent'] = request.META.get('HTTP_USER_AGENT', '')
                 
                 # Registrar actividad (Capa 4)
-                logger.info(f'Login exitoso: {user.username} desde IP: {ip}')
+                logger.info('Login exitoso: ' + user.username + ' desde IP: ' + ip)
                 
                 # Crear registro de actividad
                 ActividadUsuario.objects.create(
                     usuario=user,
                     tipo='login',
-                    descripcion=f'Inicio de sesión desde IP: {ip}',
+                    descripcion='Inicio de sesión desde IP: ' + ip,
                     ip=ip,
                     user_agent=request.META.get('HTTP_USER_AGENT', '')
                 )
                 
                 messages.success(
                     request,
-                    f'¡Bienvenido de vuelta, {user.get_nombre_completo()}!'
+                    '¡Bienvenido de vuelta, ' + user.get_nombre_completo() + '!'
                 )
                 
-                # Redirigir según el rol
-                if user.rol == 'admin':
-                    return redirect('website:dashboard_admin')
-                else:
-                    return redirect('website:dashboard_user')
+                # Redirigir a la página principal (HOME)
+                return redirect('website:home')
             
             # Login fallido - incrementar contador (Capa 2)
             attempts = cache.get(key, 0) + 1
             cache.set(key, attempts, settings.LOGIN_ATTEMPTS_TIMEOUT)
             
-            logger.warning(f'Intento de login fallido desde IP: {ip} - Intento #{attempts}')
+            logger.warning('Intento de login fallido desde IP: ' + ip + ' - Intento #' + str(attempts))
             messages.error(request, 'Usuario o contraseña incorrectos.')
         else:
             messages.error(request, 'Por favor, corrige los errores del formulario.')
@@ -203,7 +238,7 @@ def register_view(request):
     """
     # Redirigir si ya está autenticado
     if request.user.is_authenticated:
-        return redirect('website:dashboard')
+        return redirect('website:home')
     
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -217,35 +252,32 @@ def register_view(request):
                 
                 # Registrar actividad (Capa 4)
                 ip = request.META.get('REMOTE_ADDR', 'unknown')
-                logger.info(f'Nuevo usuario registrado: {user.email} desde IP: {ip}')
+                logger.info('Nuevo usuario registrado: ' + user.email + ' desde IP: ' + ip)
                 
                 ActividadUsuario.objects.create(
                     usuario=user,
                     tipo='creacion',
-                    descripcion=f'Registro de nuevo usuario: {user.email}',
+                    descripcion='Registro de nuevo usuario: ' + user.email,
                     ip=ip,
                     user_agent=request.META.get('HTTP_USER_AGENT', '')
                 )
                 
                 messages.success(
                     request,
-                    f'¡Registro exitoso! Bienvenido a ANGELOW, {user.get_nombre_completo()}.'
+                    '¡Registro exitoso! Bienvenido a ANGELOW, ' + user.get_nombre_completo() + '.'
                 )
                 
-                # Redirigir según el rol
-                if user.rol == 'admin':
-                    return redirect('website:dashboard_admin')
-                else:
-                    return redirect('website:dashboard_user')
+                # Redirigir a la página principal (HOME)
+                return redirect('website:home')
                 
             except Exception as e:
-                logger.error(f'Error en registro: {str(e)}')
+                logger.error('Error en registro: ' + str(e))
                 messages.error(request, 'Ocurrió un error durante el registro. Por favor, intenta nuevamente.')
         else:
             # Mostrar errores específicos
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f'{field.capitalize()}: {error}')
+                    messages.error(request, field.capitalize() + ': ' + error)
     else:
         form = RegisterForm()
     
@@ -262,7 +294,7 @@ def logout_view(request):
     """
     if request.user.is_authenticated:
         # Registrar actividad (Capa 4)
-        logger.info(f'Logout: {request.user.username}')
+        logger.info('Logout: ' + request.user.username)
         
         ActividadUsuario.objects.create(
             usuario=request.user,
@@ -276,7 +308,7 @@ def logout_view(request):
         logout(request)
         messages.info(request, 'Has cerrado sesión exitosamente.')
     
-    return redirect('website:login')
+    return redirect('website:home')
 
 # ============================================================
 # 6. DASHBOARD ADMIN (Capa 2 - Autorización)
@@ -383,20 +415,100 @@ def favorites_view(request):
     """
     Vista de productos favoritos del usuario
     """
-    favoritos = Favorito.objects.filter(
-        usuario=request.user,
-        producto__esta_activo=True
-    ).select_related('producto').order_by('-agregado')
+    # Todos los productos activos para el JavaScript
+    productos = Producto.objects.filter(esta_activo=True)
     
     context = {
-        'favoritos': favoritos,
-        'total_favoritos': favoritos.count(),
+        'productos': productos,
     }
     
     return render(request, 'website/favorites.html', context)
 
 # ============================================================
-# 10. VISTA DE PERFIL DE USUARIO
+# 10. API: OBTENER FAVORITOS
+# ============================================================
+
+@login_required(login_url='website:login')
+@require_GET
+def api_favoritos(request):
+    """
+    API para obtener los productos favoritos del usuario
+    """
+    favoritos = Favorito.objects.filter(
+        usuario=request.user,
+        producto__esta_activo=True
+    ).select_related('producto')
+    
+    data = {
+        'success': True,
+        'favoritos': [fav.producto.id for fav in favoritos],
+        'total': favoritos.count()
+    }
+    return JsonResponse(data)
+
+# ============================================================
+# 11. API: TOGGLE FAVORITO
+# ============================================================
+
+@login_required(login_url='website:login')
+@csrf_exempt
+@require_POST
+def api_toggle_favorito(request):
+    """
+    API para agregar o quitar un producto de favoritos
+    """
+    try:
+        data = json.loads(request.body)
+        producto_id = data.get('producto_id')
+        
+        if not producto_id:
+            return JsonResponse({
+                'success': False,
+                'message': 'Producto ID es requerido'
+            }, status=400)
+        
+        producto = Producto.objects.filter(id=producto_id, esta_activo=True).first()
+        if not producto:
+            return JsonResponse({
+                'success': False,
+                'message': 'Producto no encontrado'
+            }, status=404)
+        
+        favorito, created = Favorito.objects.get_or_create(
+            usuario=request.user,
+            producto=producto
+        )
+        
+        if not created:
+            favorito.delete()
+            es_favorito = False
+            message = 'Producto eliminado de favoritos'
+        else:
+            es_favorito = True
+            message = 'Producto agregado a favoritos'
+        
+        total = Favorito.objects.filter(usuario=request.user).count()
+        
+        return JsonResponse({
+            'success': True,
+            'es_favorito': es_favorito,
+            'message': message,
+            'total': total
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Datos inválidos'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=500)
+
+# ============================================================
+# 12. VISTA DE PERFIL DE USUARIO
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -423,7 +535,7 @@ def perfil_view(request):
     return render(request, 'website/perfil.html', context)
 
 # ============================================================
-# 11. VISTA DE ACTIVIDADES (Solo admin)
+# 13. VISTA DE ACTIVIDADES (Solo admin)
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -455,7 +567,7 @@ def actividades_view(request):
     return render(request, 'website/actividades.html', context)
 
 # ============================================================
-# 12. API PARA VERIFICAR ESTADO DE SESIÓN
+# 14. API PARA VERIFICAR ESTADO DE SESIÓN
 # ============================================================
 
 @login_required(login_url='website:login')

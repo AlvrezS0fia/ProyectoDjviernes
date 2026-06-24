@@ -7,3 +7,198 @@ INFO 2026-06-24 14:23:59,973 middleware 30172 18640 Actividad: sofia - GET /acco
 INFO 2026-06-24 14:24:01,528 middleware 30172 18640 Actividad: sofia - GET /accounts/dashboard/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-24 14:24:01,585 middleware 30172 18640 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-24 14:24:12,825 middleware 30172 18640 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:29:03,875 middleware 32524 33956 Actividad: sofia - GET /accounts/dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:29:04,123 middleware 32524 33956 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:29:09,018 middleware 32524 33956 Actividad: sofia - GET /accounts/dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:29:09,103 middleware 32524 33956 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:30:59,090 middleware 32524 33956 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:31:00,319 middleware 32524 33956 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:31:04,213 views 32524 33956 Logout: sofia
+WARNING 2026-06-24 14:31:17,972 middleware 32524 33956 Intento de login fallido desde IP: 127.0.0.1 (Intento #1)
+INFO 2026-06-24 14:31:45,322 views 32524 33956 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:31:45,375 middleware 32524 33956 Actividad: sofia - POST /accounts/login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:31:45,380 middleware 32524 33956 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:31:49,264 views 32524 29512 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:31:49,296 middleware 32524 29512 Actividad: sofia - POST /accounts/login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:31:49,303 middleware 32524 29512 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:31:51,192 views 32524 33624 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:31:51,212 middleware 32524 33624 Actividad: sofia - POST /accounts/login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:31:51,220 middleware 32524 33624 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:31:51,302 middleware 32524 33624 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:33:37,964 middleware 32524 33624 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:35:11,351 middleware 32524 33624 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:35:13,797 middleware 32524 33624 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:37:05,408 middleware 32524 33624 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:38:10,047 middleware 32524 33624 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:44:41,926 middleware 32524 29340 Actividad: sofia - GET /admin - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:44:42,372 middleware 32524 33784 Actividad: sofia - GET /admin/ - Tipo: admin - IP: 127.0.0.1
+INFO 2026-06-24 14:45:00,687 middleware 32524 23076 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:51:53,497 middleware 32524 26840 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:52:20,720 middleware 32524 30984 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:54:55,882 middleware 32524 30984 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:54:58,709 middleware 32524 30984 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:57:00,722 middleware 32524 30984 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:57:45,429 middleware 32524 30984 Actividad: sofia - GET /accounts/perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:57:47,552 middleware 32524 30984 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 15:09:22,602 middleware 2652 23756 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 15:09:31,827 views 2652 23756 Logout: sofia
+INFO 2026-06-24 15:19:59,205 models 31256 31432 Producto creado: Conjunto Deportivo - $49900
+INFO 2026-06-24 15:19:59,247 models 31256 31432 Producto creado: Conjunto Size - $45900
+INFO 2026-06-24 15:19:59,270 models 31256 31432 Producto creado: Body Niño - $34900
+INFO 2026-06-24 15:20:52,369 views 17004 13668 Producto visualizado: Conjunto Deportivo por visitante anónimo
+INFO 2026-06-24 15:25:02,864 views 23032 33860 Producto visualizado: Conjunto Deportivo por visitante anónimo
+INFO 2026-06-24 15:36:14,353 views 25260 31360 Búsqueda de productos: "lo" desde IP: 127.0.0.1
+INFO 2026-06-24 15:36:21,407 views 25260 31360 Búsqueda de productos: "bo" desde IP: 127.0.0.1
+INFO 2026-06-24 15:54:58,535 models 29992 28108 Producto actualizado: Conjunto Deportivo
+INFO 2026-06-24 15:54:58,724 models 29992 28108 Producto actualizado: Conjunto Size
+INFO 2026-06-24 15:54:58,764 models 29992 28108 Producto actualizado: Body Niño
+INFO 2026-06-24 15:54:58,803 models 29992 28108 Producto creado: Jogger Niño - $49900
+INFO 2026-06-24 15:54:58,901 models 29992 28108 Producto creado: Body Negro - $32900
+INFO 2026-06-24 15:54:58,936 models 29992 28108 Producto creado: Short Deportivo - $29900
+INFO 2026-06-24 15:54:58,969 models 29992 28108 Producto creado: Camiseta Niño - $25900
+INFO 2026-06-24 15:54:58,996 models 29992 28108 Producto creado: Pantalón Niño - $38900
+INFO 2026-06-24 15:54:59,026 models 29992 28108 Producto creado: Chaqueta Niño - $59900
+INFO 2026-06-24 15:54:59,051 models 29992 28108 Producto creado: Sudadera Niño - $42900
+INFO 2026-06-24 15:54:59,083 models 29992 28108 Producto creado: Pijama Niño - $35900
+INFO 2026-06-24 15:54:59,108 models 29992 28108 Producto creado: Conjunto Formal Niño - $69900
+INFO 2026-06-24 15:54:59,130 models 29992 28108 Producto creado: Gorra Niño - $15900
+INFO 2026-06-24 15:54:59,155 models 29992 28108 Producto creado: Mochila Niño - $45900
+INFO 2026-06-24 15:54:59,182 models 29992 28108 Producto creado: Zapatos Niño - $54900
+INFO 2026-06-24 15:54:59,207 models 29992 28108 Producto creado: Conjunto Infantil - $45900
+INFO 2026-06-24 15:54:59,244 models 29992 28108 Producto creado: Set Falda - $39900
+INFO 2026-06-24 15:54:59,266 models 29992 28108 Producto creado: Vestido Verano - $42900
+INFO 2026-06-24 15:54:59,296 models 29992 28108 Producto creado: Pijama Infantil - $35900
+INFO 2026-06-24 15:54:59,329 models 29992 28108 Producto creado: Vestido Floreado - $45900
+INFO 2026-06-24 15:54:59,360 models 29992 28108 Producto creado: Set Deportivo Niña - $47900
+INFO 2026-06-24 15:54:59,383 models 29992 28108 Producto creado: Blusa Niña - $27900
+INFO 2026-06-24 15:54:59,410 models 29992 28108 Producto creado: Falda Niña - $32900
+INFO 2026-06-24 15:54:59,439 models 29992 28108 Producto creado: Vestido Fiesta - $59900
+INFO 2026-06-24 15:54:59,467 models 29992 28108 Producto creado: Leggins Niña - $24900
+INFO 2026-06-24 15:54:59,499 models 29992 28108 Producto creado: Chaqueta Niña - $55900
+INFO 2026-06-24 15:54:59,522 models 29992 28108 Producto creado: Sudadera Niña - $39900
+INFO 2026-06-24 15:54:59,545 models 29992 28108 Producto creado: Mochila Niña - $45900
+INFO 2026-06-24 15:54:59,566 models 29992 28108 Producto creado: Zapatos Niña - $54900
+INFO 2026-06-24 15:54:59,590 models 29992 28108 Producto creado: Pulsera Niña - $12900
+INFO 2026-06-24 15:54:59,609 models 29992 28108 Producto creado: Set Bebé Premium - $39900
+INFO 2026-06-24 15:54:59,641 models 29992 28108 Producto creado: Body Bebé - $28900
+INFO 2026-06-24 15:54:59,663 models 29992 28108 Producto creado: Conjunto Bebé - $34900
+INFO 2026-06-24 15:54:59,693 models 29992 28108 Producto creado: Gorrito Bebé - $15900
+INFO 2026-06-24 15:54:59,717 models 29992 28108 Producto creado: Pijama Bebé - $29900
+INFO 2026-06-24 15:54:59,745 models 29992 28108 Producto creado: Conjunto Bebé Verano - $42900
+INFO 2026-06-24 15:54:59,775 models 29992 28108 Producto creado: Babero Bebé - $12900
+INFO 2026-06-24 15:54:59,796 models 29992 28108 Producto creado: Manta Bebé - $34900
+INFO 2026-06-24 15:54:59,823 models 29992 28108 Producto creado: Conjunto Bebé Invierno - $49900
+INFO 2026-06-24 15:54:59,843 models 29992 28108 Producto creado: Zapatitos Bebé - $25900
+INFO 2026-06-24 15:56:41,061 views 31304 31992 Búsqueda de productos: "con" desde IP: 127.0.0.1
+INFO 2026-06-24 15:59:36,805 views 31304 31992 Búsqueda de productos: "con" desde IP: 127.0.0.1
+INFO 2026-06-24 15:59:51,605 views 31304 31992 Búsqueda de productos: "conjun" desde IP: 127.0.0.1
+INFO 2026-06-24 16:20:34,602 views 31304 32832 Búsqueda de productos: "conjun" desde IP: 127.0.0.1
+INFO 2026-06-24 16:22:57,533 views 31304 32832 Producto visualizado: Conjunto Bebé Invierno por visitante anónimo
+INFO 2026-06-24 16:28:44,983 views 30836 1960 Producto visualizado: Conjunto Bebé Invierno por visitante anónimo
+INFO 2026-06-24 16:43:07,483 views 30836 30160 Producto visualizado: Conjunto Bebé Invierno por visitante anónimo
+INFO 2026-06-24 16:54:08,256 views 30836 11752 Producto visualizado: Zapatitos Bebé por visitante anónimo
+INFO 2026-06-24 17:27:31,570 views 21780 31056 Producto visualizado: Zapatitos Bebé por visitante anónimo
+INFO 2026-06-24 17:28:31,234 views 21780 28304 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 17:28:31,298 middleware 21780 28304 Actividad: sofia - POST /login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:28:31,335 middleware 21780 28304 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 17:28:31,340 views 21780 31624 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 17:28:31,442 middleware 21780 31624 Actividad: sofia - POST /login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:28:31,466 middleware 21780 31624 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 17:28:32,489 middleware 21780 31624 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:28:56,036 middleware 21780 31624 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:28:59,254 middleware 21780 31056 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:00,478 views 21780 31056 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:29:00,648 middleware 21780 31056 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:05,641 middleware 21780 33204 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:07,915 views 21780 33204 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 17:29:07,987 middleware 21780 33204 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:11,415 middleware 21780 11776 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:12,678 views 21780 11776 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 17:29:12,727 middleware 21780 11776 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:17,710 middleware 21780 13828 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:18,943 views 21780 23052 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 17:29:18,974 middleware 21780 23052 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:29:21,091 middleware 21780 28560 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:32:56,853 views 21780 28560 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:32:56,903 middleware 21780 28560 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:00,060 middleware 21780 30012 Actividad: sofia - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:01,596 views 21780 30012 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:33:01,722 middleware 21780 30012 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:04,984 middleware 21780 13692 Actividad: sofia - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:07,210 views 21780 13692 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:33:07,302 middleware 21780 13692 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:09,706 middleware 21780 24592 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:11,961 views 21780 24592 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:33:12,056 middleware 21780 24592 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:14,812 middleware 21780 27692 Actividad: sofia - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:33:16,320 views 21780 27692 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:33:16,414 middleware 21780 27692 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:34:56,993 views 21780 33492 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:34:57,118 middleware 21780 33492 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:01,474 middleware 21780 27692 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:05,391 views 21780 27692 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:35:05,444 middleware 21780 27692 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:09,860 middleware 21780 6268 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:11,978 views 21780 6268 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:35:12,073 middleware 21780 6268 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:14,680 middleware 21780 32828 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:17,128 views 21780 30896 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:35:17,152 middleware 21780 30896 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:23,617 middleware 21780 32364 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:35:28,739 views 21780 32364 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:35:28,905 middleware 21780 32364 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:37:51,102 views 21780 29400 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:37:51,136 middleware 21780 29400 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:37:54,717 middleware 21780 33036 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:37:57,226 views 21780 33036 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 17:37:57,527 middleware 21780 33036 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:38:04,511 middleware 21780 23972 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:38:07,761 views 21780 23972 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:38:07,878 middleware 21780 23972 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:38:11,815 middleware 21780 28184 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:38:13,578 views 21780 28184 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:38:13,625 middleware 21780 28184 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:38:17,164 middleware 21780 29700 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:38:19,670 views 21780 29700 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:38:19,748 middleware 21780 29700 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:40:34,725 views 21780 13464 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:40:35,023 middleware 21780 13464 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:40:40,194 middleware 21780 17720 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:40:42,963 views 21780 17720 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:40:43,120 middleware 21780 17720 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:40:48,856 middleware 21780 31012 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:40:54,163 views 21780 34764 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:40:54,246 middleware 21780 34764 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:42:39,917 middleware 21780 20828 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:44:31,684 middleware 21780 27148 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:44:36,155 views 21780 27148 Producto visualizado: Zapatitos Bebé por sofia
+INFO 2026-06-24 17:44:36,251 middleware 21780 27148 Actividad: sofia - GET /tienda/producto/zapatitos-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:44:40,602 middleware 21780 27596 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:44:42,359 middleware 21780 27596 Actividad: sofia - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:45:59,962 middleware 21780 27952 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:46:01,650 middleware 21780 27952 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:46:04,394 views 21780 27952 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 17:46:04,462 middleware 21780 27952 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:46:08,292 middleware 21780 27728 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:47:28,602 middleware 21780 27728 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:47:31,868 middleware 21780 27728 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:48:57,057 middleware 21780 27596 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:50:17,674 middleware 21780 27596 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:55:37,559 middleware 21780 25588 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:55:44,216 middleware 21780 25588 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:57:38,700 views 21780 25588 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:57:38,884 middleware 21780 25588 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:57:44,002 middleware 21780 24344 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:57:46,765 middleware 21780 24344 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:57:51,020 views 21780 24344 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 17:57:51,125 middleware 21780 24344 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:57:57,817 middleware 21780 22436 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 17:58:06,504 middleware 21780 22436 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 18:02:51,293 middleware 21780 22436 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 18:09:26,698 middleware 21780 4672 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 18:09:30,759 views 21780 4672 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 18:09:31,172 middleware 21780 4672 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 18:09:39,317 middleware 21780 28940 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 18:09:48,373 views 21780 28940 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 18:09:48,797 middleware 21780 28940 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 18:09:56,004 middleware 21780 1456 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1

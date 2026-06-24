@@ -1,53 +1,198 @@
+<!-- website/templates/website/partials/navbar.html -->
 {% load static %}
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'website:home' %}">
-            <img src="{% static 'img/logo.png' %}" alt="Angelow" height="40">
-            <span>Angelow</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'lista_productos' %}active{% endif %}" href="{% url 'tienda:lista_productos' %}">
-                        <i class="fas fa-store"></i> Tienda
-                    </a>
-                </li>
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'website:home' %}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    {% if user.is_superuser or user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if 'clientes' in request.path %}active{% endif %}" href="{% url 'clientes:cliente_list' %}">
-                            <i class="fas fa-users"></i> Clientes
-                        </a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link position-relative" href="{% url 'tienda:ver_carrito' %}">
-                            <i class="fas fa-shopping-cart"></i> Carrito
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> {{ user.first_name|default:user.username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{% url 'tienda:favoritos' %}"><i class="fas fa-heart"></i> Favoritos</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'website:logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="nav-item"><a class="btn-nav btn-login" href="{% url 'website:login' %}">Iniciar sesión</a></li>
-                    <li class="nav-item"><a class="btn-nav btn-register" href="{% url 'website:register' %}">Registrarse</a></li>
-                {% endif %}
-            </ul>
+
+<header style="background: white; box-shadow: 0 2px 20px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #E8EDF5;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 10px 24px;">
+        <!-- Fila superior -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            
+            <!-- Logo -->
+            <a href="{% url 'website:home' %}" style="display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0;">
+                <img src="{% static 'img/general/logos.png' %}" alt="ANGELOW" style="height: 45px; width: auto; border-radius: 8px;">
+                <div style="display: flex; flex-direction: column; line-height: 1;">
+                    <span style="font-size: 22px; font-weight: 900; color: #1E3A8A; letter-spacing: -0.5px;">ANGELOW</span>
+                    <span style="font-size: 9px; font-weight: 700; color: #5E9DE6; letter-spacing: 0.5px; text-transform: uppercase;">INICIO</span>
+                </div>
+            </a>
+
+            <!-- ESPACIO CENTRAL (sin buscador) -->
+            <div style="flex: 1;"></div>
+
+            <!-- Iconos en círculos -->
+            <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                
+                <!-- Contacto -->
+                <a href="#" style="text-decoration: none;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #F0F2F5; display: flex; align-items: center; justify-content: center; transition: all 0.3s; border: 1px solid #E8EDF5;" 
+                         onmouseover="this.style.background='#5E9DE6'; this.style.borderColor='#5E9DE6'; this.querySelector('img').style.filter='brightness(0) invert(1)'" 
+                         onmouseout="this.style.background='#F0F2F5'; this.style.borderColor='#E8EDF5'; this.querySelector('img').style.filter='none'">
+                        <img src="{% static 'img/general/contactenos.png' %}" alt="Contacto" style="width: 22px; height: 22px; transition: filter 0.3s;">
+                    </div>
+                </a>
+                
+                <!-- Carrito -->
+                <a href="{% url 'tienda:ver_carrito' %}" style="text-decoration: none; position: relative;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #F0F2F5; display: flex; align-items: center; justify-content: center; transition: all 0.3s; border: 1px solid #E8EDF5; position: relative;" 
+                         onmouseover="this.style.background='#5E9DE6'; this.style.borderColor='#5E9DE6'; this.querySelector('img').style.filter='brightness(0) invert(1)'" 
+                         onmouseout="this.style.background='#F0F2F5'; this.style.borderColor='#E8EDF5'; this.querySelector('img').style.filter='none'">
+                        <img src="{% static 'img/general/carro.png' %}" alt="Carrito" style="width: 22px; height: 22px; transition: filter 0.3s;">
+                        <span class="badge-header cart-badge" id="cartBadgeHeader">0</span>
+                    </div>
+                </a>
+                
+                <!-- Favoritos -->
+                <a href="{% url 'website:favorites' %}" style="text-decoration: none; position: relative;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #F0F2F5; display: flex; align-items: center; justify-content: center; transition: all 0.3s; border: 1px solid #E8EDF5; position: relative;" 
+                         onmouseover="this.style.background='#5E9DE6'; this.style.borderColor='#5E9DE6'; this.querySelector('img').style.filter='brightness(0) invert(1)'" 
+                         onmouseout="this.style.background='#F0F2F5'; this.style.borderColor='#E8EDF5'; this.querySelector('img').style.filter='none'">
+                        <img src="{% static 'img/general/favoritos.png' %}" alt="Favoritos" style="width: 22px; height: 22px; transition: filter 0.3s;">
+                        <span class="badge-header" id="favBadgeHeader">0</span>
+                    </div>
+                </a>
+                
+                <!-- Mi cuenta -->
+                <div style="position: relative;">
+                    <button onclick="toggleUserMenu()" style="background: none; border: none; cursor: pointer; padding: 0;">
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #F0F2F5; display: flex; align-items: center; justify-content: center; transition: all 0.3s; border: 1px solid #E8EDF5;" 
+                             onmouseover="this.style.background='#5E9DE6'; this.style.borderColor='#5E9DE6'; this.querySelector('img').style.filter='brightness(0) invert(1)'" 
+                             onmouseout="this.style.background='#F0F2F5'; this.style.borderColor='#E8EDF5'; this.querySelector('img').style.filter='none'">
+                            <img src="{% static 'img/general/avatar.png' %}" alt="Mi cuenta" style="width: 22px; height: 22px; transition: filter 0.3s; border-radius: 50%;">
+                        </div>
+                    </button>
+                    <!-- Dropdown -->
+                    <div id="userDropdown" style="display: none; position: absolute; top: 50px; right: 0; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); min-width: 200px; overflow: hidden; border: 1px solid #E0E7F5; z-index: 100;">
+                        <div style="padding: 14px 18px; border-bottom: 1px solid #E0E7F5; background: #F8FBFE;">
+                            <div style="font-weight: 600; color: #1E3A8A; font-size: 14px;">{{ user.get_nombre_completo|default:user.username }}</div>
+                            <div style="font-size: 12px; color: #4B6A9B;">{{ user.email }}</div>
+                        </div>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'website:perfil' %}" style="display: flex; align-items: center; gap: 12px; padding: 10px 18px; color: #1E3A8A; text-decoration: none; transition: background 0.2s; font-size: 13px;" 
+                               onmouseover="this.style.background='#F8FBFE'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-user" style="color: #5E9DE6; width: 16px;"></i> Mi Perfil
+                            </a>
+                            <a href="#" style="display: flex; align-items: center; gap: 12px; padding: 10px 18px; color: #1E3A8A; text-decoration: none; transition: background 0.2s; font-size: 13px;" 
+                               onmouseover="this.style.background='#F8FBFE'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-shopping-bag" style="color: #5E9DE6; width: 16px;"></i> Mis Pedidos
+                            </a>
+                            <a href="{% url 'website:favorites' %}" style="display: flex; align-items: center; gap: 12px; padding: 10px 18px; color: #1E3A8A; text-decoration: none; transition: background 0.2s; font-size: 13px;" 
+                               onmouseover="this.style.background='#F8FBFE'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-heart" style="color: #FF6B6B; width: 16px;"></i> Mis Favoritos
+                                <span id="favBadgeDropdown" style="background: #FF6B6B; color: white; font-size: 10px; font-weight: 700; padding: 1px 8px; border-radius: 50px; margin-left: auto; display: none;">0</span>
+                            </a>
+                            <hr style="margin: 4px 16px; border-color: #E0E7F5;">
+                            <a href="{% url 'website:logout' %}" style="display: flex; align-items: center; gap: 12px; padding: 10px 18px; color: #ef4444; text-decoration: none; transition: background 0.2s; font-size: 13px;" 
+                               onmouseover="this.style.background='#F8FBFE'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-sign-out-alt" style="width: 16px;"></i> Cerrar Sesión
+                            </a>
+                        {% else %}
+                            <a href="{% url 'website:login' %}" style="display: flex; align-items: center; gap: 12px; padding: 10px 18px; color: #1E3A8A; text-decoration: none; transition: background 0.2s; font-size: 13px;" 
+                               onmouseover="this.style.background='#F8FBFE'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-sign-in-alt" style="color: #5E9DE6; width: 16px;"></i> Iniciar Sesión
+                            </a>
+                            <a href="{% url 'website:register' %}" style="display: flex; align-items: center; gap: 12px; padding: 10px 18px; color: #1E3A8A; text-decoration: none; transition: background 0.2s; font-size: 13px;" 
+                               onmouseover="this.style.background='#F8FBFE'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-user-plus" style="color: #5E9DE6; width: 16px;"></i> Registrarse
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</nav>
+</header>
+
+<style>
+    .badge-header {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #FF6B6B;
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+        line-height: 1;
+        box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+    }
+    .badge-header.cart-badge {
+        background: #5E9DE6;
+        box-shadow: 0 2px 4px rgba(94, 157, 230, 0.3);
+    }
+    #favBadgeDropdown {
+        background: #FF6B6B;
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 8px;
+        border-radius: 50px;
+        margin-left: auto;
+        display: none;
+    }
+</style>
+
+<script>
+function toggleUserMenu() {
+    var dropdown = document.getElementById('userDropdown');
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        dropdown.style.display = 'block';
+    }
+}
+
+document.addEventListener('click', function(event) {
+    var dropdown = document.getElementById('userDropdown');
+    var button = document.querySelector('button[onclick="toggleUserMenu()"]');
+    if (dropdown && button) {
+        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    }
+});
+
+function updateHeaderBadges() {
+    try {
+        var cart = JSON.parse(localStorage.getItem('angelow_cart') || '[]');
+        var total = 0;
+        for (var i = 0; i < cart.length; i++) {
+            total = total + (cart[i].quantity || 1);
+        }
+        var cartBadge = document.getElementById('cartBadgeHeader');
+        if (cartBadge) {
+            cartBadge.textContent = total;
+            cartBadge.style.display = total > 0 ? 'flex' : 'none';
+        }
+    } catch(e) {}
+    
+    try {
+        var favs = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+        var count = favs.length;
+        var favBadge = document.getElementById('favBadgeHeader');
+        if (favBadge) {
+            favBadge.textContent = count;
+            favBadge.style.display = count > 0 ? 'flex' : 'none';
+        }
+        var favBadgeDropdown = document.getElementById('favBadgeDropdown');
+        if (favBadgeDropdown) {
+            favBadgeDropdown.textContent = count;
+            favBadgeDropdown.style.display = count > 0 ? 'inline' : 'none';
+        }
+    } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateHeaderBadges();
+});
+
+window.addEventListener('storage', function(e) {
+    if (e.key === 'angelow_cart' || e.key === 'angelow_favorites') {
+        updateHeaderBadges();
+    }
+});
+</script>

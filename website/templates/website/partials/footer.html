@@ -1,20 +1,92 @@
 <!-- website/templates/website/partials/footer.html -->
-<footer class="text-center py-4 mt-5" style="background: #EDF4FC; border-top: 2px solid #E0E7F5;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-4 text-md-start">
-                <span class="fw-bold" style="color: #1E3A8A;">
-                    <i class="fas fa-crown me-2" style="color: #5E9DE6;"></i> ANGELOW
-                </span>
+{% load static %}
+
+<footer style="background: #1E3A8A; color: white; padding: 50px 20px 30px; margin-top: auto;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 40px; text-align: left;">
+            
+            <!-- Logo y descripción -->
+            <div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="{% static 'img/general/logos.png' %}" alt="ANGELOW" style="width: 50px; height: 50px; object-fit: contain; border-radius: 50%; background: white; padding: 6px;">
+                        <div>
+                            <div style="font-size: 24px; font-weight: 900; color: #7FBBF2; letter-spacing: -0.5px;">ANGELOW</div>
+                            <p style="color: #94a3b8; font-size: 12px; margin: 0;">Ropa Infantil de calidad</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <span class="text-muted">&copy; 2026 ANGELOW. Todos los derechos reservados.</span>
+
+            <!-- Contacto -->
+            <div>
+                <h3 style="font-size: 16px; color: #7FBBF2; margin-bottom: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">Contacto</h3>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <p style="color: #cbd5e1; font-size: 14px; margin: 0; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-phone" style="color: #7FBBF2; width: 18px; font-size: 14px;"></i> +57 310595664
+                    </p>
+                    <p style="color: #cbd5e1; font-size: 14px; margin: 0; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-envelope" style="color: #7FBBF2; width: 18px; font-size: 14px;"></i> info@angelow.com
+                    </p>
+                    <p style="color: #cbd5e1; font-size: 14px; margin: 0; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-map-marker-alt" style="color: #7FBBF2; width: 18px; font-size: 14px;"></i> Medellín, Colombia
+                    </p>
+                </div>
             </div>
-            <div class="col-md-4 text-md-end">
-                <small class="text-muted">
-                    <i class="fas fa-code"></i> Django & Bootstrap 5
-                </small>
+
+            <!-- Ayuda -->
+            <div>
+                <h3 style="font-size: 16px; color: #7FBBF2; margin-bottom: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">Ayuda</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Pedidos y Envíos</a>
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Devoluciones y Cambios</a>
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Preguntas Frecuentes</a>
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Guía de Tallas</a>
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Términos y Condiciones</a>
+                </div>
             </div>
+
+            <!-- Legal -->
+            <div>
+                <h3 style="font-size: 16px; color: #7FBBF2; margin-bottom: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">Legal</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Políticas de Privacidad</a>
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Términos y Condiciones</a>
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Políticas de Empleo</a>
+                    <a href="#" style="color: #cbd5e1; font-size: 14px; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#7FBBF2'" onmouseout="this.style.color='#cbd5e1'">Políticas de Devolución</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Redes Sociales -->
+        <div style="display: flex; justify-content: center; gap: 16px; margin-top: 40px;">
+            <a href="#" style="width: 44px; height: 44px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+               onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                <i class="fab fa-instagram" style="color: white; font-size: 20px;"></i>
+            </a>
+            <a href="#" style="width: 44px; height: 44px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+               onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                <i class="fab fa-facebook-f" style="color: white; font-size: 20px;"></i>
+            </a>
+            <a href="#" style="width: 44px; height: 44px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+               onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                <i class="fab fa-tiktok" style="color: white; font-size: 20px;"></i>
+            </a>
+            <a href="#" style="width: 44px; height: 44px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; text-decoration: none;" 
+               onmouseover="this.style.background='#7FBBF2'; this.style.transform='translateY(-3px)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                <i class="fab fa-youtube" style="color: white; font-size: 20px;"></i>
+            </a>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <p style="color: #94a3b8; font-size: 13px; margin: 0;">
+                &copy; 2026 ANGELOW. Todos los derechos reservados.
+            </p>
         </div>
     </div>
 </footer>
