@@ -1,0 +1,118 @@
+<!-- website/templates/website/dashboard_admin.html -->
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Administrador - ANGELOW{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold" style="color: #1E3A8A;">
+        <i class="fas fa-chart-pie me-2" style="color: #5E9DE6;"></i> Panel de Control
+    </h2>
+    <span class="badge bg-primary rounded-pill px-3 py-2">Administrador</span>
+</div>
+
+<div class="row g-4">
+    <!-- Tarjetas de Estadísticas -->
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center p-3">
+            <i class="fas fa-users" style="font-size: 32px; color: #5E9DE6;"></i>
+            <h3 class="fw-bold mt-2">{{ total_usuarios|default:0 }}</h3>
+            <p class="text-muted">Usuarios</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center p-3">
+            <i class="fas fa-user-friends" style="font-size: 32px; color: #10b981;"></i>
+            <h3 class="fw-bold mt-2">{{ total_clientes|default:0 }}</h3>
+            <p class="text-muted">Clientes</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center p-3">
+            <i class="fas fa-box" style="font-size: 32px; color: #f59e0b;"></i>
+            <h3 class="fw-bold mt-2">{{ total_productos|default:0 }}</h3>
+            <p class="text-muted">Productos</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center p-3">
+            <i class="fas fa-shopping-cart" style="font-size: 32px; color: #ef4444;"></i>
+            <h3 class="fw-bold mt-2">{{ total_pedidos|default:0 }}</h3>
+            <p class="text-muted">Pedidos</p>
+        </div>
+    </div>
+</div>
+
+<!-- Productos con bajo stock -->
+{% if productos_bajo_stock %}
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-warning bg-opacity-10">
+        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+        Productos con Stock Bajo
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos_bajo_stock %}
+                    <tr>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.categoria.nombre }}</td>
+                        <td><span class="badge bg-danger">{{ producto.stock }}</span></td>
+                        <td>
+                            <a href="{% url 'tienda:detalle_producto' producto.slug %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Últimas Actividades -->
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-info bg-opacity-10">
+        <i class="fas fa-history text-info me-2"></i>
+        Actividades Recientes
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Acción</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for actividad in actividades_recientes|slice:":10" %}
+                    <tr>
+                        <td>{{ actividad.usuario.get_nombre_completo|default:actividad.usuario.username }}</td>
+                        <td>{{ actividad.descripcion|truncatechars:50 }}</td>
+                        <td>{{ actividad.fecha|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-3">No hay actividades recientes</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

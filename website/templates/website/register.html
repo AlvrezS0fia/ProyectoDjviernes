@@ -1,59 +1,633 @@
 <!-- website/templates/website/register.html -->
-{% extends 'website/base.html' %}
+{% extends 'website/base_auth.html' %}
+{% load static %}
 
 {% block title %}Registrarse - ANGELOW{% endblock %}
 
+{% block extra_css %}
+<style>
+    .register-container {
+        display: flex;
+        min-height: calc(100vh - 108px);
+        flex: 1;
+        background: white;
+    }
+    .register-left {
+        flex: 1;
+        background: linear-gradient(135deg, #5E9DE6 0%, #7FBBF2 100%);
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .register-left-content {
+        max-width: 500px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+    .register-logo {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+    .register-logo-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: white;
+    }
+    .register-logo-title {
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: -1px;
+        color: white;
+    }
+    .register-logo-subtitle {
+        font-size: 14px;
+        opacity: 0.8;
+        letter-spacing: 2px;
+    }
+    .register-title-main {
+        font-size: 38px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        line-height: 1.2;
+    }
+    .register-subtitle {
+        font-size: 16px;
+        opacity: 0.9;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    .register-features {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 10px;
+    }
+    .register-feature {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .register-feature-icon {
+        width: 36px;
+        height: 36px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+    .register-feature-title {
+        font-weight: 600;
+        font-size: 15px;
+    }
+    .register-feature-desc {
+        font-size: 13px;
+        opacity: 0.8;
+    }
+    .register-right {
+        flex: 1;
+        padding: 40px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: white;
+        overflow-y: auto;
+    }
+    .register-form-container {
+        max-width: 450px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .register-heading {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #1E3A8A;
+    }
+    .register-sub-heading {
+        font-size: 15px;
+        color: #4B6A9B;
+        margin-bottom: 25px;
+    }
+    .register-tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 25px;
+        border: 2px solid #E0E7F5;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .register-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+    .register-tab-inactive {
+        color: #4B6A9B;
+        background: #F8FBFE;
+    }
+    .register-tab-inactive:hover {
+        background: #EDF4FC;
+    }
+    .register-tab-active {
+        color: white;
+        background: linear-gradient(135deg, #5E9DE6 0%, #7FBBF2 100%);
+    }
+    .register-field {
+        margin-bottom: 16px;
+    }
+    .register-label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1E3A8A;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .register-label-icon {
+        margin-right: 8px;
+        color: #5E9DE6;
+    }
+    .register-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #E0E7F5;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s;
+        background: #F8FBFE;
+    }
+    .register-input:focus {
+        outline: none;
+        border-color: #5E9DE6;
+        box-shadow: 0 0 0 4px rgba(94,157,230,0.12);
+    }
+    .register-password-wrapper {
+        position: relative;
+    }
+    .register-password-input {
+        width: 100%;
+        padding: 12px 16px;
+        padding-right: 45px;
+        border: 2px solid #E0E7F5;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s;
+        background: #F8FBFE;
+    }
+    .register-password-input:focus {
+        outline: none;
+        border-color: #5E9DE6;
+        box-shadow: 0 0 0 4px rgba(94,157,230,0.12);
+    }
+    .register-password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #94a3b8;
+        font-size: 16px;
+        padding: 4px;
+    }
+    .register-password-toggle:hover {
+        color: #5E9DE6;
+    }
+    .register-rules-box {
+        margin-bottom: 16px;
+        padding: 12px 16px;
+        background: #F8FBFE;
+        border-radius: 10px;
+        border: 1px solid #E0E7F5;
+    }
+    .register-rules-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1E3A8A;
+        margin-bottom: 6px;
+    }
+    .register-rules-list {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 12px;
+        color: #4B6A9B;
+        list-style-type: none;
+    }
+    .register-rules-item {
+        padding: 2px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .register-rules-dot {
+        font-size: 6px;
+        color: #5E9DE6;
+    }
+    .register-match {
+        margin-top: 6px;
+        font-size: 13px;
+    }
+    .register-match-success {
+        color: #10b981;
+    }
+    .register-match-error {
+        color: #ef4444;
+    }
+    .register-checkbox-wrapper {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .register-checkbox {
+        width: 18px;
+        height: 18px;
+        accent-color: #5E9DE6;
+        margin-top: 2px;
+        cursor: pointer;
+    }
+    .register-checkbox-label {
+        font-size: 13px;
+        color: #4B6A9B;
+        cursor: pointer;
+        line-height: 1.4;
+    }
+    .register-submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #5E9DE6 0%, #7FBBF2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 16px rgba(94,157,230,0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .register-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(94,157,230,0.4);
+    }
+    .register-submit-btn:active {
+        transform: translateY(0);
+    }
+    .register-divider {
+        text-align: center;
+        margin: 20px 0;
+        color: #4B6A9B;
+        font-size: 14px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .register-divider::before,
+    .register-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #E0E7F5;
+    }
+    .register-google-btn {
+        width: 100%;
+        padding: 14px;
+        background: white;
+        color: #757575;
+        border: 2px solid #E0E7F5;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        text-decoration: none;
+    }
+    .register-google-btn:hover {
+        background: #f8f8f8;
+        border-color: #cbd5e1;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .register-google-icon {
+        width: 22px;
+        height: 22px;
+    }
+    .register-footer-link {
+        text-align: center;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #E0E7F5;
+    }
+    .register-footer-text {
+        color: #4B6A9B;
+        font-size: 14px;
+    }
+    .register-footer-link a {
+        color: #5E9DE6;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .register-footer-link a:hover {
+        text-decoration: underline;
+    }
+    .register-message {
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+    }
+    .register-message-success {
+        background: rgba(16, 185, 129, 0.08);
+        border-left: 4px solid #10b981;
+        color: #065f46;
+    }
+    .register-message-error {
+        background: rgba(239, 68, 68, 0.08);
+        border-left: 4px solid #ef4444;
+        color: #dc2626;
+    }
+    .register-message-icon {
+        font-size: 18px;
+    }
+    @media (max-width: 768px) {
+        .register-container {
+            flex-direction: column;
+        }
+        .register-left {
+            padding: 30px 20px;
+        }
+        .register-right {
+            padding: 30px 20px;
+        }
+        .register-title-main {
+            font-size: 28px;
+        }
+        .register-logo-title {
+            font-size: 24px;
+        }
+        .register-heading {
+            font-size: 24px;
+        }
+    }
+    @media (max-width: 480px) {
+        .register-left {
+            padding: 20px 16px;
+        }
+        .register-right {
+            padding: 20px 16px;
+        }
+        .register-logo-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 28px;
+        }
+        .register-title-main {
+            font-size: 24px;
+        }
+        .register-logo-title {
+            font-size: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow">
-            <div class="card-header text-center" style="background: #EDF4FC;">
-                <h4 class="mb-0" style="color: #1E3A8A;">
-                    <i class="fas fa-user-plus me-2" style="color: #5E9DE6;"></i> Crear Cuenta
-                </h4>
+<div class="register-container">
+    <!-- LADO IZQUIERDO - INFORMACIÓN -->
+    <div class="register-left">
+        <div class="register-left-content">
+            <div class="register-logo">
+                <div class="register-logo-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div>
+                    <div class="register-logo-title">ANGELOW</div>
+                    <div class="register-logo-subtitle">PEDIDOS</div>
+                </div>
             </div>
-            <div class="card-body">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Nombre</label>
-                            {{ form.first_name }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Apellidos</label>
-                            {{ form.last_name }}
-                        </div>
+            
+            <h1 class="register-title-main">Bienvenido a la familia Angelow</h1>
+            <p class="register-subtitle">
+                Accede a tu cuenta para descubrir las mejores colecciones de ropa infantil, ofertas exclusivas y una experiencia de compra personalizada.
+            </p>
+            
+            <div class="register-features">
+                <div class="register-feature">
+                    <div class="register-feature-icon"><i class="fas fa-truck"></i></div>
+                    <div>
+                        <div class="register-feature-title">Envío Gratis</div>
+                        <div class="register-feature-desc">En pedidos superiores a $50.000</div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Correo Electrónico</label>
-                        {{ form.email }}
+                </div>
+                <div class="register-feature">
+                    <div class="register-feature-icon"><i class="fas fa-heart"></i></div>
+                    <div>
+                        <div class="register-feature-title">Lista de Favoritos</div>
+                        <div class="register-feature-desc">Guarda tus productos favoritos</div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Contraseña</label>
-                        {{ form.password1 }}
-                        <small class="text-muted">Mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial.</small>
+                </div>
+                <div class="register-feature">
+                    <div class="register-feature-icon"><i class="fas fa-gem"></i></div>
+                    <div>
+                        <div class="register-feature-title">Ofertas Exclusivas</div>
+                        <div class="register-feature-desc">Solo para miembros registrados</div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Confirmar Contraseña</label>
-                        {{ form.password2 }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LADO DERECHO - FORMULARIO -->
+    <div class="register-right">
+        <div class="register-form-container">
+            <h2 class="register-heading">Crear Cuenta</h2>
+            <p class="register-sub-heading">Regístrate para comenzar</p>
+
+            <div class="register-tabs">
+                <a href="{% url 'website:login' %}" class="register-tab register-tab-inactive">
+                    INICIAR SESIÓN
+                </a>
+                <a href="{% url 'website:register' %}" class="register-tab register-tab-active">
+                    REGISTRARSE
+                </a>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="register-message {% if 'success' in message.tags %}register-message-success{% else %}register-message-error{% endif %}">
+                        <i class="fas fa-{% if 'success' in message.tags %}check-circle{% else %}exclamation-circle{% endif %} register-message-icon"></i> 
+                        <span>{{ message }}</span>
                     </div>
-                    <div class="mb-3 form-check">
-                        {{ form.terms }}
-                        <label class="form-check-label" for="{{ form.terms.id_for_label }}">
-                            Acepto los Términos y Condiciones
-                        </label>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Botón de Google -->
+<!-- O simplemente usa la ruta directa -->
+<a href="/auth/login/google-oauth2/" class="login-google-btn">
+                    <svg class="register-google-icon" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Continuar con Google
+            </a>
+
+            <div class="register-divider"><span>o</span></div>
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="register-field">
+                    <label class="register-label">
+                        <i class="fas fa-envelope register-label-icon"></i> CORREO ELECTRÓNICO
+                    </label>
+                    <input type="email" name="email" class="register-input" placeholder="tu@email.com" required>
+                </div>
+
+                <div class="register-field">
+                    <label class="register-label">
+                        <i class="fas fa-user register-label-icon"></i> NOMBRE COMPLETO
+                    </label>
+                    <input type="text" name="first_name" class="register-input" placeholder="Tu nombre completo" required>
+                </div>
+
+                <div class="register-field">
+                    <label class="register-label">
+                        <i class="fas fa-lock register-label-icon"></i> CONTRASEÑA
+                    </label>
+                    <div class="register-password-wrapper">
+                        <input type="password" name="password1" id="password1" class="register-password-input" placeholder="********" required>
+                        <button type="button" class="register-password-toggle" onclick="togglePassword('password1', 'passwordIcon1')">
+                            <i class="fas fa-eye" id="passwordIcon1"></i>
+                        </button>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-user-plus me-2"></i> Registrarse
-                    </button>
-                </form>
-                <hr>
-                <p class="text-center mb-0">
-                    ¿Ya tienes cuenta? <a href="{% url 'website:login' %}" class="fw-bold" style="color: #5E9DE6;">Iniciar Sesión</a>
+                </div>
+
+                <div class="register-rules-box">
+                    <p class="register-rules-title">La contraseña debe contener:</p>
+                    <ul class="register-rules-list">
+                        <li class="register-rules-item">
+                            <i class="fas fa-circle register-rules-dot"></i> Al menos 8 caracteres
+                        </li>
+                        <li class="register-rules-item">
+                            <i class="fas fa-circle register-rules-dot"></i> Una letra mayúscula
+                        </li>
+                        <li class="register-rules-item">
+                            <i class="fas fa-circle register-rules-dot"></i> Una minúscula
+                        </li>
+                        <li class="register-rules-item">
+                            <i class="fas fa-circle register-rules-dot"></i> Un carácter especial
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="register-field">
+                    <label class="register-label">
+                        <i class="fas fa-check-circle register-label-icon"></i> CONFIRMAR CONTRASEÑA
+                    </label>
+                    <div class="register-password-wrapper">
+                        <input type="password" name="password2" id="password2" class="register-password-input" placeholder="********" required>
+                        <button type="button" class="register-password-toggle" onclick="togglePassword('password2', 'passwordIcon2')">
+                            <i class="fas fa-eye" id="passwordIcon2"></i>
+                        </button>
+                    </div>
+                    <div id="passwordMatch" class="register-match"></div>
+                </div>
+
+                <div class="register-checkbox-wrapper">
+                    <input type="checkbox" name="subscribe" id="subscribe" class="register-checkbox">
+                    <label for="subscribe" class="register-checkbox-label">
+                        Me gustaría recibir noticias sobre productos y servicios de Angelow.
+                    </label>
+                </div>
+
+                <button type="submit" class="register-submit-btn">
+                    <i class="fas fa-user-plus" style="margin-right: 10px;"></i> REGISTRARSE
+                </button>
+            </form>
+
+            <div class="register-footer-link">
+                <p class="register-footer-text">
+                    ¿Ya tienes cuenta? 
+                    <a href="{% url 'website:login' %}">Inicia Sesión aquí</a>
                 </p>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function togglePassword(inputId, iconId) {
+    var passwordInput = document.getElementById(inputId);
+    var icon = document.getElementById(iconId);
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        icon.className = 'fas fa-eye';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var password1 = document.getElementById('password1');
+    var password2 = document.getElementById('password2');
+    var matchDiv = document.getElementById('passwordMatch');
+
+    function checkPasswordMatch() {
+        if (password2.value.length > 0) {
+            if (password1.value === password2.value) {
+                matchDiv.innerHTML = '<span class="register-match-success"><i class="fas fa-check-circle"></i> Las contraseñas coinciden</span>';
+                password2.style.borderColor = '#10b981';
+            } else {
+                matchDiv.innerHTML = '<span class="register-match-error"><i class="fas fa-exclamation-circle"></i> Las contraseñas no coinciden</span>';
+                password2.style.borderColor = '#ef4444';
+            }
+        } else {
+            matchDiv.innerHTML = '';
+            password2.style.borderColor = '#E0E7F5';
+        }
+    }
+
+    if (password1 && password2) {
+        password1.addEventListener('input', checkPasswordMatch);
+        password2.addEventListener('input', checkPasswordMatch);
+    }
+});
+</script>
 {% endblock %}

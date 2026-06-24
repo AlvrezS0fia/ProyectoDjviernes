@@ -1,0 +1,9 @@
+INFO 2026-06-24 14:23:56,417 views 30172 18640 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:23:56,453 middleware 30172 18640 Actividad: sofia - POST /accounts/login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:23:56,460 middleware 30172 18640 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 14:23:56,602 middleware 30172 18640 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:23:59,909 middleware 30172 18640 Actividad: sofia - GET /accounts/dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:23:59,973 middleware 30172 18640 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:24:01,528 middleware 30172 18640 Actividad: sofia - GET /accounts/dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:24:01,585 middleware 30172 18640 Actividad: sofia - GET /accounts/dashboard/user/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 14:24:12,825 middleware 30172 18640 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1

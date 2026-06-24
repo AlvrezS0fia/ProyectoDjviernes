@@ -1,16 +1,17 @@
-<!-- website/templates/website/base.html -->
+<!-- website/templates/website/base_auth.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ANGELOW - CRM & Tienda{% endblock %}</title>
+    <title>{% block title %}ANGELOW - Autenticación{% endblock %}</title>
     
     {% load static %}
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'img/favico.ico' %}">
     <link rel="icon" type="image/png" href="{% static 'img/favico.ico' %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favico.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/favico.ico' %}">
     
     <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
@@ -20,125 +21,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Estilos Personalizados -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
-    <style>
-        .alert {
-            border-radius: 12px;
-            border-left: 4px solid #3b82f6;
-        }
-        .alert-success {
-            border-left-color: #10b981;
-        }
-        .alert-danger {
-            border-left-color: #ef4444;
-        }
-        .alert-warning {
-            border-left-color: #f59e0b;
-        }
-        .alert-info {
-            border-left-color: #3b82f6;
-        }
-        
-        .navbar-custom {
-            background: linear-gradient(135deg, #5E9DE6 0%, #7FBBF2 100%);
-            box-shadow: 0 4px 20px rgba(94, 157, 230, 0.25);
-        }
-        
-        .navbar-brand img {
-            height: 40px;
-            width: auto;
-            margin-right: 10px;
-        }
-    </style>
-    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'website:home' %}">
-                <img src="{% static 'img/logo.png' %}" alt="ANGELOW Logo">
-                ANGELOW
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'website:dashboard' %}">
-                                <i class="fas fa-home"></i> Inicio
-                            </a>
-                        </li>
-                        {% if user.rol == 'admin' %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="crmDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-users-cog"></i> CRM
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="{% url 'clientes:cliente_list' %}"><i class="fas fa-list"></i> Clientes</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'clientes:cliente_create' %}"><i class="fas fa-plus"></i> Nuevo Cliente</a></li>
-                                </ul>
-                            </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tienda:lista_productos' %}">
-                                <i class="fas fa-store"></i> Tienda
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tienda:ver_carrito' %}">
-                                <i class="fas fa-shopping-cart"></i> Carrito
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ user.get_nombre_completo|default:user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'website:perfil' %}"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{% url 'website:logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tienda:lista_productos' %}">
-                                <i class="fas fa-store"></i> Tienda
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-light btn-sm px-4" href="{% url 'website:login' %}" style="border-radius: 50px;">
-                                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-light btn-sm px-4" href="{% url 'website:register' %}" style="border-radius: 50px; color: #5E9DE6; font-weight: 600;">
-                                <i class="fas fa-user-plus"></i> Registrarse
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
+    <!-- HEADER -->
+    <header style="padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: white; box-shadow: 0 2px 20px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;">
+        <a href="{% url 'website:home' %}" style="display: flex; align-items: center; gap: 14px; text-decoration: none;">
+            <img src="{% static 'img/logo.png' %}" alt="ANGELOW" style="height: 50px; width: auto; border-radius: 12px;">
+            <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                <span style="font-size: 26px; font-weight: 900; letter-spacing: -0.5px; color: #5E9DE6;">ANGELOW</span>
+                <span style="font-size: 11px; font-weight: 600; color: #4B6A9B; letter-spacing: 1.5px; text-transform: uppercase;">CRM & Tienda Online</span>
             </div>
-        </div>
-    </nav>
+        </a>
+        <a href="{% url 'website:home' %}" style="display: flex; align-items: center; gap: 10px; padding: 10px 22px; background: #EDF4FC; border-radius: 50px; text-decoration: none; color: #4B6A9B; font-weight: 500; font-size: 14px; transition: all 0.3s;"
+           onmouseover="this.style.background='#5E9DE6'; this.style.color='white'; this.style.transform='translateY(-2px)'"
+           onmouseout="this.style.background='#EDF4FC'; this.style.color='#4B6A9B'; this.style.transform='translateY(0)'">
+            <i class="fas fa-arrow-left"></i> Volver al inicio
+        </a>
+    </header>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main>
-        {% if messages %}
-            <div class="container mt-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
-                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
         {% block content %}
         {% endblock %}
     </main>

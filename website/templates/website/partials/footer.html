@@ -1,47 +1,20 @@
-{% load static %}
-<footer class="footer">
+<!-- website/templates/website/partials/footer.html -->
+<footer class="text-center py-4 mt-5" style="background: #EDF4FC; border-top: 2px solid #E0E7F5;">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-3">
-                <img src="{% static 'img/logo.png' %}" alt="Angelow" style="max-height: 50px;">
-                <p class="text-muted small mt-2">Ropa infantil de calidad</p>
-                <p class="text-muted small">Descubre la mejor moda para los más pequeños.</p>
-                <div class="social-icons mt-3">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                </div>
+        <div class="row align-items-center">
+            <div class="col-md-4 text-md-start">
+                <span class="fw-bold" style="color: #1E3A8A;">
+                    <i class="fas fa-crown me-2" style="color: #5E9DE6;"></i> ANGELOW
+                </span>
             </div>
-            <div class="col-md-3">
-                <h5 class="footer-title">Contacto</h5>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-phone-alt text-primary me-2"></i> +57 313 595 1664</li>
-                    <li><i class="fas fa-envelope text-primary me-2"></i> info@angelow.com</li>
-                    <li><i class="fas fa-map-marker-alt text-primary me-2"></i> Medellín, Colombia</li>
-                </ul>
+            <div class="col-md-4">
+                <span class="text-muted">&copy; 2026 ANGELOW. Todos los derechos reservados.</span>
             </div>
-            <div class="col-md-3">
-                <h5 class="footer-title">Ayuda</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="footer-link">Pedidos y Envíos</a></li>
-                    <li><a href="#" class="footer-link">Devoluciones y Cambios</a></li>
-                    <li><a href="#" class="footer-link">Preguntas Frecuentes</a></li>
-                    <li><a href="#" class="footer-link">Guía de Tallas</a></li>
-                </ul>
+            <div class="col-md-4 text-md-end">
+                <small class="text-muted">
+                    <i class="fas fa-code"></i> Django & Bootstrap 5
+                </small>
             </div>
-            <div class="col-md-3">
-                <h5 class="footer-title">Legal</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="footer-link">Políticas de Privacidad</a></li>
-                    <li><a href="#" class="footer-link">Términos y Condiciones</a></li>
-                    <li><a href="#" class="footer-link">Políticas de Envío</a></li>
-                </ul>
-            </div>
-        </div>
-        <hr class="my-4">
-        <div class="text-center">
-            <p class="small text-muted mb-0">© {% now "Y" %} ANGELOW. Todos los derechos reservados.</p>
         </div>
     </div>
 </footer>

@@ -1,28 +1,97 @@
-{% extends 'base.html' %}
+<!-- website/templates/website/favorites.html -->
+{% extends 'website/base.html' %}
 {% load static %}
 
-{% block title %}Favoritos | ANGELOW CRM{% endblock %}
+{% block title %}Mis Favoritos - ANGELOW{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="card-custom mx-auto" style="max-width: 600px;">
-        <div class="card-header">
-            <h2><i class="fas fa-heart"></i> Mis Favoritos</h2>
-            <p>Productos guardados en tu lista</p>
-        </div>
-        <div class="card-body">
-            <p class="text-muted">Los productos que agregues a favoritos aparecerán aquí.</p>
-            <div id="favoritesList" class="mt-4"></div>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold" style="color: #1E3A8A;">
+        <i class="fas fa-heart me-2" style="color: #FF6B6B;"></i> Mis Favoritos
+    </h2>
+    <span class="badge bg-danger rounded-pill px-3 py-2">{{ favoritos|length }} productos</span>
 </div>
+
+{% if favoritos %}
+    <div class="row g-4">
+        {% for favorito in favoritos %}
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-top" style="height: 180px; overflow: hidden; background: #EDF4FC;">
+                        <img src="{{ favorito.producto.get_imagen_principal_url }}" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="{{ favorito.producto.nombre }}">
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ favorito.producto.nombre }}</h6>
+                        <p class="card-text text-muted small">{{ favorito.producto.categoria.nombre }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold" style="color: #1E3A8A;">${{ favorito.producto.precio|floatformat:0 }}</span>
+                            <div>
+                                <a href="{% url 'tienda:detalle_producto' favorito.producto.slug %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button class="btn btn-sm btn-outline-danger btn-remove-fav" data-product-id="{{ favorito.producto.id }}">
+                                    <i class="fas fa-heart-broken"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-heart fa-4x text-muted mb-3" style="opacity: 0.3;"></i>
+        <h4 style="color: #1E3A8A;">No tienes productos favoritos</h4>
+        <p class="text-muted">Explora nuestra tienda y agrega tus productos favoritos</p>
+        <a href="{% url 'tienda:lista_productos' %}" class="btn btn-primary">
+            <i class="fas fa-store me-2"></i> Explorar tienda
+        </a>
+    </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
-const favorites = JSON.parse(localStorage.getItem('angelow_favorites')) || [];
-if (favorites.length === 0) {
-    document.getElementById('favoritesList').innerHTML = '<p class="text-center text-muted">Aún no tienes productos favoritos.</p>';
-}
+(function() {
+    function removeFavorite(productoId) {
+        if (confirm('¿Quieres eliminar este producto de tus favoritos?')) {
+            var url = '/tienda/favoritos/toggle/' + productoId + '/';
+            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+            var token = csrfToken ? csrfToken.value : '';
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    location.reload();
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('.btn-remove-fav');
+        for (var i = 0; i < buttons.length; i++) {
+            (function(index) {
+                buttons[index].addEventListener('click', function() {
+                    var productId = this.getAttribute('data-product-id');
+                    removeFavorite(productId);
+                });
+            })(i);
+        }
+    });
+})();
 </script>
 {% endblock %}
