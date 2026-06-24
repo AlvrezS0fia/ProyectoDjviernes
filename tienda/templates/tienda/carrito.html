@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito de Compras | ANGELOW{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary: #5E9DE6;
+    --primary-light: #7FBBF2;
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --gray: #64748b;
+    --white: #ffffff;
+    --border-light: #e0e7f5;
+    --bg-soft: #f8fafc;
+}
+
+.cart-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 2rem;
+    border-radius: 24px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.cart-header h1 {
+    font-weight: 800;
+    margin: 0;
+}
+
+.cart-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.step-item.active {
+    font-weight: 600;
+}
+
+.step-item:not(.active) {
+    opacity: 0.7;
+}
+
+.cart-table {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+}
+
+.cart-table th {
+    background: var(--bg-soft);
+    color: var(--primary);
+    padding: 1rem;
+    font-weight: 600;
+    border: none;
+}
+
+.cart-table td {
+    padding: 1.2rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.cart-table tr:last-child td {
+    border-bottom: none;
+}
+
+.cart-item-image {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.quantity-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-soft);
+    border-radius: 12px;
+    padding: 0.5rem;
+    width: fit-content;
+}
+
+.quantity-btn {
+    width: 32px;
+    height: 32px;
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quantity-btn:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.total-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 20px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--border-light);
+}
+
+.total-row:last-of-type {
+    border-bottom: none;
+}
+
+.total-final {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.btn-action {
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+}
+
+.btn-checkout {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    border: none;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--white);
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.empty-cart i {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .cart-item-image {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .cart-table th,
+    .cart-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="cart-header">
+        <h1><i class="fas fa-shopping-cart me-2"></i>Carrito de Compras</h1>
+        <div class="cart-step">
+            <span class="step-item active"><i class="fas fa-shopping-cart"></i> Carrito</span>
+            <i class="fas fa-chevron-right"></i>
+            <span class="step-item"><i class="fas fa-credit-card"></i> Pago</span>
+            <i class="fas fa-chevron-right"></i>
+            <span class="step-item"><i class="fas fa-check-circle"></i> Confirmación</span>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message|safe }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if items %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="table-responsive cart-table">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-center">Precio</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-end">Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ item.producto.get_imagen_principal_url }}" 
+                                         class="cart-item-image" 
+                                         alt="{{ item.producto.nombre }}">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">{{ item.producto.nombre }}</h6>
+                                        <small class="text-muted">Talla: {{ item.talla }}</small>
+                                        <div class="mt-1">
+                                            <span class="badge bg-light text-dark">
+                                                <i class="fas fa-box me-1"></i>Stock: {{ item.producto.stock }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center align-middle">
+                                <span class="fw-semibold">COP ${{ item.producto.precio|floatformat:0 }}</span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <form method="post" action="{% url 'tienda:actualizar_carrito' item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <div class="quantity-wrapper">
+                                        <button type="button" class="quantity-btn" 
+                                                onclick="changeQty({{ item.id }}, -1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" name="cantidad" id="qty-{{ item.id }}" 
+                                               value="{{ item.cantidad }}" min="1" max="{{ item.producto.stock }}" 
+                                               class="quantity-input" onchange="this.form.submit()">
+                                        <button type="button" class="quantity-btn" 
+                                                onclick="changeQty({{ item.id }}, 1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-end align-middle">
+                                <strong class="fs-5">COP ${{ item.subtotal|floatformat:0 }}</strong>
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'tienda:eliminar_del_carrito' item.id %}" 
+                                   class="btn btn-sm btn-outline-danger rounded-circle"
+                                   title="Eliminar del carrito">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="total-card">
+                <h5 class="mb-4 fw-bold">Resumen de Compra</h5>
+                
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <strong>COP ${{ total|floatformat:0 }}</strong>
+                </div>
+                
+                <div class="total-row">
+                    <span>Envío</span>
+                    <strong class="text-success">Gratis</strong>
+                </div>
+                
+                <div class="total-row">
+                    <span>IVA (19%)</span>
+                    <strong>COP {{ total_iva|floatformat:0 }}</strong>
+                </div>
+                
+                <hr class="my-3">
+                
+                <div class="total-row">
+                    <span>Total</span>
+                    <span class="total-final">COP {{ total_final|floatformat:0 }}</span>
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-checkout btn-action btn-lg" type="button">
+                        <i class="fas fa-credit-card me-2"></i>Finalizar compra
+                    </button>
+                    <a href="{% url 'tienda:lista_productos' %}" class="btn btn-outline-secondary btn-action">
+                        <i class="fas fa-arrow-left me-2"></i>Seguir comprando
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <i class="fas fa-shopping-cart fa-4x"></i>
+        <h3 class="fw-bold mb-3">Tu carrito está vacío</h3>
+        <p class="text-muted mb-4">Aún no has agregado productos a tu carrito. ¡Descubre nuestra colección!</p>
+        <a href="{% url 'tienda:lista_productos' %}" class="btn btn-primary btn-lg px-4">
+            <i class="fas fa-store me-2"></i>Ver productos
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeQty(itemId, delta) {
+    const input = document.getElementById('qty-' + itemId);
+    const currentValue = parseInt(input.value) || 1;
+    const newValue = Math.max(1, currentValue + delta);
+    const maxValue = parseInt(input.max);
+    
+    if (newValue <= maxValue) {
+        input.value = newValue;
+        input.form.submit();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,467 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registro | ANGELOW CRM{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary: #5E9DE6;
+    --primary-light: #7FBBF2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --gray: #64748b;
+    --white: #ffffff;
+    --border-light: #e0e7f5;
+}
+
+.register-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8fbfe, #edf4fc);
+}
+
+.register-card {
+    background: var(--white);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(94, 157, 230, 0.15);
+    max-width: 680px;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.card-header img {
+    max-height: 50px;
+    margin-bottom: 0.8rem;
+}
+
+.card-header h1 {
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.card-header p {
+    opacity: 0.9;
+    font-size: 1rem;
+    margin: 0.5rem 0 0;
+    font-weight: 500;
+}
+
+.card-body {
+    padding: 2rem 2rem 1.5rem;
+}
+
+.form-section {
+    margin-bottom: 1.8rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid var(--border-light);
+    border-radius: 14px;
+    font-size: 1rem;
+    transition: all 0.25s;
+    background: var(--white);
+    color: #1e293b;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(94, 157, 230, 0.25);
+}
+
+.form-input::placeholder {
+    color: var(--gray);
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+}
+
+.form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.form-check-input {
+    margin-top: 3px;
+    border: 2px solid var(--border-light);
+    border-radius: 4px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-check-label {
+    font-size: 0.9rem;
+    color: var(--gray);
+    cursor: pointer;
+}
+
+.terms-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+.password-strength {
+    height: 6px;
+    border-radius: 3px;
+    background: #f1f5f9;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 3px;
+    transition: width 0.3s, background 0.3s;
+}
+
+.strength-weak { background: var(--error); width: 33%; }
+.strength-medium { background: var(--warning); width: 66%; }
+.strength-strong { background: var(--success); width: 100%; }
+
+.strength-text {
+    font-size: 0.8rem;
+    margin-top: 6px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.strength-text i {
+    font-size: 0.9rem;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(94, 157, 230, 0.35);
+    background: linear-gradient(135deg, #4a8ce0, var(--primary));
+}
+
+.form-input.is-invalid {
+    border-color: var(--error);
+}
+
+.form-input.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25);
+}
+
+.invalid-feedback {
+    color: var(--error);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: block;
+}
+
+.password-requirements {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    border: 1px solid var(--border-light);
+}
+
+.alert-modern {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 1rem 1.2rem;
+    border-radius: 14px;
+    margin-bottom: 1.5rem;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.alert-modern i {
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+
+.alert-success-modern {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.alert-success-modern i {
+    color: var(--success);
+}
+
+.alert-error-modern {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.alert-error-modern i {
+    color: var(--error);
+}
+
+.alert-warning-modern {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.alert-warning-modern i {
+    color: var(--warning);
+}
+
+.password-requirements {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    border: 1px solid var(--border-light);
+}
+
+.password-requirements ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.password-requirements li {
+    margin: 4px 0;
+}
+
+.password-requirements li.valid {
+    color: var(--success);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <div class="card-header">
+            <img src="{% static 'img/logo.png' %}" alt="Angelow CRM">
+            <h1>Crear Cuenta</h1>
+            <p>Regístrate para acceder a ANGELOW CRM</p>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-modern {% if message.tags == 'success' %}alert-success-modern{% else %}alert-error-modern{% endif %}">
+                        <i class="{% if message.tags == 'success' %}fas fa-check-circle{% else %}fas fa-exclamation-triangle{% endif %}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="id_first_name">Nombre</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="id_last_name">Apellido</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <label class="form-label" for="id_email">Email</label>
+                    {{ form.email }}
+                </div>
+                
+                <div class="password-container">
+                    <label class="form-label" for="id_password1">Contraseña</label>
+                    <div class="position-relative">
+                        {{ form.password1 }}
+                        <button type="button" class="password-toggle" tabindex="-1">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText"></div>
+                    <div class="password-requirements" id="requirementsBox">
+                        <small>La contraseña debe contener:</small>
+                        <ul class="mb-0">
+                            <li id="req-length">• Al menos 8 caracteres</li>
+                            <li id="req-uppercase">• Una letra mayúscula</li>
+                            <li id="req-lowercase">• Una letra minúscula</li>
+                            <li id="req-symbol">• Un símbolo especial</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="form-section mt-4">
+                    <label class="form-label" for="id_password2">Confirmar contraseña</label>
+                    {{ form.password2 }}
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="id_terms" name="terms" required>
+                    <label class="form-check-label" for="id_terms">
+                        <i class="fas fa-file-contract me-1"></i> Acepto los <a href="#" class="terms-link">Términos y Condiciones</a>
+                    </label>
+                </div>
+                
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="id_subscribe" name="subscribe">
+                    <label class="form-check-label" for="id_subscribe">
+                        <i class="fas fa-envelope me-1"></i> Suscríbeme al newsletter
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-user-plus"></i> Crear cuenta
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input').forEach(input => {
+        input.classList.add('form-input');
+    });
+
+    const passwordInput = document.getElementById('id_password1');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    
+    const reqLength = document.getElementById('req-length');
+    const reqUppercase = document.getElementById('req-uppercase');
+    const reqLowercase = document.getElementById('req-lowercase');
+    const reqSymbol = document.getElementById('req-symbol');
+
+    function updatePasswordStrength(password) {
+        let score = 0;
+        const checks = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            symbol: /[^a-zA-Z0-9]/.test(password)
+        };
+
+        reqLength.className = checks.length ? 'valid' : '';
+        reqUppercase.className = checks.uppercase ? 'valid' : '';
+        reqLowercase.className = checks.lowercase ? 'valid' : '';
+        reqSymbol.className = checks.symbol ? 'valid' : '';
+
+        if (checks.length) score++;
+        if (checks.uppercase) score++;
+        if (checks.lowercase) score++;
+        if (checks.symbol) score++;
+
+        strengthBar.className = 'password-strength-bar';
+        strengthText.innerHTML = '';
+        
+        if (score < 2) {
+            strengthBar.classList.add('strength-weak');
+            strengthText.innerHTML = '<i class="fas fa-exclamation-circle" style="color:#ef4444"></i><span style="color:#ef4444">Débil - Añade más caracteres</span>';
+        } else if (score < 4) {
+            strengthBar.classList.add('strength-medium');
+            strengthText.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#f59e0b"></i><span style="color:#f59e0b">Media - Puedes mejorar</span>';
+        } else {
+            strengthBar.classList.add('strength-strong');
+            strengthText.innerHTML = '<i class="fas fa-check-circle" style="color:#10b981"></i><span style="color:#10b981">Fuerte - ¡Contraseña segura!</span>';
+        }
+    }
+
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            updatePasswordStrength(this.value);
+        });
+    }
+
+    const toggleButtons = document.querySelectorAll('.password-toggle');
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.closest('.position-relative').querySelector('input');
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

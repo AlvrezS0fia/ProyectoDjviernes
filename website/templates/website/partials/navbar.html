@@ -1,0 +1,53 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'website:home' %}">
+            <img src="{% static 'img/logo.png' %}" alt="Angelow" height="40">
+            <span>Angelow</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'lista_productos' %}active{% endif %}" href="{% url 'tienda:lista_productos' %}">
+                        <i class="fas fa-store"></i> Tienda
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'website:home' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    {% if user.is_superuser or user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'clientes' in request.path %}active{% endif %}" href="{% url 'clientes:cliente_list' %}">
+                            <i class="fas fa-users"></i> Clientes
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{% url 'tienda:ver_carrito' %}">
+                            <i class="fas fa-shopping-cart"></i> Carrito
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> {{ user.first_name|default:user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'tienda:favoritos' %}"><i class="fas fa-heart"></i> Favoritos</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'website:logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="btn-nav btn-login" href="{% url 'website:login' %}">Iniciar sesión</a></li>
+                    <li class="nav-item"><a class="btn-nav btn-register" href="{% url 'website:register' %}">Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

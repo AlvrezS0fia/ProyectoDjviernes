@@ -1,0 +1,11 @@
+# Framework Principal 
+Django==4.2.11 
+ 
+# Conector para MySQL
+PyMySQL==1.1.3
+# mysqlclient==2.2.0
+# mysql-connector-python==8.0.33
+ 
+# Utilidades 
+python-dotenv==1.0.1 
+sqlparse==0.4.4 

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Favoritos | ANGELOW CRM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card-custom mx-auto" style="max-width: 600px;">
+        <div class="card-header">
+            <h2><i class="fas fa-heart"></i> Mis Favoritos</h2>
+            <p>Productos guardados en tu lista</p>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">Los productos que agregues a favoritos aparecerán aquí.</p>
+            <div id="favoritesList" class="mt-4"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const favorites = JSON.parse(localStorage.getItem('angelow_favorites')) || [];
+if (favorites.length === 0) {
+    document.getElementById('favoritesList').innerHTML = '<p class="text-center text-muted">Aún no tienes productos favoritos.</p>';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Eliminar Cliente | Angelow CRM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card-custom mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-danger text-white">
+            <h2><i class="fas fa-exclamation-triangle"></i> Eliminar Cliente</h2>
+            <p>Confirmar acción</p>
+        </div>
+        <div class="card-body text-center">
+            <p class="mb-4">
+                ¿Estás seguro de eliminar al cliente <strong>{{ object.nombre }}</strong>?<br>
+                Esta acción no se puede deshacer.
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'clientes:cliente_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Sí, eliminar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card-header.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #ff6b6b) !important;
+}
+.btn-danger {
+    background: #dc3545;
+    border: none;
+    border-radius: 0.75rem;
+}
+.btn-danger:hover { background: #bb2d3b; }
+</style>
+{% endblock %}
