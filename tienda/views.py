@@ -29,6 +29,7 @@ from website.views import role_required
 # Configurar logger para auditoría (Capa 4)
 logger = logging.getLogger('website.security')
 
+
 # ============================================================
 # 1. FUNCIONES DE UTILIDAD (DRY)
 # ============================================================
@@ -45,6 +46,7 @@ def _get_alert_icon(tag):
     }
     return icons.get(tag, icons['info'])
 
+
 def _get_client_ip(request):
     """
     Obtiene la IP real del cliente (DRY)
@@ -53,6 +55,7 @@ def _get_client_ip(request):
     if x_forwarded_for:
         return x_forwarded_for.split(',')[0].strip()
     return request.META.get('REMOTE_ADDR', 'unknown')
+
 
 def _registrar_actividad(request, tipo, descripcion, datos_adicionales=None):
     """
@@ -67,6 +70,7 @@ def _registrar_actividad(request, tipo, descripcion, datos_adicionales=None):
             user_agent=request.META.get('HTTP_USER_AGENT', ''),
             datos_adicionales=datos_adicionales or {}
         )
+
 
 # ============================================================
 # 2. LISTA DE PRODUCTOS con Filtros y Paginación
@@ -486,7 +490,7 @@ def eliminar_del_carrito(request, item_id):
 
 
 # ============================================================
-# 8. FAVORITOS
+# 8. FAVORITOS (Vista web)
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -525,7 +529,7 @@ def favoritos(request):
 @never_cache
 def toggle_favorito(request, producto_id):
     """
-    Vista para agregar o quitar un producto de favoritos
+    Vista para agregar o quitar un producto de favoritos (Web)
     
     Capas de seguridad:
     - Capa 1: Autenticación requerida
@@ -751,6 +755,7 @@ def api_agregar_carrito(request):
 def api_toggle_favorito(request):
     """
     API para alternar favoritos (AJAX)
+    - POST: Agrega o quita un favorito (toggle)
     
     Capas de seguridad:
     - Capa 1: Autenticación requerida
@@ -803,4 +808,30 @@ def api_toggle_favorito(request):
         'es_favorito': es_favorito,
         'message': message,
         'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
+    })
+
+
+# ============================================================
+# 14. API - OBTENER FAVORITOS (GET) - NUEVO
+# ============================================================
+
+@login_required(login_url='website:login')
+@require_GET
+def api_favoritos(request):
+    """
+    API para obtener la lista de favoritos del usuario (GET)
+    
+    Capas de seguridad:
+    - Capa 1: Autenticación requerida
+    """
+    
+    favoritos = Favorito.objects.filter(
+        usuario=request.user,
+        producto__esta_activo=True
+    ).values_list('producto_id', flat=True)
+    
+    return JsonResponse({
+        'success': True,
+        'favoritos': list(favoritos),
+        'total': len(favoritos)
     })

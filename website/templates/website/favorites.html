@@ -669,41 +669,51 @@
 <!-- ===== DATOS JSON DE PRODUCTOS ===== -->
 {{ productos_json|json_script:"productos-data" }}
 
+<!-- ===== TOKEN CSRF ===== -->
+{% csrf_token %}
+
+<!-- ===== CONFIGURACIÓN DE ANGELOW ===== -->
 {% if user.is_authenticated %}
 <script>
     window.ANGELOW = {
         isAuthenticated: true,
         userId: {{ user.id }},
-        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+        apiFavoritos: "{% url 'tienda:api_favoritos' %}",
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}"
     };
+    console.log('✅ ANGELOW configurado (autenticado):', window.ANGELOW);
 </script>
 {% else %}
 <script>
     window.ANGELOW = {
         isAuthenticated: false,
         userId: null,
-        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+        apiFavoritos: "{% url 'tienda:api_favoritos' %}",
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}"
     };
+    console.log('✅ ANGELOW configurado (anónimo):', window.ANGELOW);
 </script>
 {% endif %}
 
 <!-- ===== DEBUG: Verificar que los datos se están pasando ===== -->
 <script>
-    console.log('=== DEBUG FAVORITOS ===');
+    console.log('=== 🔍 DEBUG FAVORITOS ===');
     var scriptElement = document.getElementById('productos-data');
     if (scriptElement) {
-        console.log('Script encontrado');
+        console.log('✅ Script "productos-data" encontrado');
         try {
             var data = JSON.parse(scriptElement.textContent);
-            console.log('Productos cargados:', data.length);
-            console.log('Primer producto:', data[0]);
+            console.log('📦 Productos cargados:', data.length);
+            if (data.length > 0) {
+                console.log('📦 Primer producto:', data[0]);
+            }
         } catch(e) {
-            console.error('Error al parsear JSON:', e);
+            console.error('❌ Error al parsear JSON:', e);
         }
     } else {
-        console.error('Script con id "productos-data" NO encontrado');
+        console.error('❌ Script con id "productos-data" NO encontrado');
     }
-    console.log('Favoritos en localStorage:', localStorage.getItem('angelow_favorites'));
+    console.log('📌 Favoritos en localStorage:', localStorage.getItem('angelow_favorites'));
 </script>
 {% endblock %}
 

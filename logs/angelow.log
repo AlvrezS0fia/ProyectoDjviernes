@@ -4001,3 +4001,214 @@ WARNING 2026-06-25 08:27:50,439 log 13104 19936 Method Not Allowed (GET): /tiend
 WARNING 2026-06-25 08:27:50,482 log 13104 19936 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
 WARNING 2026-06-25 08:35:54,176 log 13848 21984 Method Not Allowed (GET): /tienda/api/favoritos/toggle/
 WARNING 2026-06-25 08:35:54,301 log 13848 21984 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
+ERROR 2026-06-25 09:07:56,504 log 11412 20908 Internal Server Error: /tienda/producto/conjunto-bebe-verano/
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\tienda\views.py", line 257, in detalle_producto
+    return render(request, 'tienda/detalle_producto.html', context)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader_tags.py", line 160, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader_tags.py", line 66, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\defaulttags.py", line 333, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\defaulttags.py", line 511, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\urls\resolvers.py", line 842, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'api_favoritos' not found. 'api_favoritos' is not a valid view function or pattern name.
+ERROR 2026-06-25 09:07:56,847 log 11412 20908 "GET /tienda/producto/conjunto-bebe-verano/ HTTP/1.1" 500 203824
+ERROR 2026-06-25 09:08:00,963 log 11412 20908 Internal Server Error: /tienda/producto/pantalon-nino/
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\tienda\views.py", line 257, in detalle_producto
+    return render(request, 'tienda/detalle_producto.html', context)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader_tags.py", line 160, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader_tags.py", line 66, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\defaulttags.py", line 333, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\defaulttags.py", line 511, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\urls\resolvers.py", line 842, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'api_favoritos' not found. 'api_favoritos' is not a valid view function or pattern name.
+ERROR 2026-06-25 09:08:01,013 log 11412 20908 "GET /tienda/producto/pantalon-nino/ HTTP/1.1" 500 202465
+ERROR 2026-06-25 09:08:39,202 log 5360 1932 Internal Server Error: /tienda/producto/conjunto-bebe-verano/
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\tienda\views.py", line 261, in detalle_producto
+    return render(request, 'tienda/detalle_producto.html', context)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader_tags.py", line 160, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\loader_tags.py", line 66, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\defaulttags.py", line 333, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\template\defaulttags.py", line 511, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\urls\resolvers.py", line 842, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'api_favoritos' not found. 'api_favoritos' is not a valid view function or pattern name.
+ERROR 2026-06-25 09:08:39,319 log 5360 1932 "GET /tienda/producto/conjunto-bebe-verano/ HTTP/1.1" 500 203824
+WARNING 2026-06-25 09:09:32,486 log 17588 22060 Method Not Allowed (GET): /tienda/api/favoritos/toggle/
+WARNING 2026-06-25 09:09:32,671 log 17588 22060 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
+WARNING 2026-06-25 09:10:15,184 log 17588 22060 Method Not Allowed (GET): /tienda/api/favoritos/toggle/
+WARNING 2026-06-25 09:10:15,282 log 17588 22060 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
+WARNING 2026-06-25 09:11:34,165 log 17588 22060 Method Not Allowed (GET): /tienda/api/favoritos/toggle/
+WARNING 2026-06-25 09:11:34,226 log 17588 22060 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
+WARNING 2026-06-25 09:12:57,985 log 17588 22060 Method Not Allowed (GET): /tienda/api/favoritos/toggle/
+WARNING 2026-06-25 09:12:58,146 log 17588 22060 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
+WARNING 2026-06-25 09:12:59,175 log 17588 22060 Method Not Allowed (GET): /tienda/api/favoritos/toggle/
+WARNING 2026-06-25 09:12:59,269 log 17588 22060 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0

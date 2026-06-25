@@ -21,34 +21,172 @@ function changeImage(element, src) {
 }
 
 // ============================================================
+// OBTENER FAVORITOS DEL SERVIDOR
+// ============================================================
+function getFavoritesFromServer(callback) {
+    if (!window.ANGELOW || !window.ANGELOW.isAuthenticated) {
+        callback([]);
+        return;
+    }
+    
+    var url = window.ANGELOW.apiFavoritos;
+    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    var token = csrfToken ? csrfToken.value : '';
+    
+    console.log('🔍 Obteniendo favoritos del servidor...', url);
+    
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('Error al obtener favoritos: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('📦 Datos recibidos del servidor:', data);
+        if (data.success && data.favoritos !== undefined) {
+            localStorage.setItem('angelow_favorites', JSON.stringify(data.favoritos));
+            callback(data.favoritos);
+        } else {
+            console.error('❌ Error en la respuesta:', data);
+            callback([]);
+        }
+    })
+    .catch(function(error) {
+        console.error('❌ Error al obtener favoritos:', error);
+        callback([]);
+    });
+}
+
+// ============================================================
+// GUARDAR FAVORITO EN EL SERVIDOR
+// ============================================================
+function saveFavoriteOnServer(productId, action, callback) {
+    if (!window.ANGELOW || !window.ANGELOW.isAuthenticated) {
+        callback(true);
+        return;
+    }
+    
+    var url = window.ANGELOW.apiToggleFavorito;
+    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    var token = csrfToken ? csrfToken.value : '';
+    
+    console.log('💾 Guardando favorito en el servidor...', url, productId, action);
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': token
+        },
+        body: JSON.stringify({
+            producto_id: productId
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('📦 Respuesta del servidor:', data);
+        if (data.success) {
+            callback(true, data);
+        } else {
+            console.error('❌ Error del servidor:', data.message);
+            callback(false);
+        }
+    })
+    .catch(function(error) {
+        console.error('❌ Error en la petición:', error);
+        callback(false);
+    });
+}
+
+// ============================================================
 // TOGGLE FAVORITO
 // ============================================================
 function toggleFavorite(productId, productName, button) {
+    console.log('🔄 Toggle favorito:', productId, productName);
+    
     var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
     var index = favorites.indexOf(productId);
     var isFavorite = index !== -1;
+    var action = isFavorite ? 'quitar' : 'agregar';
     
-    if (isFavorite) {
-        favorites.splice(index, 1);
-        showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
-    } else {
-        favorites.push(productId);
-        showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
-        createHeartParticles(button);
-    }
+    console.log('📌 Estado actual:', isFavorite ? 'Favorito' : 'No favorito');
+    console.log('📌 Acción:', action);
     
-    localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
-    
-    if (button) {
-        button.classList.toggle('active');
-        var textSpan = button.querySelector('.fav-text');
-        if (textSpan) {
-            textSpan.textContent = button.classList.contains('active') ? 'Favorito' : 'Favoritos';
+    // Si el usuario está autenticado, guardar en el servidor
+    if (window.ANGELOW && window.ANGELOW.isAuthenticated) {
+        // Deshabilitar botón temporalmente
+        if (button) {
+            button.disabled = true;
+            button.style.opacity = '0.6';
         }
+        
+        saveFavoriteOnServer(productId, action, function(success, data) {
+            if (success) {
+                // Actualizar localStorage
+                if (isFavorite) {
+                    favorites.splice(index, 1);
+                    showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+                } else {
+                    favorites.push(productId);
+                    showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
+                    createHeartParticles(button);
+                }
+                localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
+                
+                // Actualizar UI del botón
+                if (button) {
+                    button.classList.toggle('active');
+                    var textSpan = button.querySelector('.fav-text');
+                    if (textSpan) {
+                        textSpan.textContent = button.classList.contains('active') ? 'Favorito' : 'Favoritos';
+                    }
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                }
+                
+                updateHeaderBadges();
+                window.dispatchEvent(new Event('storage'));
+            } else {
+                showToast('error', 'fa-exclamation-triangle', 'Error al procesar favorito');
+                if (button) {
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                }
+            }
+        });
+    } else {
+        // Usuario no autenticado - solo localStorage
+        if (isFavorite) {
+            favorites.splice(index, 1);
+            showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+        } else {
+            favorites.push(productId);
+            showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
+            createHeartParticles(button);
+        }
+        
+        localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
+        
+        if (button) {
+            button.classList.toggle('active');
+            var textSpan = button.querySelector('.fav-text');
+            if (textSpan) {
+                textSpan.textContent = button.classList.contains('active') ? 'Favorito' : 'Favoritos';
+            }
+        }
+        
+        updateHeaderBadges();
+        window.dispatchEvent(new Event('storage'));
     }
-    
-    updateHeaderBadges();
-    window.dispatchEvent(new Event('storage'));
 }
 
 // ============================================================
@@ -149,18 +287,84 @@ function updateHeaderBadges() {
 }
 
 // ============================================================
+// SINCRONIZAR FAVORITOS AL CARGAR LA PÁGINA
+// ============================================================
+function syncFavorites() {
+    console.log('🔄 Sincronizando favoritos...');
+    console.log('🔑 Usuario autenticado:', window.ANGELOW && window.ANGELOW.isAuthenticated);
+    
+    if (window.ANGELOW && window.ANGELOW.isAuthenticated) {
+        getFavoritesFromServer(function(favoritos) {
+            console.log('✅ Favoritos sincronizados desde el servidor:', favoritos);
+            
+            // Actualizar el botón de favoritos
+            var btn = document.getElementById('favBtn-' + productData.id);
+            if (btn) {
+                var isFav = favoritos.indexOf(productData.id) !== -1;
+                console.log('📌 Producto en favoritos:', isFav);
+                
+                if (isFav) {
+                    btn.classList.add('active');
+                    var textSpan = btn.querySelector('.fav-text');
+                    if (textSpan) {
+                        textSpan.textContent = 'Favorito';
+                    }
+                } else {
+                    btn.classList.remove('active');
+                    var textSpan = btn.querySelector('.fav-text');
+                    if (textSpan) {
+                        textSpan.textContent = 'Favoritos';
+                    }
+                }
+            }
+            
+            updateHeaderBadges();
+        });
+    } else {
+        console.log('⚠️ Usuario no autenticado, usando localStorage');
+        // Usuario no autenticado - verificar localStorage
+        var favs = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+        var btn = document.getElementById('favBtn-' + productData.id);
+        if (btn) {
+            var isFav = favs.indexOf(productData.id) !== -1;
+            if (isFav) {
+                btn.classList.add('active');
+                var textSpan = btn.querySelector('.fav-text');
+                if (textSpan) {
+                    textSpan.textContent = 'Favorito';
+                }
+            }
+        }
+        updateHeaderBadges();
+    }
+}
+
+// ============================================================
 // INICIALIZAR
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando detalle_producto.js...');
+    
     var productScript = document.getElementById('producto-data');
     if (productScript) {
         try {
             productData = JSON.parse(productScript.textContent);
+            console.log('📦 Producto cargado:', productData.nombre);
+            console.log('📦 ID del producto:', productData.id);
         } catch(e) {
-            console.error('Error parsing product data:', e);
+            console.error('❌ Error parsing product data:', e);
         }
+    } else {
+        console.error('❌ Script "producto-data" no encontrado');
     }
+    
+    // Primero actualizar badges desde localStorage
     updateHeaderBadges();
+    
+    // Luego sincronizar con el servidor si está autenticado
+    setTimeout(function() {
+        syncFavorites();
+    }, 300);
 });
 
 // ============================================================
@@ -168,6 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================================
 window.addEventListener('storage', function(e) {
     if (e.key === 'angelow_favorites') {
+        console.log('📢 Storage event: favoritos cambiados');
         updateHeaderBadges();
         var favs = JSON.parse(e.newValue || '[]');
         var btn = document.getElementById('favBtn-' + productData.id);

@@ -1,117 +1,245 @@
-// static/js/favorites.js
+// static/js/detalle_producto.js
 
 // ============================================================
 // VARIABLE GLOBAL
 // ============================================================
-var allProducts = [];
+var productData = {};
 
 // ============================================================
-// CARGAR FAVORITOS
+// CAMBIAR IMAGEN PRINCIPAL
 // ============================================================
-function loadFavorites() {
-    var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
-    var grid = document.getElementById('favoritesGrid');
-    var empty = document.getElementById('emptyFavorites');
-    var countSpan = document.getElementById('favCount');
-
-    if (countSpan) {
-        countSpan.textContent = favorites.length;
+function changeImage(element, src) {
+    var mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+        mainImage.src = src;
     }
+    var thumbnails = document.querySelectorAll('.thumbnail');
+    for (var i = 0; i < thumbnails.length; i++) {
+        thumbnails[i].classList.remove('active');
+    }
+    element.classList.add('active');
+}
 
-    if (favorites.length === 0) {
-        if (grid) grid.innerHTML = '';
-        if (grid) grid.classList.add('d-none');
-        if (empty) empty.classList.remove('d-none');
+// ============================================================
+// OBTENER FAVORITOS DEL SERVIDOR
+// ============================================================
+function getFavoritesFromServer(callback) {
+    if (!window.ANGELOW || !window.ANGELOW.isAuthenticated) {
+        if (callback) callback([]);
         return;
     }
-
-    if (grid) grid.classList.remove('d-none');
-    if (empty) empty.classList.add('d-none');
-
-    var favProducts = allProducts.filter(function(p) {
-        return favorites.includes(p.id);
-    });
-
-    if (favProducts.length === 0) {
-        if (grid) grid.innerHTML = '';
-        if (grid) grid.classList.add('d-none');
-        if (empty) empty.classList.remove('d-none');
-        return;
-    }
-
-    var html = '';
-    for (var i = 0; i < favProducts.length; i++) {
-        var product = favProducts[i];
-        var price = product.precio_oferta || product.precio;
-        var oldPrice = product.precio_oferta ? product.precio : null;
-        
-        var stockHtml = '';
-        if (product.stock > 10) {
-            stockHtml = '<span class="in-stock"><i class="fas fa-check-circle"></i> En stock</span>';
-        } else if (product.stock > 0) {
-            stockHtml = '<span class="low-stock"><i class="fas fa-exclamation-circle"></i> Solo ' + product.stock + ' unidades</span>';
+    
+    var url = window.ANGELOW.apiFavoritos;
+    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    var token = csrfToken ? csrfToken.value : '';
+    
+    console.log('🔍 Obteniendo favoritos del servidor...', url);
+    
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('Error al obtener favoritos: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('📦 Datos recibidos del servidor:', data);
+        if (data.success && data.favoritos !== undefined) {
+            localStorage.setItem('angelow_favorites', JSON.stringify(data.favoritos));
+            if (callback) callback(data.favoritos);
         } else {
-            stockHtml = '<span class="out-of-stock"><i class="fas fa-times-circle"></i> Sin stock</span>';
+            console.error('❌ Error en la respuesta:', data);
+            if (callback) callback([]);
         }
+    })
+    .catch(function(error) {
+        console.error('❌ Error al obtener favoritos:', error);
+        if (callback) callback([]);
+    });
+}
 
-        var oldPriceHtml = oldPrice ? '<span class="old-price">$' + oldPrice.toLocaleString() + '</span>' : '';
-
-        html += '<div class="fav-product-card" data-id="' + product.id + '" style="animation-delay: ' + (i * 0.05) + 's">';
-        html += '<img src="' + product.imagen + '" class="card-img-top" alt="' + product.nombre + '" loading="lazy" onerror="this.src=\'/static/img/productos/default.jpg\'">';
-        html += '<div class="card-body">';
-        html += '<h3 class="product-name">' + product.nombre + '</h3>';
-        html += '<p class="product-category">' + product.categoria + '</p>';
-        html += '<div class="product-price">' + oldPriceHtml + '$' + price.toLocaleString() + '</div>';
-        html += '<div class="product-stock">' + stockHtml + '</div>';
-        html += '<div class="card-actions">';
-        html += '<button class="btn-cart" onclick="addToCart(' + product.id + ', event)" ' + (product.stock === 0 ? 'disabled' : '') + '>';
-        html += '<i class="fas fa-shopping-cart"></i> Agregar';
-        html += '</button>';
-        html += '<button class="btn-remove-fav" onclick="removeFavorite(' + product.id + ', \'' + product.nombre + '\', event)" title="Quitar de favoritos">';
-        html += '<i class="fas fa-heart-broken"></i>';
-        html += '<span class="remove-text">Quitar</span>';
-        html += '</button>';
-        html += '</div>';
-        html += '<div style="position:absolute; inset:0; cursor:pointer; z-index:1;" onclick="window.location.href=\'/tienda/producto/' + product.slug + '/\'"></div>';
-        html += '</div>';
-        html += '</div>';
+// ============================================================
+// GUARDAR FAVORITO EN EL SERVIDOR
+// ============================================================
+function saveFavoriteOnServer(productId, callback) {
+    if (!window.ANGELOW || !window.ANGELOW.isAuthenticated) {
+        if (callback) callback(true);
+        return;
     }
-    grid.innerHTML = html;
-}
-
-// ============================================================
-// QUITAR FAVORITO
-// ============================================================
-function removeFavorite(productId, productName, event) {
-    if (event) event.stopPropagation();
     
-    var card = event.target.closest('.fav-product-card');
-    var btn = event.target.closest('.btn-remove-fav');
+    var url = window.ANGELOW.apiToggleFavorito;
+    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    var token = csrfToken ? csrfToken.value : '';
     
-    if (btn) btn.classList.add('removing');
-    if (card) card.classList.add('removing');
+    console.log('💾 Guardando favorito en el servidor...', url, productId);
     
-    setTimeout(function() {
-        var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
-        var index = favorites.indexOf(productId);
-        
-        if (index !== -1) {
-            favorites.splice(index, 1);
-            localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
-            showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
-            loadFavorites();
-            updateHeaderBadges();
-            window.dispatchEvent(new Event('storage'));
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': token
+        },
+        body: JSON.stringify({
+            producto_id: productId
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('📦 Respuesta del servidor:', data);
+        if (data.success) {
+            if (callback) callback(true, data);
+        } else {
+            console.error('❌ Error del servidor:', data.message);
+            if (callback) callback(false);
         }
-    }, 400);
+    })
+    .catch(function(error) {
+        console.error('❌ Error en la petición:', error);
+        if (callback) callback(false);
+    });
 }
 
 // ============================================================
-// AGREGAR AL CARRITO
+// TOGGLE FAVORITO
 // ============================================================
-function addToCart(productId, event) {
-    if (event) event.stopPropagation();
-    showToast('success', 'fa-shopping-cart', 'Producto agregado al carrito');
+function toggleFavorite(productId, productName, button) {
+    console.log('🔄 Toggle favorito:', productId, productName);
+    
+    var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+    var index = favorites.indexOf(productId);
+    var isFavorite = index !== -1;
+    
+    console.log('📌 Estado actual:', isFavorite ? 'Favorito' : 'No favorito');
+    
+    // SIEMPRE guardar en el servidor si el usuario está autenticado
+    if (window.ANGELOW && window.ANGELOW.isAuthenticated) {
+        // Deshabilitar botón temporalmente
+        if (button) {
+            button.disabled = true;
+            button.style.opacity = '0.6';
+        }
+        
+        saveFavoriteOnServer(productId, function(success, data) {
+            if (success) {
+                // Actualizar localStorage con la respuesta del servidor
+                if (data && data.es_favorito !== undefined) {
+                    // Si el servidor dice que es favorito
+                    if (data.es_favorito) {
+                        // Agregar a localStorage si no está
+                        if (favorites.indexOf(productId) === -1) {
+                            favorites.push(productId);
+                        }
+                        showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
+                        createHeartParticles(button);
+                    } else {
+                        // Quitar de localStorage
+                        var idx = favorites.indexOf(productId);
+                        if (idx !== -1) {
+                            favorites.splice(idx, 1);
+                        }
+                        showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+                    }
+                }
+                
+                localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
+                
+                // Actualizar UI del botón
+                if (button) {
+                    var isFav = favorites.indexOf(productId) !== -1;
+                    if (isFav) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                    var textSpan = button.querySelector('.fav-text');
+                    if (textSpan) {
+                        textSpan.textContent = isFav ? 'Favorito' : 'Favoritos';
+                    }
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                }
+                
+                updateHeaderBadges();
+                window.dispatchEvent(new Event('storage'));
+            } else {
+                showToast('error', 'fa-exclamation-triangle', 'Error al procesar favorito');
+                if (button) {
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                }
+            }
+        });
+    } else {
+        // Usuario NO autenticado - solo localStorage
+        if (isFavorite) {
+            favorites.splice(index, 1);
+            showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+        } else {
+            favorites.push(productId);
+            showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
+            createHeartParticles(button);
+        }
+        
+        localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
+        
+        if (button) {
+            button.classList.toggle('active');
+            var textSpan = button.querySelector('.fav-text');
+            if (textSpan) {
+                textSpan.textContent = button.classList.contains('active') ? 'Favorito' : 'Favoritos';
+            }
+        }
+        
+        updateHeaderBadges();
+        window.dispatchEvent(new Event('storage'));
+    }
+}
+
+// ============================================================
+// PARTÍCULAS DE CORAZÓN
+// ============================================================
+function createHeartParticles(button) {
+    if (!button) return;
+    
+    var rect = button.getBoundingClientRect();
+    var centerX = rect.left + rect.width / 2;
+    var centerY = rect.top + rect.height / 2;
+    
+    var emojis = ['❤️', '💖', '💗', '💕', '♥️'];
+    
+    for (var i = 0; i < 8; i++) {
+        var particle = document.createElement('div');
+        particle.className = 'particle-heart';
+        particle.textContent = emojis[i % emojis.length];
+        
+        var angle = (Math.PI * 2 * i) / 8 + (Math.random() - 0.5) * 0.5;
+        var distance = 60 + Math.random() * 40;
+        var x = Math.cos(angle) * distance;
+        var y = Math.sin(angle) * distance - 30;
+        
+        particle.style.position = 'fixed';
+        particle.style.left = (centerX + x) + 'px';
+        particle.style.top = (centerY + y) + 'px';
+        particle.style.fontSize = (14 + Math.random() * 10) + 'px';
+        particle.style.color = '#ef4444';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '9999';
+        particle.style.animation = 'particleFloat 0.8s ease-out forwards';
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(function(p) {
+            if (p.parentNode) p.parentNode.removeChild(p);
+        }, 1000, particle);
+    }
 }
 
 // ============================================================
@@ -140,7 +268,18 @@ function showToast(type, icon, message) {
 }
 
 // ============================================================
-// ACTUALIZAR BADGES
+// CARRITO
+// ============================================================
+function addToCart(productId) {
+    showToast('success', 'fa-shopping-cart', 'Producto agregado al carrito');
+}
+
+function buyNow(productId) {
+    showToast('info', 'fa-bolt', 'Redirigiendo al checkout...');
+}
+
+// ============================================================
+// ACTUALIZAR BADGES DEL HEADER
 // ============================================================
 function updateHeaderBadges() {
     try {
@@ -152,6 +291,7 @@ function updateHeaderBadges() {
             favBadge.textContent = count;
             favBadge.style.display = count > 0 ? 'flex' : 'none';
         }
+        
         var favBadgeDropdown = document.getElementById('favBadgeDropdown');
         if (favBadgeDropdown) {
             favBadgeDropdown.textContent = count;
@@ -161,36 +301,54 @@ function updateHeaderBadges() {
 }
 
 // ============================================================
-// SINCRONIZAR CON SERVIDOR
+// SINCRONIZAR FAVORITOS AL CARGAR LA PÁGINA
 // ============================================================
-function syncFavoritesFromServer() {
+function syncFavorites() {
+    console.log('🔄 Sincronizando favoritos...');
+    console.log('🔑 Usuario autenticado:', window.ANGELOW && window.ANGELOW.isAuthenticated);
+    
     if (window.ANGELOW && window.ANGELOW.isAuthenticated) {
-        var url = window.ANGELOW.apiFavoritos || window.ANGELOW.apiToggleFavorito;
-        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-        var token = csrfToken ? csrfToken.value : '';
-        
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': token,
-                'Content-Type': 'application/json'
+        getFavoritesFromServer(function(favoritos) {
+            console.log('✅ Favoritos sincronizados desde el servidor:', favoritos);
+            
+            // Actualizar el botón de favoritos
+            var btn = document.getElementById('favBtn-' + productData.id);
+            if (btn) {
+                var isFav = favoritos.indexOf(productData.id) !== -1;
+                console.log('📌 Producto en favoritos:', isFav);
+                
+                if (isFav) {
+                    btn.classList.add('active');
+                    var textSpan = btn.querySelector('.fav-text');
+                    if (textSpan) {
+                        textSpan.textContent = 'Favorito';
+                    }
+                } else {
+                    btn.classList.remove('active');
+                    var textSpan = btn.querySelector('.fav-text');
+                    if (textSpan) {
+                        textSpan.textContent = 'Favoritos';
+                    }
+                }
             }
-        })
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            if (data.success && data.favoritos !== undefined) {
-                localStorage.setItem('angelow_favorites', JSON.stringify(data.favoritos));
-                loadFavorites();
-                updateHeaderBadges();
-            }
-        })
-        .catch(function(error) {
-            console.error('Error al sincronizar favoritos:', error);
-            loadFavorites();
+            
             updateHeaderBadges();
         });
     } else {
-        loadFavorites();
+        console.log('⚠️ Usuario no autenticado, usando localStorage');
+        // Usuario no autenticado - verificar localStorage
+        var favs = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+        var btn = document.getElementById('favBtn-' + productData.id);
+        if (btn) {
+            var isFav = favs.indexOf(productData.id) !== -1;
+            if (isFav) {
+                btn.classList.add('active');
+                var textSpan = btn.querySelector('.fav-text');
+                if (textSpan) {
+                    textSpan.textContent = 'Favorito';
+                }
+            }
+        }
         updateHeaderBadges();
     }
 }
@@ -199,21 +357,62 @@ function syncFavoritesFromServer() {
 // INICIALIZAR
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
-    var productosScript = document.getElementById('productos-data');
-    if (productosScript) {
+    console.log('🚀 Inicializando detalle_producto.js...');
+    
+    var productScript = document.getElementById('producto-data');
+    if (productScript) {
         try {
-            allProducts = JSON.parse(productosScript.textContent);
+            productData = JSON.parse(productScript.textContent);
+            console.log('📦 Producto cargado:', productData.nombre);
+            console.log('📦 ID del producto:', productData.id);
         } catch(e) {
-            console.error('Error parsing productos data:', e);
-            allProducts = [];
+            console.error('❌ Error parsing product data:', e);
         }
+    } else {
+        console.error('❌ Script "producto-data" no encontrado');
     }
-    syncFavoritesFromServer();
+    
+    // Primero actualizar badges desde localStorage
+    updateHeaderBadges();
+    
+    // Luego sincronizar con el servidor si está autenticado
+    setTimeout(function() {
+        syncFavorites();
+    }, 300);
 });
 
+// ============================================================
+// ESCUCHAR CAMBIOS DESDE OTRAS PESTAÑAS
+// ============================================================
 window.addEventListener('storage', function(e) {
     if (e.key === 'angelow_favorites') {
-        loadFavorites();
+        console.log('📢 Storage event: favoritos cambiados');
         updateHeaderBadges();
+        var favs = JSON.parse(e.newValue || '[]');
+        var btn = document.getElementById('favBtn-' + productData.id);
+        if (btn) {
+            var isFav = favs.includes(productData.id);
+            if (isFav) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            var textSpan = btn.querySelector('.fav-text');
+            if (textSpan) {
+                textSpan.textContent = isFav ? 'Favorito' : 'Favoritos';
+            }
+        }
     }
 });
+
+// ============================================================
+// ESTILOS PARA PARTÍCULAS
+// ============================================================
+var style = document.createElement('style');
+style.textContent = `
+    @keyframes particleFloat {
+        0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+        100% { opacity: 0; transform: translateY(-60px) scale(0) rotate(45deg); }
+    }
+`;
+document.head.appendChild(style);
