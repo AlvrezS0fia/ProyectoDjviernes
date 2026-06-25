@@ -370,3 +370,24 @@ INFO 2026-06-24 22:57:17,358 middleware 16916 17308 Actividad: sofia - GET / - T
 INFO 2026-06-24 22:57:20,322 views 16916 17308 Producto visualizado: Conjunto Bebé Invierno por sofia
 INFO 2026-06-24 22:57:20,393 middleware 16916 17308 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-24 22:57:27,579 middleware 16916 17064 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:01:44,793 middleware 14204 13372 Actividad: testfinal - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:02:39,814 middleware 12344 9520 Actividad: testfinal - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:02:40,321 middleware 12344 9520 Actividad: testfinal - POST /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:02:40,364 views 12344 9520 Carrito visualizado por: testfinal
+INFO 2026-06-24 23:02:40,371 middleware 12344 9520 Actividad: testfinal - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-24 23:02:40,442 middleware 12344 9520 Actividad: testfinal - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:04:58,370 middleware 7100 13984 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:05:00,983 middleware 7100 7112 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:05:06,010 middleware 7100 7112 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:05:08,938 views 7100 7112 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 23:05:08,976 middleware 7100 7112 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:05:12,791 middleware 7100 1488 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:05:15,587 views 7100 1488 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 23:05:15,683 middleware 7100 1488 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:05:18,327 middleware 7100 6284 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:05:21,799 middleware 7100 6284 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:07:35,923 middleware 7100 6284 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:07:36,310 middleware 7100 6284 Actividad: sofia - GET /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:07:37,558 middleware 7100 6284 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:07:38,012 middleware 7100 6284 Actividad: sofia - GET /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:12:53,871 middleware 17784 12344 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1

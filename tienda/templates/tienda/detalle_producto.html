@@ -697,6 +697,7 @@
     window.ANGELOW = {
         isAuthenticated: true,
         userId: {{ user.id }},
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
     };
 </script>
 {% else %}
@@ -704,6 +705,7 @@
     window.ANGELOW = {
         isAuthenticated: false,
         userId: null,
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
     };
 </script>
 {% endif %}

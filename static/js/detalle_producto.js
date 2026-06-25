@@ -19,7 +19,7 @@ function toggleFavorite(productId, productName, button) {
     var isAuthenticated = window.ANGELOW && window.ANGELOW.isAuthenticated;
 
     if (isAuthenticated) {
-        fetch("{% url 'tienda:api_toggle_favorito' %}", {
+        fetch(window.ANGELOW.apiToggleFavorito, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

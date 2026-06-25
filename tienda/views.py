@@ -228,6 +228,18 @@ def detalle_producto(request, slug):
     # Formulario para agregar al carrito
     form = AgregarAlCarritoForm(tallas_disponibles=producto.tallas)
     
+    # Crear datos del producto para JSON
+    producto_data = {
+        'id': producto.id,
+        'nombre': producto.nombre,
+        'slug': producto.slug,
+        'precio': float(producto.precio),
+        'precio_oferta': float(producto.precio_oferta) if producto.precio_oferta else None,
+        'imagen': producto.get_imagen_principal_url(),
+        'categoria': producto.categoria.nombre if producto.categoria else '',
+        'stock': producto.stock
+    }
+    
     # Registrar visualización (Capa 4 - Auditoría)
     if request.user.is_authenticated:
         logger.info(f'Producto visualizado: {producto.nombre} por {request.user.username}')
@@ -239,6 +251,7 @@ def detalle_producto(request, slug):
         'es_favorito': es_favorito,
         'relacionados': relacionados,
         'form': form,
+        'producto_json': json.dumps(producto_data, ensure_ascii=False)
     }
     
     return render(request, 'tienda/detalle_producto.html', context)
@@ -503,7 +516,7 @@ def favoritos(request):
 
 
 # ============================================================
-# 9. TOGGLE FAVORITO
+# 9. TOGGLE FAVORITO (Web)
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -729,12 +742,12 @@ def api_agregar_carrito(request):
 
 
 # ============================================================
-# 13. API - TOGGLE FAVORITO (JSON)
+# 13. API - TOGGLE FAVORITO (JSON) - CORREGIDA CON GET Y POST
 # ============================================================
 
 @login_required(login_url='website:login')
 @csrf_exempt
-@require_http_methods(['POST'])
+@require_http_methods(['GET', 'POST'])
 def api_toggle_favorito(request):
     """
     API para alternar favoritos (AJAX)
@@ -745,48 +758,86 @@ def api_toggle_favorito(request):
     - Capa 4: Auditoría de acción
     """
     
+    # Si es GET, devolver la lista de favoritos
+    if request.method == 'GET':
+        favoritos = Favorito.objects.filter(
+            usuario=request.user,
+            producto__esta_activo=True
+        ).values_list('producto_id', flat=True)
+        
+        return JsonResponse({
+            'success': True,
+            'favoritos': list(favoritos),
+            'total': len(favoritos)
+        })
+    
+    # Si es POST, alternar favorito
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Datos inválidos'}, status=400)
     
     producto_id = data.get('producto_id')
+    accion = data.get('accion', 'agregar')
     
     if not producto_id:
         return JsonResponse({'error': 'Producto ID es requerido'}, status=400)
     
     producto = get_object_or_404(Producto, id=producto_id, esta_activo=True)
     
-    favorito, created = Favorito.objects.get_or_create(
-        usuario=request.user,
-        producto=producto
-    )
-    
-    if not created:
-        favorito.delete()
-        _registrar_actividad(
-            request,
-            'eliminacion',
-            f'Producto eliminado de favoritos (API): {producto.nombre}',
-            {'producto_id': producto.id}
+    # Si la acción es 'agregar'
+    if accion == 'agregar':
+        favorito, created = Favorito.objects.get_or_create(
+            usuario=request.user,
+            producto=producto
         )
-        return JsonResponse({
-            'success': True,
-            'es_favorito': False,
-            'message': f'{producto.nombre} eliminado de favoritos',
-            'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
-        })
+        if created:
+            _registrar_actividad(
+                request,
+                'creacion',
+                f'Producto agregado a favoritos (API): {producto.nombre}',
+                {'producto_id': producto.id}
+            )
+            return JsonResponse({
+                'success': True,
+                'es_favorito': True,
+                'message': f'{producto.nombre} agregado a favoritos',
+                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
+            })
+        else:
+            return JsonResponse({
+                'success': True,
+                'es_favorito': True,
+                'message': f'{producto.nombre} ya está en favoritos',
+                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
+            })
     
-    _registrar_actividad(
-        request,
-        'creacion',
-        f'Producto agregado a favoritos (API): {producto.nombre}',
-        {'producto_id': producto.id}
-    )
+    # Si la acción es 'quitar'
+    elif accion == 'quitar':
+        favorito = Favorito.objects.filter(
+            usuario=request.user,
+            producto=producto
+        ).first()
+        if favorito:
+            favorito.delete()
+            _registrar_actividad(
+                request,
+                'eliminacion',
+                f'Producto eliminado de favoritos (API): {producto.nombre}',
+                {'producto_id': producto.id}
+            )
+            return JsonResponse({
+                'success': True,
+                'es_favorito': False,
+                'message': f'{producto.nombre} eliminado de favoritos',
+                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
+            })
+        else:
+            return JsonResponse({
+                'success': True,
+                'es_favorito': False,
+                'message': f'{producto.nombre} no estaba en favoritos',
+                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
+            })
     
-    return JsonResponse({
-        'success': True,
-        'es_favorito': True,
-        'message': f'{producto.nombre} agregado a favoritos',
-        'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
-    })
+    return JsonResponse({'error': 'Acción no válida'}, status=400)
