@@ -2252,3 +2252,17 @@ Traceback (most recent call last):
     raise NoReverseMatch(msg)
 django.urls.exceptions.NoReverseMatch: Reverse for 'api_favoritos' not found. 'api_favoritos' is not a valid view function or pattern name.
 ERROR 2026-06-24 23:12:53,900 basehttp 17784 12344 "GET /favoritos/ HTTP/1.1" 500 223238
+WARNING 2026-06-24 23:23:57,770 basehttp 16948 7696 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-24 23:25:29,711 basehttp 16948 2148 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-24 23:27:01,371 basehttp 16948 18924 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-24 23:27:11,858 basehttp 16948 15132 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-24 23:28:35,413 basehttp 16948 4688 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-24 23:54:29,497 basehttp 8204 20968 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-24 23:55:23,025 basehttp 8204 20944 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-24 23:55:23,027 basehttp 8204 20992 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-24 23:55:23,476 log 8204 21056 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 23:55:23,642 basehttp 8204 21056 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-24 23:59:39,862 basehttp 8204 7184 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-25 00:03:56,765 basehttp 8204 6876 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-25 00:04:17,771 basehttp 8204 21072 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002
+WARNING 2026-06-25 00:11:31,563 basehttp 8204 18544 "GET /static/img/productos/default.jpg HTTP/1.1" 404 2002

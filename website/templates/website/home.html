@@ -894,9 +894,27 @@
             </div>
         {% endif %}
     </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/home.js' %}"></script>
-{% endblock %}
+    {% endblock %}
+    
+    <!-- Configuración global ANGELOW -->
+    {% if user.is_authenticated %}
+    <script>
+        window.ANGELOW = {
+            isAuthenticated: true,
+            userId: {{ user.id }},
+            apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+        };
+    </script>
+    {% else %}
+    <script>
+        window.ANGELOW = {
+            isAuthenticated: false,
+            userId: null,
+            apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+        };
+    </script>
+    {% endif %}
+    
+    {% block extra_js %}
+    <script src="{% static 'js/home.js' %}"></script>
+    {% endblock %}

@@ -24,10 +24,10 @@ function toggleFavorite(productId, productName, button) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({producto_id: productId}),
+            body: JSON.stringify({producto_id: productId})
         })
-        .then(response => response.json())
-        .then(data => {
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
             if (data.success) {
                 if (data.es_favorito) {
                     showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
@@ -48,7 +48,7 @@ function toggleFavorite(productId, productName, button) {
                 showToast('error', 'fa-exclamation-circle', data.message || 'Error');
             }
         })
-        .catch(error => {
+        .catch(function(error) {
             showToast('error', 'fa-exclamation-circle', 'Error al procesar favorito');
         });
     } else {
@@ -202,10 +202,5 @@ window.addEventListener('storage', function(e) {
 
 // Agregar estilo para las partículas
 var style = document.createElement('style');
-style.textContent = `
-    @keyframes particleFloat {
-        0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
-        100% { opacity: 0; transform: translateY(-60px) scale(0) rotate(45deg); }
-    }
-`;
+style.textContent = '\n    @keyframes particleFloat {\n        0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }\n        100% { opacity: 0; transform: translateY(-60px) scale(0) rotate(45deg); }\n    }\n';
 document.head.appendChild(style);

@@ -1,3 +1,4 @@
+<!-- tienda/templates/tienda/favoritos.html -->
 {% extends 'website/base.html' %}
 {% load static %}
 
@@ -11,13 +12,13 @@
             {% for fav in favoritos %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="{{ fav.producto.imagenes.0 }}" class="card-img-top" alt="{{ fav.producto.nombre }}">
+                        <img src="{{ fav.producto.get_imagen_principal_url }}" class="card-img-top" alt="{{ fav.producto.nombre }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ fav.producto.nombre }}</h5>
                             <p class="card-text">{{ fav.producto.subcategoria }}</p>
                             <p class="card-text"><strong>COP ${{ fav.producto.precio|floatformat:0 }}</strong></p>
                             <a href="{% url 'tienda:detalle_producto' slug=fav.producto.slug %}" class="btn btn-primary">Ver producto</a>
-                            <a href="{% url 'tienda:toggle_favorito' fav.producto.id %}" class="btn btn-outline-danger">Eliminar</a>
+                            <button class="btn btn-outline-danger" onclick="toggleFavorite({{ fav.producto.id }}, event)">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -26,6 +27,24 @@
     {% else %}
         <p>No tienes productos favoritos.</p>
         <a href="{% url 'tienda:lista_productos' %}" class="btn btn-primary">Explorar productos</a>
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+    <script>
+        window.ANGELOW = {
+            isAuthenticated: true,
+            userId: {{ user.id }},
+            apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+        };
+    </script>
+    {% else %}
+    <script>
+        window.ANGELOW = {
+            isAuthenticated: false,
+            userId: null,
+            apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+        };
+    </script>
     {% endif %}
 </div>
 {% endblock %}

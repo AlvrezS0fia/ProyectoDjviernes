@@ -391,3 +391,67 @@ INFO 2026-06-24 23:07:36,310 middleware 7100 6284 Actividad: sofia - GET /tienda
 INFO 2026-06-24 23:07:37,558 middleware 7100 6284 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-24 23:07:38,012 middleware 7100 6284 Actividad: sofia - GET /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
 INFO 2026-06-24 23:12:53,871 middleware 17784 12344 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:23:51,027 middleware 16948 15132 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:23:54,440 middleware 16948 7696 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:23:57,451 views 16948 7696 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 23:23:57,490 middleware 16948 7696 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:24:00,329 middleware 16948 2148 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:24:02,407 middleware 16948 2148 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:25:23,646 views 16948 2148 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 23:25:23,715 middleware 16948 2148 Actividad: sofia - POST /login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:25:23,720 middleware 16948 2148 Login exitoso: sofia desde IP: 127.0.0.1
+INFO 2026-06-24 23:25:23,998 middleware 16948 2148 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:25:29,247 views 16948 2148 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 23:25:29,294 middleware 16948 2148 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:25:31,230 middleware 16948 18924 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:25:36,296 middleware 16948 18924 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:26:54,462 middleware 16948 18924 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:27:00,791 views 16948 18924 Producto visualizado: Babero Bebé por sofia
+INFO 2026-06-24 23:27:00,888 middleware 16948 18924 Actividad: sofia - GET /tienda/producto/babero-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:27:02,970 middleware 16948 15132 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:27:04,821 middleware 16948 15132 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:27:09,394 middleware 16948 15132 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:27:11,514 views 16948 15132 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 23:27:11,573 middleware 16948 15132 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:27:13,423 middleware 16948 4688 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:27:18,557 middleware 16948 4688 Actividad: sofia - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:28:33,117 middleware 16948 4688 Actividad: sofia - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:28:35,144 views 16948 4688 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 23:28:35,179 middleware 16948 4688 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:28:41,289 middleware 16948 10744 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:51:33,067 middleware 8204 20668 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:54:09,928 middleware 8204 20968 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:54:15,360 middleware 8204 20968 Actividad: sofia - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:54:21,321 views 8204 20968 Carrito visualizado por: sofia
+INFO 2026-06-24 23:54:21,536 middleware 8204 20968 Actividad: sofia - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-24 23:54:22,484 middleware 8204 20968 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:54:25,767 middleware 8204 20968 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:54:29,195 views 8204 20968 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-24 23:54:29,265 middleware 8204 20968 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:54:31,369 middleware 8204 21056 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:54:32,561 middleware 8204 21056 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:54:35,289 middleware 8204 21056 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:55:23,022 middleware 8204 21056 Actividad: sofia - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:59:32,778 middleware 8204 21056 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:59:35,857 middleware 8204 7184 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:59:38,604 views 8204 7184 Producto visualizado: Babero Bebé por sofia
+INFO 2026-06-24 23:59:38,857 middleware 8204 7184 Actividad: sofia - GET /tienda/producto/babero-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 23:59:41,916 middleware 8204 8236 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 23:59:43,615 middleware 8204 8236 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 00:03:43,443 views 8204 8236 Producto visualizado: Babero Bebé por sofia
+INFO 2026-06-25 00:03:43,512 middleware 8204 8236 Actividad: sofia - GET /tienda/producto/babero-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:03:56,018 views 8204 18936 Producto visualizado: Babero Bebé por sofia
+INFO 2026-06-25 00:03:56,075 middleware 8204 18936 Actividad: sofia - GET /tienda/producto/babero-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:04:00,697 middleware 8204 21072 Actividad: sofia - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:04:05,273 views 8204 21072 Carrito visualizado por: sofia
+INFO 2026-06-25 00:04:05,517 middleware 8204 21072 Actividad: sofia - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-25 00:04:09,612 middleware 8204 21072 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:04:13,375 middleware 8204 21072 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:04:17,060 views 8204 21072 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-25 00:04:17,344 middleware 8204 21072 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:04:19,427 middleware 8204 15212 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 00:04:20,572 middleware 8204 15212 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 00:11:30,958 views 8204 18544 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-25 00:11:31,049 middleware 8204 18544 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:11:34,127 middleware 8204 18912 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 00:11:34,696 middleware 8204 18912 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1

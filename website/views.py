@@ -416,7 +416,7 @@ def dashboard_view(request):
 
 
 # ============================================================
-# 9. VISTA DE FAVORITOS (Para usuarios) - MODIFICADA CON JSON
+# 9. VISTA DE FAVORITOS (Para usuarios) - CON FAVORITOS DEL USUARIO
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -424,12 +424,16 @@ def favorites_view(request):
     """
     Vista de productos favoritos del usuario
     """
-    # Todos los productos activos
-    productos = Producto.objects.filter(esta_activo=True)
+    # Obtener los favoritos del usuario autenticado
+    favoritos_usuario = Favorito.objects.filter(
+        usuario=request.user,
+        producto__esta_activo=True
+    ).select_related('producto')
     
-    # Convertir productos a JSON para JavaScript
+    # Convertir favoritos a JSON para JavaScript
     productos_data = []
-    for producto in productos:
+    for fav in favoritos_usuario:
+        producto = fav.producto
         productos_data.append({
             'id': producto.id,
             'nombre': producto.nombre,
@@ -442,8 +446,9 @@ def favorites_view(request):
         })
     
     context = {
-        'productos': productos,
-        'productos_json': json.dumps(productos_data, ensure_ascii=False)
+        'productos': favoritos_usuario,
+        'productos_json': json.dumps(productos_data, ensure_ascii=False),
+        'favoritos_ids': [p.id for p in favoritos_usuario]
     }
     
     return render(request, 'website/favorites.html', context)

@@ -742,12 +742,12 @@ def api_agregar_carrito(request):
 
 
 # ============================================================
-# 13. API - TOGGLE FAVORITO (JSON) - CORREGIDA CON GET Y POST
+# 13. API - TOGGLE FAVORITO (JSON) - Alternar favorito con toggle
 # ============================================================
 
 @login_required(login_url='website:login')
 @csrf_exempt
-@require_http_methods(['GET', 'POST'])
+@require_POST
 def api_toggle_favorito(request):
     """
     API para alternar favoritos (AJAX)
@@ -758,86 +758,49 @@ def api_toggle_favorito(request):
     - Capa 4: Auditoría de acción
     """
     
-    # Si es GET, devolver la lista de favoritos
-    if request.method == 'GET':
-        favoritos = Favorito.objects.filter(
-            usuario=request.user,
-            producto__esta_activo=True
-        ).values_list('producto_id', flat=True)
-        
-        return JsonResponse({
-            'success': True,
-            'favoritos': list(favoritos),
-            'total': len(favoritos)
-        })
-    
-    # Si es POST, alternar favorito
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
-        return JsonResponse({'error': 'Datos inválidos'}, status=400)
+        return JsonResponse({'success': False, 'message': 'Datos inválidos'}, status=400)
     
     producto_id = data.get('producto_id')
-    accion = data.get('accion', 'agregar')
     
     if not producto_id:
-        return JsonResponse({'error': 'Producto ID es requerido'}, status=400)
+        return JsonResponse({'success': False, 'message': 'Producto ID es requerido'}, status=400)
     
     producto = get_object_or_404(Producto, id=producto_id, esta_activo=True)
     
-    # Si la acción es 'agregar'
-    if accion == 'agregar':
-        favorito, created = Favorito.objects.get_or_create(
-            usuario=request.user,
-            producto=producto
+    # Toggle: si existe, eliminarlo; si no, crearlo
+    favorito, created = Favorito.objects.get_or_create(
+        usuario=request.user,
+        producto=producto
+    )
+    
+    if created:
+        # Se agregó el favorito
+        es_favorito = True
+        message = f'{producto.nombre} agregado a favoritos'
+        _registrar_actividad(
+            request,
+            'creacion',
+            f'Producto agregado a favoritos (API): {producto.nombre}',
+            {'producto_id': producto.id}
         )
-        if created:
-            _registrar_actividad(
-                request,
-                'creacion',
-                f'Producto agregado a favoritos (API): {producto.nombre}',
-                {'producto_id': producto.id}
-            )
-            return JsonResponse({
-                'success': True,
-                'es_favorito': True,
-                'message': f'{producto.nombre} agregado a favoritos',
-                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
-            })
-        else:
-            return JsonResponse({
-                'success': True,
-                'es_favorito': True,
-                'message': f'{producto.nombre} ya está en favoritos',
-                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
-            })
+    else:
+        # Se eliminó el favorito
+        favorito.delete()
+        es_favorito = False
+        message = f'{producto.nombre} eliminado de favoritos'
+        _registrar_actividad(
+            request,
+            'eliminacion',
+            f'Producto eliminado de favoritos (API): {producto.nombre}',
+            {'producto_id': producto.id}
+        )
     
-    # Si la acción es 'quitar'
-    elif accion == 'quitar':
-        favorito = Favorito.objects.filter(
-            usuario=request.user,
-            producto=producto
-        ).first()
-        if favorito:
-            favorito.delete()
-            _registrar_actividad(
-                request,
-                'eliminacion',
-                f'Producto eliminado de favoritos (API): {producto.nombre}',
-                {'producto_id': producto.id}
-            )
-            return JsonResponse({
-                'success': True,
-                'es_favorito': False,
-                'message': f'{producto.nombre} eliminado de favoritos',
-                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
-            })
-        else:
-            return JsonResponse({
-                'success': True,
-                'es_favorito': False,
-                'message': f'{producto.nombre} no estaba en favoritos',
-                'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
-            })
-    
-    return JsonResponse({'error': 'Acción no válida'}, status=400)
+    return JsonResponse({
+        'success': True,
+        'es_favorito': es_favorito,
+        'message': message,
+        'total_favoritos': Favorito.objects.filter(usuario=request.user).count()
+    })

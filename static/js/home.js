@@ -317,27 +317,71 @@ function updateFavBadges() {
 function toggleFavorite(productId, event) {
     if (event) event.stopPropagation();
     
-    var favs = getFavorites();
-    var index = favs.indexOf(productId);
-    var btn = document.querySelector('.btn-fav[data-id="' + productId + '"]');
+    var isAuthenticated = window.ANGELOW && window.ANGELOW.isAuthenticated;
     
-    if (index > -1) {
-        favs.splice(index, 1);
-        if (btn) {
-            btn.classList.remove('active');
-            btn.querySelector('i').style.color = '';
-        }
-        showToast('Eliminado de favoritos', 'info');
+    if (isAuthenticated) {
+        // Usuario autenticado: usar API
+        fetch(window.ANGELOW.apiToggleFavorito, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({producto_id: productId})
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                var btn = document.querySelector('.btn-fav[data-id="' + productId + '"]');
+                if (data.es_favorito) {
+                    if (btn) {
+                        btn.classList.add('active');
+                        btn.querySelector('i').style.color = '#ef4444';
+                    }
+                    showToast('Agregado a favoritos ❤️', 'success');
+                } else {
+                    if (btn) {
+                        btn.classList.remove('active');
+                        btn.querySelector('i').style.color = '';
+                    }
+                    showToast('Eliminado de favoritos', 'info');
+                }
+                updateFavBadges();
+                window.dispatchEvent(new Event('storage'));
+            } else {
+                showToast(data.message || 'Error', 'error');
+            }
+        })
+        .catch(function(error) {
+            showToast('Error al procesar favorito', 'error');
+        });
     } else {
-        favs.push(productId);
-        if (btn) {
-            btn.classList.add('active');
-            btn.querySelector('i').style.color = '#ef4444';
+        // Usuario no autenticado: usar localStorage
+        var favs = getFavorites();
+        var index = favs.indexOf(productId);
+        var btn = document.querySelector('.btn-fav[data-id="' + productId + '"]');
+        
+        if (index > -1) {
+            favs.splice(index, 1);
+            if (btn) {
+                btn.classList.remove('active');
+                btn.querySelector('i').style.color = '';
+            }
+            showToast('Eliminado de favoritos', 'info');
+        } else {
+            favs.push(productId);
+            if (btn) {
+                btn.classList.add('active');
+                btn.querySelector('i').style.color = '#ef4444';
+            }
+            showToast('Agregado a favoritos ❤️', 'success');
         }
-        showToast('Agregado a favoritos ❤️', 'success');
+        
+        saveFavorites(favs);
+        updateFavBadges();
+        window.dispatchEvent(new Event('storage'));
     }
-    
-    saveFavorites(favs);
 }
 
 // ============================================================
