@@ -101,7 +101,7 @@
                 <tbody>
                     {% for actividad in actividades_recientes|slice:":10" %}
                     <tr>
-                        <td>{{ actividad.usuario.get_nombre_completo|default:actividad.usuario.username }}</td>
+                        <td>{% if actividad.usuario %}{{ actividad.usuario.get_nombre_completo|default:actividad.usuario.username }}{% else %}—{% endif %}</td>
                         <td>{{ actividad.descripcion|truncatechars:50 }}</td>
                         <td>{{ actividad.fecha|date:"d/m/Y H:i" }}</td>
                     </tr>

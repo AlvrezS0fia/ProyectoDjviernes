@@ -25,7 +25,7 @@
                         {% for actividad in actividades %}
                         <tr>
                             <td>{{ actividad.fecha|date:"d/m/Y H:i" }}</td>
-                            <td>{{ actividad.usuario.get_full_name|default:actividad.usuario.username|default:"—" }}</td>
+                            <td>{% if actividad.usuario %}{{ actividad.usuario.get_full_name|default:actividad.usuario.username }}{% else %}—{% endif %}</td>
                             <td>{{ actividad.get_tipo_display }}</td>
                             <td>{{ actividad.descripcion }}</td>
                         </tr>

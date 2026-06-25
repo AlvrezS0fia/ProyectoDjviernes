@@ -269,3 +269,87 @@ INFO 2026-06-24 22:31:18,206 views 17576 1008 Carrito visualizado por: sofia
 INFO 2026-06-24 22:31:18,544 middleware 17576 1008 Actividad: sofia - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
 INFO 2026-06-24 22:31:22,624 middleware 17576 1008 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-24 22:31:48,310 middleware 17576 1008 Actividad: sofia - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:34:51,289 middleware 3572 18024 Actividad: testuser - GET /dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:34:51,412 middleware 3572 18024 Actividad: testuser - GET /dashboard/admin/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:34:51,432 views 3572 18024 Lista de clientes visualizada por: testuser
+INFO 2026-06-24 22:34:51,547 middleware 3572 18024 Actividad: testuser - GET /clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:39:16,776 middleware 14508 16916 Actividad: testuser - GET /dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:39:16,931 middleware 14508 16916 Actividad: testuser - GET /dashboard/admin/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:39:16,972 views 14508 16916 Lista de clientes visualizada por: testuser
+INFO 2026-06-24 22:39:16,978 middleware 14508 16916 Actividad: testuser - GET /clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:39:17,185 middleware 14508 16916 Actividad: testuser - GET /clientes/nuevo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:40:54,173 middleware 17108 13740 Actividad: testuser - GET /dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:40:54,303 middleware 17108 13740 Actividad: testuser - GET /dashboard/admin/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:40:54,333 views 17108 13740 Lista de clientes visualizada por: testuser
+INFO 2026-06-24 22:40:54,338 middleware 17108 13740 Actividad: testuser - GET /clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:40:54,387 middleware 17108 13740 Actividad: testuser - GET /clientes/nuevo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:40:54,416 middleware 17108 13740 Actividad: testuser - GET /actividades/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:40:54,440 middleware 17108 13740 Actividad: testuser - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,214 middleware 17228 13952 Actividad: testuser2 - GET /dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,394 middleware 17228 13952 Actividad: testuser2 - GET /dashboard/admin/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,467 views 17228 13952 Lista de clientes visualizada por: testuser2
+INFO 2026-06-24 22:41:47,477 middleware 17228 13952 Actividad: testuser2 - GET /clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,512 middleware 17228 13952 Actividad: testuser2 - GET /clientes/nuevo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,536 middleware 17228 13952 Actividad: testuser2 - GET /actividades/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,566 middleware 17228 13952 Actividad: testuser2 - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,670 middleware 17228 13952 Actividad: testuser2 - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,812 middleware 17228 13952 Actividad: testuser2 - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,838 views 17228 13952 Producto visualizado: Conjunto Deportivo por testuser2
+INFO 2026-06-24 22:41:47,845 middleware 17228 13952 Actividad: testuser2 - GET /tienda/producto/conjunto-deportivo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,913 views 17228 13952 Carrito visualizado por: testuser2
+INFO 2026-06-24 22:41:47,919 middleware 17228 13952 Actividad: testuser2 - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,952 views 17228 13952 Clientes exportados por: testuser2
+INFO 2026-06-24 22:41:47,952 middleware 17228 13952 Actividad: testuser2 - GET /clientes/exportar/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:47,970 middleware 17228 13952 Actividad: testuser2 - GET /clientes/api/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:41:48,459 views 17228 13952 Cliente creado: Juan - juan@test.com por testuser2
+INFO 2026-06-24 22:41:48,477 middleware 17228 13952 Actividad: testuser2 - POST /clientes/nuevo/ - Tipo: creacion - IP: 127.0.0.1
+INFO 2026-06-24 22:41:48,498 middleware 17228 13952 Actividad: testuser2 - GET /clientes/editar/1/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:43:01,780 middleware 13112 2556 Actividad: sofia - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:43:16,195 middleware 13112 4700 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:43:21,004 views 13112 4700 Producto visualizado: Conjunto Bebé Invierno por sofia
+INFO 2026-06-24 22:43:21,244 middleware 13112 4700 Actividad: sofia - GET /tienda/producto/conjunto-bebe-invierno/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:43:25,047 middleware 13112 17700 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:14,135 middleware 13472 17784 Actividad: finaltest - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:14,495 middleware 13472 17784 Actividad: finaltest - GET /dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:16,301 middleware 13472 17784 Actividad: finaltest - GET /dashboard/admin/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:16,362 views 13472 17784 Lista de clientes visualizada por: finaltest
+INFO 2026-06-24 22:46:16,369 middleware 13472 17784 Actividad: finaltest - GET /clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:16,516 middleware 13472 17784 Actividad: finaltest - GET /clientes/nuevo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:16,547 middleware 13472 17784 Actividad: finaltest - GET /clientes/editar/1/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:16,827 views 13472 17784 Clientes exportados por: finaltest
+INFO 2026-06-24 22:46:16,827 middleware 13472 17784 Actividad: finaltest - GET /clientes/exportar/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:17,025 middleware 13472 17784 Actividad: finaltest - GET /clientes/api/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:17,468 middleware 13472 17784 Actividad: finaltest - GET /actividades/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:17,482 middleware 13472 17784 Actividad: finaltest - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:17,907 middleware 13472 17784 Actividad: finaltest - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:18,014 middleware 13472 17784 Actividad: finaltest - GET /gestion-clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:18,044 middleware 13472 17784 Actividad: finaltest - GET /gestion-clientes/nuevo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:18,465 middleware 13472 17784 Actividad: finaltest - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:18,492 views 13472 17784 Producto visualizado: Conjunto Deportivo por finaltest
+INFO 2026-06-24 22:46:18,499 middleware 13472 17784 Actividad: finaltest - GET /tienda/producto/conjunto-deportivo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:46:18,540 views 13472 17784 Carrito visualizado por: finaltest
+INFO 2026-06-24 22:46:18,549 middleware 13472 17784 Actividad: finaltest - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-24 22:46:18,582 views 13472 17784 Favoritos visualizados por: finaltest
+INFO 2026-06-24 22:46:18,591 middleware 13472 17784 Actividad: finaltest - GET /tienda/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,517 middleware 1880 17800 Actividad: finaltest - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,595 middleware 1880 17800 Actividad: finaltest - GET /dashboard/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,637 middleware 1880 17800 Actividad: finaltest - GET /dashboard/admin/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,667 views 1880 17800 Lista de clientes visualizada por: finaltest
+INFO 2026-06-24 22:47:53,672 middleware 1880 17800 Actividad: finaltest - GET /clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,707 middleware 1880 17800 Actividad: finaltest - GET /clientes/nuevo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,739 middleware 1880 17800 Actividad: finaltest - GET /clientes/editar/1/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,770 views 1880 17800 Clientes exportados por: finaltest
+INFO 2026-06-24 22:47:53,770 middleware 1880 17800 Actividad: finaltest - GET /clientes/exportar/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,795 middleware 1880 17800 Actividad: finaltest - GET /clientes/api/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,822 middleware 1880 17800 Actividad: finaltest - GET /actividades/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,857 middleware 1880 17800 Actividad: finaltest - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:53,987 middleware 1880 17800 Actividad: finaltest - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:54,049 middleware 1880 17800 Actividad: finaltest - GET /gestion-clientes/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:54,071 middleware 1880 17800 Actividad: finaltest - GET /gestion-clientes/nuevo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:54,097 middleware 1880 17800 Actividad: finaltest - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:54,135 views 1880 17800 Producto visualizado: Conjunto Deportivo por finaltest
+INFO 2026-06-24 22:47:54,145 middleware 1880 17800 Actividad: finaltest - GET /tienda/producto/conjunto-deportivo/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 22:47:54,179 views 1880 17800 Carrito visualizado por: finaltest
+INFO 2026-06-24 22:47:54,184 middleware 1880 17800 Actividad: finaltest - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-24 22:47:54,204 views 1880 17800 Favoritos visualizados por: finaltest
+INFO 2026-06-24 22:47:54,212 middleware 1880 17800 Actividad: finaltest - GET /tienda/favoritos/ - Tipo: favoritos - IP: 127.0.0.1

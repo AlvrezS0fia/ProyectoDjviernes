@@ -199,6 +199,7 @@ def cliente_create(request):
         'form': form,
         'object': None,
         'action': 'Crear',
+        'accion': 'Crear',
         'titulo': 'Nuevo Cliente',
     }
     
@@ -276,6 +277,7 @@ def cliente_update(request, pk):
         'form': form,
         'object': cliente,
         'action': 'Editar',
+        'accion': 'Guardar Cambios',
         'titulo': f'Editar Cliente: {cliente.nombre}',
     }
     
