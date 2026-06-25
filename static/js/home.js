@@ -1,66 +1,310 @@
 // static/js/home.js
 
 // ============================================================
+// VARIABLES GLOBALES
+// ============================================================
+var allProducts = [];
+var activeCategory = 'todos';
+
+// ============================================================
+// INICIALIZAR PRODUCTOS DESDE DJANGO
+// ============================================================
+function initProducts() {
+    var productsScript = document.getElementById('productos-data');
+    if (productsScript) {
+        try {
+            allProducts = JSON.parse(productsScript.textContent);
+            console.log('✅ Productos cargados desde Django:', allProducts.length);
+        } catch(e) {
+            console.error('❌ Error parsing productos data:', e);
+            allProducts = [];
+        }
+    } else {
+        console.warn('⚠️ No se encontró el script productos-data');
+    }
+}
+
+// ============================================================
 // BUSCADOR EN TIEMPO REAL
 // ============================================================
-document.addEventListener('DOMContentLoaded', function() {
+function filterProducts() {
     var searchInput = document.getElementById('searchInput');
-    var searchBtn = document.getElementById('searchBtn');
-    var clearBtn = document.getElementById('clearSearchBtn');
     var resultsCount = document.getElementById('resultsCount');
     var cards = document.querySelectorAll('.product-card');
+    var query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    var visibleCount = 0;
     
-    function filterProducts() {
-        var query = searchInput.value.toLowerCase().trim();
-        var visibleCount = 0;
+    for (var i = 0; i < cards.length; i++) {
+        var card = cards[i];
+        var nombre = card.dataset.nombre || '';
+        var subcategoria = card.dataset.subcategoria || '';
+        var categoria = card.dataset.categoria || '';
+        var text = nombre + ' ' + subcategoria + ' ' + categoria;
         
-        for (var i = 0; i < cards.length; i++) {
-            var card = cards[i];
-            var nombre = card.dataset.nombre || '';
-            var subcategoria = card.dataset.subcategoria || '';
-            var categoria = card.dataset.categoria || '';
-            var text = nombre + ' ' + subcategoria + ' ' + categoria;
-            
-            if (query === '' || text.indexOf(query) !== -1) {
-                card.style.display = 'flex';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
+        // Verificar si coincide con la categoría activa
+        var categoryMatch = activeCategory === 'todos' || categoria.indexOf(activeCategory) !== -1;
+        
+        // Verificar si coincide con la búsqueda
+        var searchMatch = query === '' || text.indexOf(query) !== -1;
+        
+        if (categoryMatch && searchMatch) {
+            card.style.display = 'flex';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
         }
-        
-        if (query === '') {
+    }
+    
+    if (resultsCount) {
+        if (query === '' && activeCategory === 'todos') {
             resultsCount.textContent = 'Mostrando todos los productos';
         } else {
-            resultsCount.textContent = visibleCount + ' producto' + (visibleCount !== 1 ? 's' : '') + ' encontrado' + (visibleCount !== 1 ? 's' : '') + ' para "' + query + '"';
+            var filterText = '';
+            if (activeCategory !== 'todos') {
+                filterText += ' en ' + activeCategory;
+            }
+            if (query !== '') {
+                filterText += ' para "' + query + '"';
+            }
+            resultsCount.textContent = visibleCount + ' producto' + (visibleCount !== 1 ? 's' : '') + ' encontrado' + filterText;
+        }
+    }
+}
+
+// ============================================================
+// CATEGORÍAS - FILTRO
+// ============================================================
+function filterByCategory(category) {
+    activeCategory = category;
+    
+    var pills = document.querySelectorAll('.category-pill');
+    for (var i = 0; i < pills.length; i++) {
+        if (pills[i].dataset.categoria === category) {
+            pills[i].classList.add('active');
+        } else {
+            pills[i].classList.remove('active');
         }
     }
     
-    if (searchInput) {
-        searchInput.addEventListener('input', filterProducts);
+    filterProducts();
+}
+
+// ============================================================
+// FAVORITOS
+// ============================================================
+function getFavorites() {
+    try {
+        return JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+    } catch (e) {
+        return [];
     }
-    if (searchBtn) {
-        searchBtn.addEventListener('click', filterProducts);
+}
+
+function saveFavorites(favs) {
+    localStorage.setItem('angelow_favorites', JSON.stringify(favs));
+    updateFavBadges();
+}
+
+function updateFavBadges() {
+    var favs = getFavorites();
+    var count = favs.length;
+    
+    var headerBadge = document.getElementById('favBadgeHeader');
+    if (headerBadge) {
+        headerBadge.textContent = count;
+        headerBadge.style.display = count > 0 ? 'flex' : 'none';
     }
-    if (clearBtn) {
-        clearBtn.addEventListener('click', function() {
-            searchInput.value = '';
-            filterProducts();
-            searchInput.focus();
-        });
+    
+    var favCount = document.getElementById('favCount');
+    if (favCount) {
+        favCount.textContent = count + ' productos';
     }
-    if (searchInput) {
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                filterProducts();
+    
+    var favBtns = document.querySelectorAll('.btn-fav');
+    for (var i = 0; i < favBtns.length; i++) {
+        var btn = favBtns[i];
+        var id = parseInt(btn.getAttribute('data-id'));
+        if (favs.indexOf(id) !== -1) {
+            btn.classList.add('active');
+            btn.querySelector('i').style.color = '#ef4444';
+        } else {
+            btn.classList.remove('active');
+            btn.querySelector('i').style.color = '';
+        }
+    }
+}
+
+function toggleFavorite(productId, event) {
+    if (event) event.stopPropagation();
+    
+    var isAuthenticated = window.ANGELOW && window.ANGELOW.isAuthenticated;
+    var btn = document.querySelector('.btn-fav[data-id="' + productId + '"]');
+    
+    if (isAuthenticated) {
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        var token = csrfToken ? csrfToken.value : '';
+        
+        fetch(window.ANGELOW.apiToggleFavorito, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': token
+            },
+            body: JSON.stringify({producto_id: productId})
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                if (data.es_favorito) {
+                    if (btn) {
+                        btn.classList.add('active');
+                        btn.querySelector('i').style.color = '#ef4444';
+                    }
+                    showToast('❤️ Agregado a favoritos', 'success');
+                } else {
+                    if (btn) {
+                        btn.classList.remove('active');
+                        btn.querySelector('i').style.color = '';
+                    }
+                    showToast('💔 Eliminado de favoritos', 'info');
+                }
+                updateFavBadges();
+                window.dispatchEvent(new Event('storage'));
+            } else {
+                showToast(data.message || 'Error', 'error');
             }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            showToast('Error al procesar favorito', 'error');
+        });
+    } else {
+        var favs = getFavorites();
+        var index = favs.indexOf(productId);
+        
+        if (index > -1) {
+            favs.splice(index, 1);
+            if (btn) {
+                btn.classList.remove('active');
+                btn.querySelector('i').style.color = '';
+            }
+            showToast('💔 Eliminado de favoritos', 'info');
+        } else {
+            favs.push(productId);
+            if (btn) {
+                btn.classList.add('active');
+                btn.querySelector('i').style.color = '#ef4444';
+            }
+            showToast('❤️ Agregado a favoritos', 'success');
+        }
+        
+        saveFavorites(favs);
+        updateFavBadges();
+        window.dispatchEvent(new Event('storage'));
+    }
+}
+
+// ============================================================
+// CARRITO
+// ============================================================
+function getCart() {
+    try {
+        return JSON.parse(localStorage.getItem('angelow_cart') || '[]');
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveCart(cart) {
+    localStorage.setItem('angelow_cart', JSON.stringify(cart));
+    updateCartBadge();
+}
+
+function updateCartBadge() {
+    var cart = getCart();
+    var total = 0;
+    for (var i = 0; i < cart.length; i++) {
+        total = total + (cart[i].quantity || 1);
+    }
+    var badge = document.getElementById('cartBadgeHeader');
+    if (badge) {
+        badge.textContent = total;
+        badge.style.display = total > 0 ? 'flex' : 'none';
+    }
+}
+
+function addToCart(productId, event) {
+    if (event) event.stopPropagation();
+    
+    var card = document.querySelector('.product-card[data-id="' + productId + '"]');
+    if (!card) {
+        showToast('Producto no encontrado', 'error');
+        return;
+    }
+    
+    var nameEl = card.querySelector('.product-name');
+    var priceEl = card.querySelector('.product-price');
+    var imgEl = card.querySelector('.product-card-img');
+    
+    var name = nameEl ? nameEl.textContent : 'Producto';
+    var priceText = priceEl ? priceEl.textContent.replace(/[^0-9.]/g, '') : '0';
+    var price = parseFloat(priceText) || 0;
+    var imagen = imgEl ? imgEl.src : '';
+    
+    var cart = getCart();
+    var existing = null;
+    for (var i = 0; i < cart.length; i++) {
+        if (cart[i].id === productId) {
+            existing = cart[i];
+            break;
+        }
+    }
+    
+    if (existing) {
+        existing.quantity = (existing.quantity || 1) + 1;
+    } else {
+        cart.push({
+            id: productId,
+            name: name,
+            price: price,
+            quantity: 1,
+            imagen: imagen
         });
     }
-    if (searchInput && searchInput.value) {
-        filterProducts();
-    }
-});
+    
+    saveCart(cart);
+    showToast('🛒 ' + name + ' agregado al carrito', 'success');
+}
+
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+function showToast(message, type) {
+    type = type || 'info';
+    var container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    var colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#5E9DE6'
+    };
+    var icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    var toast = document.createElement('div');
+    toast.className = 'toast-item ' + type;
+    toast.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '" style="color: ' + (colors[type] || colors.info) + ';"></i><span style="color: #1E3A8A; font-size: 14px; font-weight: 500;">' + message + '</span><button class="toast-close" onclick="this.parentElement.remove()">×</button>';
+    container.appendChild(toast);
+    setTimeout(function() { if (toast.parentElement) toast.remove(); }, 3500);
+}
 
 // ============================================================
 // HERO CAROUSEL
@@ -270,246 +514,42 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 // ============================================================
-// FAVORITOS - Con corazón rojo y contador
-// ============================================================
-function getFavorites() {
-    try {
-        return JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
-    } catch (e) {
-        return [];
-    }
-}
-
-function saveFavorites(favs) {
-    localStorage.setItem('angelow_favorites', JSON.stringify(favs));
-    updateFavBadges();
-}
-
-function updateFavBadges() {
-    var favs = getFavorites();
-    var count = favs.length;
-    
-    var headerBadge = document.getElementById('favBadgeHeader');
-    if (headerBadge) {
-        headerBadge.textContent = count;
-        headerBadge.style.display = count > 0 ? 'flex' : 'none';
-    }
-    
-    var favCount = document.getElementById('favCount');
-    if (favCount) {
-        favCount.textContent = count + ' productos';
-    }
-    
-    var favBtns = document.querySelectorAll('.btn-fav');
-    for (var i = 0; i < favBtns.length; i++) {
-        var btn = favBtns[i];
-        var id = parseInt(btn.getAttribute('data-id'));
-        if (favs.indexOf(id) !== -1) {
-            btn.classList.add('active');
-            btn.querySelector('i').style.color = '#ef4444';
-        } else {
-            btn.classList.remove('active');
-            btn.querySelector('i').style.color = '';
-        }
-    }
-}
-
-function toggleFavorite(productId, event) {
-    if (event) event.stopPropagation();
-    
-    var isAuthenticated = window.ANGELOW && window.ANGELOW.isAuthenticated;
-    
-    if (isAuthenticated) {
-        // Usuario autenticado: usar API
-        fetch(window.ANGELOW.apiToggleFavorito, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({producto_id: productId})
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            if (data.success) {
-                var btn = document.querySelector('.btn-fav[data-id="' + productId + '"]');
-                if (data.es_favorito) {
-                    if (btn) {
-                        btn.classList.add('active');
-                        btn.querySelector('i').style.color = '#ef4444';
-                    }
-                    showToast('Agregado a favoritos ❤️', 'success');
-                } else {
-                    if (btn) {
-                        btn.classList.remove('active');
-                        btn.querySelector('i').style.color = '';
-                    }
-                    showToast('Eliminado de favoritos', 'info');
-                }
-                updateFavBadges();
-                window.dispatchEvent(new Event('storage'));
-            } else {
-                showToast(data.message || 'Error', 'error');
-            }
-        })
-        .catch(function(error) {
-            showToast('Error al procesar favorito', 'error');
-        });
-    } else {
-        // Usuario no autenticado: usar localStorage
-        var favs = getFavorites();
-        var index = favs.indexOf(productId);
-        var btn = document.querySelector('.btn-fav[data-id="' + productId + '"]');
-        
-        if (index > -1) {
-            favs.splice(index, 1);
-            if (btn) {
-                btn.classList.remove('active');
-                btn.querySelector('i').style.color = '';
-            }
-            showToast('Eliminado de favoritos', 'info');
-        } else {
-            favs.push(productId);
-            if (btn) {
-                btn.classList.add('active');
-                btn.querySelector('i').style.color = '#ef4444';
-            }
-            showToast('Agregado a favoritos ❤️', 'success');
-        }
-        
-        saveFavorites(favs);
-        updateFavBadges();
-        window.dispatchEvent(new Event('storage'));
-    }
-}
-
-// ============================================================
-// CARRITO
-// ============================================================
-function getCart() {
-    try {
-        return JSON.parse(localStorage.getItem('angelow_cart') || '[]');
-    } catch (e) {
-        return [];
-    }
-}
-
-function saveCart(cart) {
-    localStorage.setItem('angelow_cart', JSON.stringify(cart));
-    updateCartBadge();
-}
-
-function updateCartBadge() {
-    var cart = getCart();
-    var total = 0;
-    for (var i = 0; i < cart.length; i++) {
-        total = total + (cart[i].quantity || 1);
-    }
-    var badge = document.getElementById('cartBadgeHeader');
-    if (badge) {
-        badge.textContent = total;
-        badge.style.display = total > 0 ? 'flex' : 'none';
-    }
-}
-
-function addToCart(productId, event) {
-    if (event) event.stopPropagation();
-    
-    var card = document.querySelector('.product-card[data-id="' + productId + '"]');
-    if (!card) {
-        showToast('Producto no encontrado', 'error');
-        return;
-    }
-    
-    var name = card.querySelector('.product-name').textContent;
-    var priceText = card.querySelector('.product-price').textContent.replace(/[^0-9.]/g, '');
-    var price = parseFloat(priceText) || 0;
-    var imagen = card.querySelector('.product-card-img').src;
-    
-    var cart = getCart();
-    var existing = null;
-    for (var i = 0; i < cart.length; i++) {
-        if (cart[i].id === productId) {
-            existing = cart[i];
-            break;
-        }
-    }
-    
-    if (existing) {
-        existing.quantity = (existing.quantity || 1) + 1;
-    } else {
-        cart.push({
-            id: productId,
-            name: name,
-            price: price,
-            quantity: 1,
-            imagen: imagen
-        });
-    }
-    
-    saveCart(cart);
-    showToast(name + ' agregado al carrito 🛒', 'success');
-}
-
-// ============================================================
-// CATEGORÍAS - FILTRO
-// ============================================================
-var activeCategory = 'todos';
-
-function filterByCategory(category) {
-    activeCategory = category;
-    
-    var pills = document.querySelectorAll('.category-pill');
-    for (var i = 0; i < pills.length; i++) {
-        if (pills[i].dataset.categoria === category) {
-            pills[i].classList.add('active');
-        } else {
-            pills[i].classList.remove('active');
-        }
-    }
-    
-    var cards = document.querySelectorAll('.product-card');
-    for (var j = 0; j < cards.length; j++) {
-        var cardCat = cards[j].dataset.categoria || '';
-        if (category === 'todos') {
-            cards[j].style.display = 'flex';
-        } else {
-            cards[j].style.display = cardCat.indexOf(category) !== -1 ? 'flex' : 'none';
-        }
-    }
-}
-
-// ============================================================
-// TOAST NOTIFICATIONS
-// ============================================================
-function showToast(message, type) {
-    type = type || 'info';
-    var container = document.getElementById('toastContainer');
-    var colors = {
-        success: '#10b981',
-        error: '#ef4444',
-        warning: '#f59e0b',
-        info: '#5E9DE6'
-    };
-    var icons = {
-        success: 'fa-check-circle',
-        error: 'fa-exclamation-circle',
-        warning: 'fa-exclamation-triangle',
-        info: 'fa-info-circle'
-    };
-    
-    var toast = document.createElement('div');
-    toast.className = 'toast-item ' + type;
-    toast.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '" style="color: ' + (colors[type] || colors.info) + ';"></i><span style="color: #1E3A8A; font-size: 14px; font-weight: 500;">' + message + '</span><button class="toast-close" onclick="this.parentElement.remove()">×</button>';
-    container.appendChild(toast);
-    setTimeout(function() { toast.remove(); }, 3500);
-}
-
-// ============================================================
-// INICIALIZACIÓN
+// INICIALIZACIÓN PRINCIPAL
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Iniciando home.js...');
+    
+    // Inicializar productos desde Django
+    initProducts();
+    
+    // Configurar buscador
+    var searchInput = document.getElementById('searchInput');
+    var searchBtn = document.getElementById('searchBtn');
+    var clearBtn = document.getElementById('clearSearchBtn');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', filterProducts);
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                filterProducts();
+            }
+        });
+    }
+    if (searchBtn) {
+        searchBtn.addEventListener('click', filterProducts);
+    }
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            if (searchInput) {
+                searchInput.value = '';
+                filterProducts();
+                searchInput.focus();
+            }
+        });
+    }
+    
+    // Inicializar favoritos
     var favs = getFavorites();
     for (var i = 0; i < favs.length; i++) {
         var btn = document.querySelector('.btn-fav[data-id="' + favs[i] + '"]');
@@ -518,7 +558,16 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.querySelector('i').style.color = '#ef4444';
         }
     }
+    
+    // Actualizar badges
     updateCartBadge();
     updateFavBadges();
+    
+    // Aplicar filtro inicial
     filterByCategory('todos');
+    
+    console.log('✅ Inicialización completa');
+    console.log('📦 Productos:', allProducts.length);
+    console.log('❤️ Favoritos:', getFavorites());
+    console.log('🛒 Carrito:', getCart());
 });

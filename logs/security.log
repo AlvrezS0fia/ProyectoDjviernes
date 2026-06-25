@@ -455,3 +455,69 @@ INFO 2026-06-25 00:11:30,958 views 8204 18544 Producto visualizado: Manta Bebé p
 INFO 2026-06-25 00:11:31,049 middleware 8204 18544 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-25 00:11:34,127 middleware 8204 18912 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
 INFO 2026-06-25 00:11:34,696 middleware 8204 18912 Actividad: sofia - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 00:21:32,345 views 21160 20208 Producto visualizado: Manta Bebé por sofia
+INFO 2026-06-25 00:21:32,698 middleware 21160 20208 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:21:43,251 middleware 21160 20208 Actividad: sofia - GET / - Tipo: general - IP: 127.0.0.1
+WARNING 2026-06-25 00:40:43,784 middleware 7288 19880 Intento de login fallido desde IP: 127.0.0.1 (Intento #1)
+WARNING 2026-06-25 00:40:46,369 middleware 7288 17348 Intento de login fallido desde IP: 127.0.0.1 (Intento #2)
+WARNING 2026-06-25 00:41:05,401 middleware 7288 17348 Intento de login fallido desde IP: 127.0.0.1 (Intento #3)
+WARNING 2026-06-25 00:50:33,139 middleware 18356 20116 Intento de login fallido desde IP: 127.0.0.1 (Intento #1)
+WARNING 2026-06-25 00:51:00,555 middleware 18356 20116 Intento de login fallido desde IP: 127.0.0.1 (Intento #2)
+WARNING 2026-06-25 00:52:30,155 middleware 13636 11300 Intento de login fallido desde IP: 127.0.0.1 (Intento #1)
+WARNING 2026-06-25 00:52:47,858 middleware 13636 11300 Intento de login fallido desde IP: 127.0.0.1 (Intento #2)
+INFO 2026-06-25 00:53:11,220 views 13636 11300 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 00:53:11,332 middleware 13636 11300 Actividad: admin - POST /login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:53:11,361 middleware 13636 11300 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 00:53:11,550 middleware 13636 11300 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:53:27,561 middleware 13636 21332 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:53:34,477 middleware 13636 21332 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:53:35,683 middleware 13636 21332 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:21,994 views 13636 20460 Carrito visualizado por: admin
+INFO 2026-06-25 00:54:22,438 middleware 13636 20460 Actividad: admin - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-25 00:54:23,794 middleware 13636 20460 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:31,398 middleware 13636 20460 Actividad: admin - GET /tienda/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:33,013 middleware 13636 18148 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:35,800 middleware 13636 20460 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:37,726 middleware 13636 20460 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:38,257 middleware 13636 8656 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:40,141 middleware 13636 20460 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:45,633 middleware 13636 6924 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 00:54:47,196 middleware 13636 6924 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 01:01:52,345 middleware 13636 15520 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 01:01:54,878 middleware 13636 16272 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 01:01:55,310 middleware 13636 16272 Actividad: admin - GET /favoritos/undefined - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 01:02:01,752 middleware 13636 16272 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:27:26,731 views 13104 19936 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 08:27:26,764 middleware 13104 19936 Actividad: admin - POST /login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:27:26,776 middleware 13104 19936 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 08:27:26,891 middleware 13104 19936 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:27:47,444 middleware 13104 19936 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:27:49,783 middleware 13104 19936 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:27:50,453 middleware 13104 19936 Actividad: admin - GET /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 08:27:51,950 views 13104 19936 Carrito visualizado por: admin
+INFO 2026-06-25 08:27:51,970 middleware 13104 19936 Actividad: admin - GET /tienda/carrito/ - Tipo: carrito - IP: 127.0.0.1
+INFO 2026-06-25 08:27:55,381 middleware 13104 19936 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:29:47,283 middleware 13104 19936 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:29:48,355 middleware 13104 19936 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:31:11,003 middleware 13104 19936 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:31:11,900 middleware 13104 19936 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:31:12,454 middleware 13104 19936 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:35:24,279 models 19164 15580 Producto creado: Conjunto Bebé Invierno - $49900
+INFO 2026-06-25 08:35:24,667 models 19164 15580 Producto creado: Vestido Verano Niña - $35900
+INFO 2026-06-25 08:35:24,801 models 19164 15580 Producto creado: Camiseta Niño - $28900
+INFO 2026-06-25 08:35:25,304 models 19164 15580 Producto creado: Body Bebé Algodón - $19900
+INFO 2026-06-25 08:35:25,484 models 19164 15580 Producto creado: Pijama Niña Unicornio - $42900
+INFO 2026-06-25 08:35:25,599 models 19164 15580 Producto creado: Conjunto Deportivo Niño - $55900
+INFO 2026-06-25 08:35:26,136 models 19164 15580 Producto creado: Chaqueta Bebé - $68900
+INFO 2026-06-25 08:35:26,416 models 19164 15580 Producto creado: Falda Niña - $45900
+INFO 2026-06-25 08:35:26,803 models 19164 15580 Producto creado: Pantalón Niño - $38900
+INFO 2026-06-25 08:35:26,951 models 19164 15580 Producto creado: Conjunto Bebé Verano - $29900
+INFO 2026-06-25 08:35:45,763 middleware 13848 21984 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:35:49,877 views 13848 5708 Producto visualizado: Conjunto Bebé Verano por admin
+INFO 2026-06-25 08:35:49,991 middleware 13848 5708 Actividad: admin - GET /tienda/producto/conjunto-bebe-verano/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:35:53,853 middleware 13848 21984 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:35:54,207 middleware 13848 21984 Actividad: admin - GET /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 08:35:58,118 middleware 13848 21984 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:36:00,820 views 13848 21984 Producto visualizado: Conjunto Bebé Verano por admin
+INFO 2026-06-25 08:36:00,837 middleware 13848 21984 Actividad: admin - GET /tienda/producto/conjunto-bebe-verano/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 08:36:04,264 middleware 13848 21984 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1

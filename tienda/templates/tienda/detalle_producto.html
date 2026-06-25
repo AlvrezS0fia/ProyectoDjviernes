@@ -584,7 +584,7 @@
 
 <div class="product-detail-container">
     <div class="product-images">
-        <img src="{{ producto.get_imagen_principal_url }}" class="main-image" id="mainImage" alt="{{ producto.nombre }}">
+        <img src="{{ producto.get_imagen_principal_url }}" class="main-image" id="mainImage" alt="{{ producto.nombre }}" onerror="this.src='{% static 'img/productos/default.jpg' %}'">
         <div class="thumbnail-grid">
             {% for img in producto.imagenes %}
                 <img src="{{ img }}" class="thumbnail" alt="Imagen {{ forloop.counter }}" onclick="changeImage(this, '{{ img }}')">
@@ -693,21 +693,8 @@
 {{ producto_json|json_script:"producto-data" }}
 
 {% if user.is_authenticated %}
-<script>
-    window.ANGELOW = {
-        isAuthenticated: true,
-        userId: {{ user.id }},
-        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
-    };
-</script>
+
 {% else %}
-<script>
-    window.ANGELOW = {
-        isAuthenticated: false,
-        userId: null,
-        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
-    };
-</script>
 {% endif %}
 {% endblock %}
 

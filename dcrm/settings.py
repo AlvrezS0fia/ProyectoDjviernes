@@ -149,17 +149,11 @@ if DATABASE_ENGINE == 'django.db.backends.mysql':
     except ImportError:
         pass
 
+
 DATABASES = {
     'default': {
-        'ENGINE': DATABASE_ENGINE,
-        'NAME': DATABASE_NAME if DATABASE_ENGINE != 'django.db.backends.sqlite3' else BASE_DIR / DATABASE_NAME,
-        'USER': get_env_var('DB_USER', ''),
-        'PASSWORD': get_env_var('DB_PASSWORD', ''),
-        'HOST': get_env_var('DB_HOST', 'localhost'),
-        'PORT': get_env_var('DB_PORT', '3306'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        } if DATABASE_ENGINE == 'django.db.backends.mysql' else {},
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

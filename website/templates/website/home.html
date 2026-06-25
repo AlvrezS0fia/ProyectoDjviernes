@@ -722,9 +722,7 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 992px) {
-        .page-wrapper {
-            padding: 0 16px;
-        }
+        .page-wrapper { padding: 0 16px; }
         .hero-carousel { height: 390px; min-height: 390px; }
         .slide-base { padding: 2.5rem 1rem 4.5rem; }
         .promo-content { max-width: 100%; }
@@ -894,27 +892,32 @@
             </div>
         {% endif %}
     </div>
-    {% endblock %}
-    
-    <!-- Configuración global ANGELOW -->
-    {% if user.is_authenticated %}
-    <script>
-        window.ANGELOW = {
-            isAuthenticated: true,
-            userId: {{ user.id }},
-            apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
-        };
-    </script>
-    {% else %}
-    <script>
-        window.ANGELOW = {
-            isAuthenticated: false,
-            userId: null,
-            apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
-        };
-    </script>
-    {% endif %}
-    
-    {% block extra_js %}
-    <script src="{% static 'js/home.js' %}"></script>
-    {% endblock %}
+</div>
+
+<!-- ===== DATOS JSON DE PRODUCTOS ===== -->
+{{ productos_json|json_script:"productos-data" }}
+
+<!-- ===== CONFIGURACIÓN GLOBAL ANGELOW ===== -->
+{% if user.is_authenticated %}
+<script>
+    window.ANGELOW = {
+        isAuthenticated: true,
+        userId: {{ user.id }},
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}"
+    };
+</script>
+{% else %}
+<script>
+    window.ANGELOW = {
+        isAuthenticated: false,
+        userId: null,
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}"
+    };
+</script>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/home.js' %}"></script>
+{% endblock %}
