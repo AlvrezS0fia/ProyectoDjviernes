@@ -98,18 +98,32 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = [
-            'nombre', 
-            'email', 
-            'confirmar_email',  # Campo adicional
-            'telefono', 
+            'identificacion',
+            'nombre',
+            'apellido',
+            'email',
+            'confirmar_email',
+            'telefono',
             'direccion',
-            'tipo_cliente',     # Campo adicional
+            'ciudad',
+            'tipo_cliente',
+            'activo'
         ]
         widgets = {
+            'identificacion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 1234567890',
+                'required': True,
+                'autofocus': True
+            }),
             'nombre': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Nombre completo del cliente',
-                'autofocus': True
+                'required': True
+            }),
+            'apellido': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Apellido del cliente'
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
@@ -124,30 +138,32 @@ class ClienteForm(forms.ModelForm):
                 'rows': 3,
                 'placeholder': 'Calle 123 # 45-67, Ciudad'
             }),
+            'ciudad': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ciudad'
+            }),
+            'tipo_cliente': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'activo': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
         }
         labels = {
+            'identificacion': 'Identificación',
             'nombre': 'Nombre Completo',
+            'apellido': 'Apellido',
             'email': 'Correo Electrónico',
             'telefono': 'Teléfono',
             'direccion': 'Dirección',
+            'ciudad': 'Ciudad',
             'tipo_cliente': 'Tipo de Cliente',
+            'activo': 'Cliente Activo',
         }
         help_texts = {
-            'nombre': 'Solo letras, números, espacios y guiones.',
-            'email': 'Ingresa un correo electrónico válido.',
-            'telefono': 'Formato: +57 300 123 4567 (opcional).',
-            'direccion': 'Dirección completa del cliente.',
-        }
-        error_messages = {
-            'nombre': {
-                'required': 'El nombre del cliente es obligatorio.',
-                'max_length': 'El nombre no puede tener más de 100 caracteres.',
-            },
-            'email': {
-                'required': 'El correo electrónico es obligatorio.',
-                'unique': 'Ya existe un cliente con este correo electrónico.',
-                'invalid': 'Ingresa un correo electrónico válido.',
-            },
+            'identificacion': 'Número de identificación único del cliente.',
+            'email': 'Opcional. Si se proporciona, debe ser único.',
+            'activo': 'Desmarca esta opción para desactivar el cliente.',
         }
 
     # ============================================================

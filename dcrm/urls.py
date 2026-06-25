@@ -13,20 +13,17 @@ admin.site.index_title = 'Bienvenido'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
     # ===== PÁGINA PRINCIPAL (HOME) =====
     # website.urls contiene la ruta '' que apunta a home
     path('', include('website.urls')),                    # Home - Página principal
-    
+
     # ===== TIENDA =====
     path('tienda/', include('tienda.urls')),              # Tienda - Catálogo de productos
-    
-    # ===== AUTENTICACIÓN =====
-    path('accounts/', include('website.urls')),           # Autenticación (login, register, logout)
-    
+
     # ===== CRM =====
     path('clientes/', include('clientes.urls')),          # CRM - Clientes
-    
+
     # ===== GOOGLE OAUTH =====
     path('auth/', include('social_django.urls', namespace='social')),  # Google OAuth
 ]

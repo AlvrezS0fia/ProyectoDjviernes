@@ -4,7 +4,12 @@
 var allProducts = [];
 
 function loadFavorites() {
+    console.log('=== loadFavorites() ejecutado ===');
+    console.log('allProducts:', allProducts);
+    
     var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
+    console.log('Favoritos desde localStorage:', favorites);
+    
     var grid = document.getElementById('favoritesGrid');
     var empty = document.getElementById('emptyFavorites');
     var countSpan = document.getElementById('favCount');
@@ -13,27 +18,47 @@ function loadFavorites() {
         countSpan.textContent = favorites.length;
     }
 
+    // Si no hay favoritos, mostrar estado vacío
     if (favorites.length === 0) {
-        if (grid) grid.innerHTML = '';
-        if (grid) grid.classList.add('d-none');
-        if (empty) empty.classList.remove('d-none');
+        console.log('No hay favoritos');
+        if (grid) {
+            grid.innerHTML = '';
+            grid.classList.add('d-none');
+        }
+        if (empty) {
+            empty.classList.remove('d-none');
+        }
         return;
     }
 
-    if (grid) grid.classList.remove('d-none');
-    if (empty) empty.classList.add('d-none');
+    // Ocultar estado vacío
+    if (grid) {
+        grid.classList.remove('d-none');
+    }
+    if (empty) {
+        empty.classList.add('d-none');
+    }
 
+    // Filtrar productos que están en favoritos
     var favProducts = allProducts.filter(function(p) {
         return favorites.includes(p.id);
     });
+    
+    console.log('Productos favoritos encontrados:', favProducts.length);
 
     if (favProducts.length === 0) {
-        if (grid) grid.innerHTML = '';
-        if (grid) grid.classList.add('d-none');
-        if (empty) empty.classList.remove('d-none');
+        console.log('No se encontraron productos favoritos en la lista de productos');
+        if (grid) {
+            grid.innerHTML = '';
+            grid.classList.add('d-none');
+        }
+        if (empty) {
+            empty.classList.remove('d-none');
+        }
         return;
     }
 
+    // Generar HTML
     var html = '';
     for (var i = 0; i < favProducts.length; i++) {
         var product = favProducts[i];
@@ -71,7 +96,10 @@ function loadFavorites() {
         html += '</div>';
         html += '</div>';
     }
+    
+    console.log('HTML generado, insertando en grid...');
     grid.innerHTML = html;
+    console.log('Favoritos cargados correctamente');
 }
 
 function removeFavorite(productId, productName, event) {
@@ -152,15 +180,22 @@ function updateHeaderBadges() {
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== DOM cargado ===');
+    
     var productosScript = document.getElementById('productos-data');
     if (productosScript) {
+        console.log('Script productos-data encontrado');
         try {
             allProducts = JSON.parse(productosScript.textContent);
+            console.log('Productos cargados correctamente:', allProducts.length);
         } catch(e) {
             console.error('Error parsing productos data:', e);
             allProducts = [];
         }
+    } else {
+        console.error('Script con id "productos-data" NO encontrado');
     }
+    
     loadFavorites();
     updateHeaderBadges();
 });
@@ -168,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Escuchar cambios desde otras pestañas
 window.addEventListener('storage', function(e) {
     if (e.key === 'angelow_favorites') {
+        console.log('Storage event detected: favoritos cambiados');
         loadFavorites();
         updateHeaderBadges();
     }

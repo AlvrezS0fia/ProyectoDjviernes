@@ -668,6 +668,25 @@
 
 <!-- ===== DATOS JSON DE PRODUCTOS ===== -->
 {{ productos_json|json_script:"productos-data" }}
+
+<!-- ===== DEBUG: Verificar que los datos se están pasando ===== -->
+<script>
+    console.log('=== DEBUG FAVORITOS ===');
+    var scriptElement = document.getElementById('productos-data');
+    if (scriptElement) {
+        console.log('Script encontrado');
+        try {
+            var data = JSON.parse(scriptElement.textContent);
+            console.log('Productos cargados:', data.length);
+            console.log('Primer producto:', data[0]);
+        } catch(e) {
+            console.error('Error al parsear JSON:', e);
+        }
+    } else {
+        console.error('Script con id "productos-data" NO encontrado');
+    }
+    console.log('Favoritos en localStorage:', localStorage.getItem('angelow_favorites'));
+</script>
 {% endblock %}
 
 {% block extra_js %}

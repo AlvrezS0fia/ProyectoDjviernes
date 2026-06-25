@@ -17,18 +17,19 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from django.db import models  # <--- IMPORTAR models
+from django.db import models
 import logging
 import json
 
 # Importaciones del proyecto
-from .forms import RegisterForm, LoginForm, RecordForm, PerfilUsuarioForm
+from .forms import RegisterForm, LoginForm, RecordForm, PerfilUsuarioForm, ClienteForm
 from .models import Usuario, Record, ActividadUsuario
 from clientes.models import Cliente
 from tienda.models import Producto, Favorito
 
 # Configurar logger para auditoría (Capa 4)
 logger = logging.getLogger('website.security')
+
 
 # ============================================================
 # 1. DECORADORES PERSONALIZADOS (DRY)
@@ -50,6 +51,7 @@ def role_required(allowed_roles=[]):
                 return redirect('website:login')
         return wrapper_func
     return decorator
+
 
 # ============================================================
 # 2. VISTA DE INICIO (HOME) - CON TODOS LOS PRODUCTOS
@@ -112,6 +114,7 @@ def home(request):
         'favoritos_ids': favoritos_ids,
     }
     return render(request, 'website/home.html', context)
+
 
 # ============================================================
 # 3. VISTA DE LOGIN (Capa 1 - Autenticación)
@@ -221,6 +224,7 @@ def login_view(request):
     
     return render(request, 'website/login.html', {'form': form})
 
+
 # ============================================================
 # 4. VISTA DE REGISTRO (Capa 1 - Autenticación)
 # ============================================================
@@ -283,6 +287,7 @@ def register_view(request):
     
     return render(request, 'website/register.html', {'form': form})
 
+
 # ============================================================
 # 5. VISTA DE LOGOUT (Capa 4 - Auditoría)
 # ============================================================
@@ -309,6 +314,7 @@ def logout_view(request):
         messages.info(request, 'Has cerrado sesión exitosamente.')
     
     return redirect('website:home')
+
 
 # ============================================================
 # 6. DASHBOARD ADMIN (Capa 2 - Autorización)
@@ -357,6 +363,7 @@ def dashboard_admin(request):
     
     return render(request, 'website/dashboard_admin.html', context)
 
+
 # ============================================================
 # 7. DASHBOARD USUARIO (Capa 2 - Autorización)
 # ============================================================
@@ -392,6 +399,7 @@ def dashboard_user(request):
     
     return render(request, 'website/dashboard_user.html', context)
 
+
 # ============================================================
 # 8. DASHBOARD GENERAL (Redirección)
 # ============================================================
@@ -406,8 +414,9 @@ def dashboard_view(request):
     else:
         return redirect('website:dashboard_user')
 
+
 # ============================================================
-# 9. VISTA DE FAVORITOS (Para usuarios)
+# 9. VISTA DE FAVORITOS (Para usuarios) - MODIFICADA CON JSON
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -415,14 +424,30 @@ def favorites_view(request):
     """
     Vista de productos favoritos del usuario
     """
-    # Todos los productos activos para el JavaScript
+    # Todos los productos activos
     productos = Producto.objects.filter(esta_activo=True)
+    
+    # Convertir productos a JSON para JavaScript
+    productos_data = []
+    for producto in productos:
+        productos_data.append({
+            'id': producto.id,
+            'nombre': producto.nombre,
+            'slug': producto.slug,
+            'precio': float(producto.precio),
+            'precio_oferta': float(producto.precio_oferta) if producto.precio_oferta else None,
+            'imagen': producto.get_imagen_principal_url(),
+            'categoria': producto.categoria.nombre if producto.categoria else '',
+            'stock': producto.stock
+        })
     
     context = {
         'productos': productos,
+        'productos_json': json.dumps(productos_data, ensure_ascii=False)
     }
     
     return render(request, 'website/favorites.html', context)
+
 
 # ============================================================
 # 10. API: OBTENER FAVORITOS
@@ -445,6 +470,7 @@ def api_favoritos(request):
         'total': favoritos.count()
     }
     return JsonResponse(data)
+
 
 # ============================================================
 # 11. API: TOGGLE FAVORITO
@@ -507,6 +533,7 @@ def api_toggle_favorito(request):
             'message': str(e)
         }, status=500)
 
+
 # ============================================================
 # 12. VISTA DE PERFIL DE USUARIO
 # ============================================================
@@ -533,6 +560,7 @@ def perfil_view(request):
     }
     
     return render(request, 'website/perfil.html', context)
+
 
 # ============================================================
 # 13. VISTA DE ACTIVIDADES (Solo admin)
@@ -566,6 +594,7 @@ def actividades_view(request):
     
     return render(request, 'website/actividades.html', context)
 
+
 # ============================================================
 # 14. API PARA VERIFICAR ESTADO DE SESIÓN
 # ============================================================
@@ -582,3 +611,195 @@ def session_status(request):
         'rol': request.user.rol,
         'session_time': request.session.get('last_activity'),
     })
+
+
+# ============================================================
+# 15. GESTIÓN DE CLIENTES (CRUD - Solo admin)
+# ============================================================
+
+@login_required(login_url='website:login')
+@role_required(allowed_roles=['admin'])
+def gestion_clientes(request):
+    """
+    Vista para que el administrador gestione todos los clientes
+    Permite ver, buscar y filtrar clientes
+    """
+    clientes = Cliente.objects.all().order_by('-fecha_registro')
+    
+    # Búsqueda
+    q = request.GET.get('q', '')
+    if q:
+        clientes = clientes.filter(
+            models.Q(nombre__icontains=q) |
+            models.Q(apellido__icontains=q) |
+            models.Q(email__icontains=q) |
+            models.Q(telefono__icontains=q) |
+            models.Q(identificacion__icontains=q)
+        )
+    
+    # Filtro por estado
+    estado = request.GET.get('estado')
+    if estado and estado != 'todos':
+        if estado == 'activo':
+            clientes = clientes.filter(activo=True)
+        elif estado == 'inactivo':
+            clientes = clientes.filter(activo=False)
+    
+    context = {
+        'clientes': clientes,
+        'total_clientes': clientes.count(),
+        'busqueda': q,
+        'filtro_estado': estado or 'todos',
+    }
+    
+    return render(request, 'website/gestion_clientes.html', context)
+
+
+@login_required(login_url='website:login')
+@role_required(allowed_roles=['admin'])
+def cliente_crear(request):
+    """
+    Vista para crear un nuevo cliente
+    """
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            cliente = form.save()
+            messages.success(request, f'<i class="fas fa-check-circle me-2"></i>Cliente "{cliente.nombre_completo}" creado exitosamente.')
+            
+            # Registrar actividad
+            ActividadUsuario.objects.create(
+                usuario=request.user,
+                tipo='creacion',
+                descripcion=f'Creó el cliente: {cliente.nombre_completo}',
+                ip=request.META.get('REMOTE_ADDR', 'unknown'),
+                user_agent=request.META.get('HTTP_USER_AGENT', '')
+            )
+            
+            return redirect('website:gestion_clientes')
+    else:
+        form = ClienteForm()
+    
+    context = {
+        'form': form,
+        'titulo': 'Crear Nuevo Cliente',
+        'accion': 'Crear Cliente'
+    }
+    
+    return render(request, 'clientes/cliente_form.html', context)
+
+
+@login_required(login_url='website:login')
+@role_required(allowed_roles=['admin'])
+def cliente_editar(request, cliente_id):
+    """
+    Vista para editar un cliente existente
+    """
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            cliente_actualizado = form.save()
+            messages.success(request, f'<i class="fas fa-check-circle me-2"></i>Cliente "{cliente_actualizado.nombre_completo}" actualizado exitosamente.')
+            
+            # Registrar actividad
+            ActividadUsuario.objects.create(
+                usuario=request.user,
+                tipo='edicion',
+                descripcion=f'Editó el cliente: {cliente_actualizado.nombre_completo}',
+                ip=request.META.get('REMOTE_ADDR', 'unknown'),
+                user_agent=request.META.get('HTTP_USER_AGENT', '')
+            )
+            
+            return redirect('website:gestion_clientes')
+    else:
+        form = ClienteForm(instance=cliente)
+    
+    context = {
+        'form': form,
+        'cliente': cliente,
+        'titulo': f'Editar Cliente: {cliente.nombre_completo}',
+        'accion': 'Guardar Cambios'
+    }
+    
+    return render(request, 'clientes/cliente_form.html', context)
+
+
+@login_required(login_url='website:login')
+@role_required(allowed_roles=['admin'])
+def cliente_eliminar(request, cliente_id):
+    """
+    Vista para eliminar un cliente (soft delete)
+    """
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    nombre_cliente = cliente.nombre_completo
+    
+    if request.method == 'POST':
+        # Soft delete - desactivar en lugar de eliminar
+        cliente.activo = False
+        cliente.save()
+        
+        messages.success(request, f'<i class="fas fa-trash-alt me-2"></i>Cliente "{nombre_cliente}" desactivado exitosamente.')
+        
+        # Registrar actividad
+        ActividadUsuario.objects.create(
+            usuario=request.user,
+            tipo='eliminacion',
+            descripcion=f'Desactivó el cliente: {nombre_cliente}',
+            ip=request.META.get('REMOTE_ADDR', 'unknown'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')
+        )
+        
+        return redirect('website:gestion_clientes')
+    
+    context = {
+        'cliente': cliente,
+        'nombre_cliente': nombre_cliente,
+    }
+    
+    return render(request, 'clientes/cliente_confirm_delete.html', context)
+
+
+@login_required(login_url='website:login')
+@role_required(allowed_roles=['admin'])
+def cliente_activar(request, cliente_id):
+    """
+    Vista para reactivar un cliente desactivado
+    """
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    nombre_cliente = cliente.nombre_completo
+    
+    if request.method == 'POST':
+        cliente.activo = True
+        cliente.save()
+        
+        messages.success(request, f'<i class="fas fa-check-circle me-2"></i>Cliente "{nombre_cliente}" reactivado exitosamente.')
+        
+        # Registrar actividad
+        ActividadUsuario.objects.create(
+            usuario=request.user,
+            tipo='edicion',
+            descripcion=f'Reactivó el cliente: {nombre_cliente}',
+            ip=request.META.get('REMOTE_ADDR', 'unknown'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')
+        )
+        
+        return redirect('website:gestion_clientes')
+    
+    return redirect('website:gestion_clientes')
+
+
+@login_required(login_url='website:login')
+@role_required(allowed_roles=['admin'])
+def cliente_detalle(request, cliente_id):
+    """
+    Vista para ver el detalle de un cliente
+    """
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    
+    context = {
+        'cliente': cliente,
+    }
+    
+    return render(request, 'clientes/cliente_detail.html', context)

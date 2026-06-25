@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from .utils import no_dangerous_chars, valid_name, validate_password_complexity
 from .models import Usuario, Record
+from clientes.models import Cliente
 import re
 import logging
 
@@ -21,6 +22,7 @@ logger = logging.getLogger('website.security')
 
 # Obtener el modelo de usuario personalizado
 User = get_user_model()
+
 
 # ============================================================
 # 1. FORMULARIO DE REGISTRO DE USUARIO (DRY - UserCreationForm)
@@ -127,7 +129,7 @@ class RegisterForm(UserCreationForm):
     )
 
     class Meta:
-        model = User  # Usa el modelo personalizado
+        model = User
         fields = [
             'first_name', 
             'last_name', 
@@ -379,7 +381,7 @@ class RecordForm(forms.ModelForm):
         })
     )
     
-    phone = forms.CharField(  # Cambiado de 'phone_number' a 'phone'
+    phone = forms.CharField(
         label="Teléfono",
         validators=[no_dangerous_chars],
         widget=forms.TextInput(attrs={
@@ -431,7 +433,7 @@ class RecordForm(forms.ModelForm):
             'first_name', 
             'last_name', 
             'email', 
-            'phone',      # <--- CAMBIADO: era 'phone_number'
+            'phone',
             'address', 
             'city', 
             'state', 
@@ -593,3 +595,217 @@ class PerfilUsuarioForm(forms.ModelForm):
                 perfil.save()
         
         return user
+
+
+# ============================================================
+# 5. FORMULARIO PARA GESTIÓN DE CLIENTES (CRUD ADMIN)
+# ============================================================
+
+class ClienteForm(forms.ModelForm):
+    """
+    Formulario para gestionar clientes desde el panel de administración
+    
+    Principios aplicados:
+    - DRY: Hereda de ModelForm
+    - SOLID: Responsabilidad única para gestión de clientes
+    - Seguridad: Validaciones con expresiones regulares (Capa 3)
+    """
+    
+    class Meta:
+        model = Cliente
+        fields = [
+            'identificacion', 'nombre', 'apellido', 'email', 
+            'telefono', 'direccion', 'ciudad', 'activo'
+        ]
+        widgets = {
+            'identificacion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 1234567890',
+                'required': True
+            }),
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nombre del cliente',
+                'required': True
+            }),
+            'apellido': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Apellido del cliente',
+                'required': True
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'correo@ejemplo.com'
+            }),
+            'telefono': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 3001234567'
+            }),
+            'direccion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Dirección del cliente'
+            }),
+            'ciudad': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ciudad'
+            }),
+            'activo': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+        }
+        labels = {
+            'identificacion': 'Identificación',
+            'nombre': 'Nombre',
+            'apellido': 'Apellido',
+            'email': 'Correo Electrónico',
+            'telefono': 'Teléfono',
+            'direccion': 'Dirección',
+            'ciudad': 'Ciudad',
+            'activo': 'Cliente Activo',
+        }
+        help_texts = {
+            'identificacion': 'Número de identificación único del cliente.',
+            'email': 'Opcional. Si se proporciona, debe ser único.',
+            'activo': 'Desmarca esta opción para desactivar el cliente.',
+        }
+
+    # ============================================================
+    # VALIDACIONES PERSONALIZADAS
+    # ============================================================
+
+    def clean_identificacion(self):
+        """
+        Valida que la identificación sea única y tenga formato válido
+        """
+        identificacion = self.cleaned_data.get('identificacion')
+        if identificacion:
+            identificacion = identificacion.strip().upper()
+            
+            # Validar formato (solo letras y números, sin caracteres especiales)
+            if not re.match(r'^[A-Z0-9]{5,20}$', identificacion):
+                raise ValidationError(
+                    'La identificación debe contener solo letras y números (5-20 caracteres).'
+                )
+            
+            # Verificar que no exista otro cliente con la misma identificación
+            instance = getattr(self, 'instance', None)
+            if instance and instance.pk:
+                if Cliente.objects.exclude(pk=instance.pk).filter(identificacion=identificacion).exists():
+                    raise ValidationError('Ya existe un cliente con esta identificación.')
+            else:
+                if Cliente.objects.filter(identificacion=identificacion).exists():
+                    raise ValidationError('Ya existe un cliente con esta identificación.')
+            
+            return identificacion
+        return identificacion
+
+    def clean_email(self):
+        """
+        Valida que el email sea único si se proporciona
+        """
+        email = self.cleaned_data.get('email')
+        if email:
+            email = email.strip().lower()
+            
+            # Validar formato de email
+            if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+                raise ValidationError('Ingresa un correo electrónico válido.')
+            
+            # Verificar que no exista otro cliente con el mismo email
+            instance = getattr(self, 'instance', None)
+            if instance and instance.pk:
+                if Cliente.objects.exclude(pk=instance.pk).filter(email=email).exists():
+                    raise ValidationError('Ya existe un cliente con este correo electrónico.')
+            else:
+                if Cliente.objects.filter(email=email).exists():
+                    raise ValidationError('Ya existe un cliente con este correo electrónico.')
+            
+            return email
+        return email
+
+    def clean_nombre(self):
+        """
+        Valida y limpia el nombre
+        """
+        nombre = self.cleaned_data.get('nombre')
+        if nombre:
+            nombre = nombre.strip()
+            
+            # Validar que solo contenga letras y espacios
+            if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$', nombre):
+                raise ValidationError(
+                    'El nombre solo puede contener letras y espacios (2-50 caracteres).'
+                )
+            
+            return nombre.title()  # Capitalizar
+        return nombre
+
+    def clean_apellido(self):
+        """
+        Valida y limpia el apellido
+        """
+        apellido = self.cleaned_data.get('apellido')
+        if apellido:
+            apellido = apellido.strip()
+            
+            # Validar que solo contenga letras y espacios
+            if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$', apellido):
+                raise ValidationError(
+                    'El apellido solo puede contener letras y espacios (2-50 caracteres).'
+                )
+            
+            return apellido.title()  # Capitalizar
+        return apellido
+
+    def clean_telefono(self):
+        """
+        Valida el número de teléfono
+        """
+        telefono = self.cleaned_data.get('telefono')
+        if telefono:
+            telefono = telefono.strip()
+            
+            # Permitir números, espacios, guiones y el signo +
+            if not re.match(r'^\+?[\d\s-]{7,20}$', telefono):
+                raise ValidationError(
+                    'Ingresa un número de teléfono válido (mínimo 7 dígitos).'
+                )
+            
+            # Eliminar espacios y guiones para almacenar
+            telefono_limpio = re.sub(r'[\s-]', '', telefono)
+            return telefono_limpio
+        return telefono
+
+    def clean_ciudad(self):
+        """
+        Valida y limpia la ciudad
+        """
+        ciudad = self.cleaned_data.get('ciudad')
+        if ciudad:
+            ciudad = ciudad.strip()
+            
+            # Validar que solo contenga letras y espacios
+            if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$', ciudad):
+                raise ValidationError(
+                    'La ciudad solo puede contener letras y espacios (2-50 caracteres).'
+                )
+            
+            return ciudad.title()
+        return ciudad
+
+    def clean_direccion(self):
+        """
+        Limpia la dirección
+        """
+        direccion = self.cleaned_data.get('direccion')
+        if direccion:
+            direccion = direccion.strip()
+            
+            # Validar que no tenga caracteres peligrosos
+            if not re.match(r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s#.,-]{3,100}$', direccion):
+                raise ValidationError(
+                    'La dirección contiene caracteres no válidos.'
+                )
+            
+            return direccion
+        return direccion

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalle de Cliente | Angelow CRM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card-custom mx-auto" style="max-width: 700px;">
+        <div class="card-header">
+            <h2><i class="fas fa-user"></i> {{ cliente.nombre_completo }}</h2>
+            <p>Detalle del cliente</p>
+        </div>
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tr><th>Identificación</th><td>{{ cliente.identificacion }}</td></tr>
+                <tr><th>Nombre</th><td>{{ cliente.nombre }}</td></tr>
+                <tr><th>Apellido</th><td>{{ cliente.apellido }}</td></tr>
+                <tr><th>Email</th><td>{{ cliente.email|default:"—" }}</td></tr>
+                <tr><th>Teléfono</th><td>{{ cliente.telefono|default:"—" }}</td></tr>
+                <tr><th>Dirección</th><td>{{ cliente.direccion|default:"—" }}</td></tr>
+                <tr><th>Ciudad</th><td>{{ cliente.ciudad|default:"—" }}</td></tr>
+                <tr><th>Tipo</th><td>{{ cliente.get_tipo_cliente_display }}</td></tr>
+                <tr><th>Estado</th><td>{% if cliente.activo %}Activo{% else %}Inactivo{% endif %}</td></tr>
+                <tr><th>Registro</th><td>{{ cliente.fecha_registro|date:"d/m/Y H:i" }}</td></tr>
+            </table>
+            <a href="{% url 'clientes:cliente_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

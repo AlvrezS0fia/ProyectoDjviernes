@@ -46,7 +46,7 @@ SECRET_KEY = get_env_var('SECRET_KEY', 'django-insecure-%d5%@ag*=+v0!%i58yzz#+q4
 DEBUG = True  # Cambiar a False en producción
 
 # Hosts permitidos (seguridad en producción)
-ALLOWED_HOSTS = get_env_var('ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0').split(',')
+ALLOWED_HOSTS = get_env_var('ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0,testserver').split(',')
 
 # ============================================================
 # 4. APLICACIONES INSTALADAS (Modularidad - SOLID)

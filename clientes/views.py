@@ -74,10 +74,10 @@ def cliente_list(request):
         # Filtro por estado
         estado = filter_form.cleaned_data.get('estado')
         if estado == 'activo':
-            clientes = clientes.filter(is_active=True)
+            clientes = clientes.filter(activo=True)
             filtro_aplicado = True
         elif estado == 'inactivo':
-            clientes = clientes.filter(is_active=False)
+            clientes = clientes.filter(activo=False)
             filtro_aplicado = True
         
         # Filtro por fecha
@@ -110,7 +110,7 @@ def cliente_list(request):
     # ============================================================
     
     total_clientes = Cliente.objects.count()
-    clientes_activos = Cliente.objects.filter(is_active=True).count()
+    clientes_activos = Cliente.objects.filter(activo=True).count()
     clientes_vip = Cliente.objects.filter(tipo_cliente='vip').count()
     
     # Registrar acceso (Capa 4 - Auditoría)
@@ -154,12 +154,9 @@ def cliente_create(request):
         
         if form.is_valid():
             try:
-                # Guardar cliente con información del usuario
-                cliente = form.save(
-                    commit=False,
-                    usuario=request.user,
-                    actualizado_por=request.user
-                )
+                cliente = form.save(commit=False)
+                cliente.usuario = request.user
+                cliente.actualizado_por = request.user
                 cliente.save()
                 
                 # Registrar actividad (Capa 4 - Auditoría)
@@ -393,7 +390,7 @@ def cliente_export(request):
     from django.http import HttpResponse
     
     # Obtener clientes
-    clientes = Cliente.objects.filter(is_active=True)
+    clientes = Cliente.objects.filter(activo=True)
     
     # Crear respuesta CSV
     response = HttpResponse(content_type='text/csv')
@@ -417,7 +414,7 @@ def cliente_export(request):
             cliente.direccion or '',
             cliente.get_tipo_cliente_display(),
             cliente.fecha_registro.strftime('%Y-%m-%d %H:%M'),
-            'Activo' if cliente.is_active else 'Inactivo'
+            'Activo' if cliente.activo else 'Inactivo'
         ])
     
     # Registrar actividad (Capa 4 - Auditoría)
@@ -437,7 +434,7 @@ def cliente_api(request):
     API para obtener clientes en formato JSON
     """
     
-    clientes = Cliente.objects.filter(is_active=True)
+    clientes = Cliente.objects.filter(activo=True)
     
     # Filtro por búsqueda
     q = request.GET.get('q')
