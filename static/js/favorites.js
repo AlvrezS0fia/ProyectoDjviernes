@@ -1,6 +1,6 @@
 // static/js/favorites.js
 
-// Obtener los datos de productos desde el script JSON
+// Variable global para almacenar productos
 var allProducts = [];
 
 function loadFavorites() {
@@ -14,24 +14,23 @@ function loadFavorites() {
     }
 
     if (favorites.length === 0) {
-        grid.innerHTML = '';
-        grid.classList.add('d-none');
-        empty.classList.remove('d-none');
+        if (grid) grid.innerHTML = '';
+        if (grid) grid.classList.add('d-none');
+        if (empty) empty.classList.remove('d-none');
         return;
     }
 
-    grid.classList.remove('d-none');
-    empty.classList.add('d-none');
+    if (grid) grid.classList.remove('d-none');
+    if (empty) empty.classList.add('d-none');
 
-    // Usar allProducts desde el script JSON
     var favProducts = allProducts.filter(function(p) {
         return favorites.includes(p.id);
     });
 
     if (favProducts.length === 0) {
-        grid.innerHTML = '';
-        grid.classList.add('d-none');
-        empty.classList.remove('d-none');
+        if (grid) grid.innerHTML = '';
+        if (grid) grid.classList.add('d-none');
+        if (empty) empty.classList.remove('d-none');
         return;
     }
 
@@ -153,10 +152,14 @@ function updateHeaderBadges() {
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtener datos de productos desde el script JSON
     var productosScript = document.getElementById('productos-data');
     if (productosScript) {
-        allProducts = JSON.parse(productosScript.textContent);
+        try {
+            allProducts = JSON.parse(productosScript.textContent);
+        } catch(e) {
+            console.error('Error parsing productos data:', e);
+            allProducts = [];
+        }
     }
     loadFavorites();
     updateHeaderBadges();

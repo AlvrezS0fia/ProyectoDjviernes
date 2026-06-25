@@ -202,3 +202,4 @@ INFO 2026-06-24 18:09:39,317 middleware 21780 28940 Actividad: sofia - GET / - T
 INFO 2026-06-24 18:09:48,373 views 21780 28940 Producto visualizado: Manta Bebé por sofia
 INFO 2026-06-24 18:09:48,797 middleware 21780 28940 Actividad: sofia - GET /tienda/producto/manta-bebe/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-24 18:09:56,004 middleware 21780 1456 Actividad: sofia - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-24 21:55:45,291 views 5716 9700 Producto visualizado: Manta Bebé por visitante anónimo
