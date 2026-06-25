@@ -104,26 +104,51 @@ function loadFavorites() {
 
 function removeFavorite(productId, productName, event) {
     if (event) event.stopPropagation();
-    
+
     var card = event.target.closest('.fav-product-card');
     var btn = event.target.closest('.btn-remove-fav');
-    
+
     if (btn) {
         btn.classList.add('removing');
     }
-    
+
     if (card) {
         card.classList.add('removing');
     }
-    
+
     setTimeout(function() {
         var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
         var index = favorites.indexOf(productId);
-        
+
         if (index !== -1) {
             favorites.splice(index, 1);
             localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
-            
+        }
+
+        var isAuthenticated = window.ANGELOW && window.ANGELOW.isAuthenticated;
+        if (isAuthenticated) {
+            fetch(window.ANGELOW.apiToggleFavorito, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({producto_id: productId}),
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+                    loadFavorites();
+                    updateHeaderBadges();
+                    window.dispatchEvent(new Event('storage'));
+                } else {
+                    showToast('error', 'fa-exclamation-circle', data.message || 'Error');
+                }
+            })
+            .catch(function() {
+                showToast('error', 'fa-exclamation-circle', 'Error al eliminar favorito');
+            });
+        } else {
             showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
             loadFavorites();
             updateHeaderBadges();

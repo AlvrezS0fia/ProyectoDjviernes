@@ -541,24 +541,75 @@ def api_toggle_favorito(request):
 @login_required(login_url='website:login')
 def perfil_view(request):
     """
-    Vista para ver y editar el perfil del usuario
+    Vista para ver y editar el perfil del usuario.
+    Si el usuario es admin, también gestiona clientes desde el perfil.
     """
     user = request.user
-    
+
     if request.method == 'POST':
+        if user.rol == 'admin':
+            if 'crear_cliente' in request.POST:
+                form_cliente = ClienteForm(request.POST)
+                if form_cliente.is_valid():
+                    cliente = form_cliente.save(commit=False)
+                    cliente.usuario = user
+                    cliente.actualizado_por = user
+                    cliente.save()
+                    messages.success(request, f'Cliente "{cliente.nombre}" creado exitosamente.')
+                    return redirect('website:perfil')
+            elif 'editar_cliente_id' in request.POST:
+                cliente_id = request.POST.get('editar_cliente_id')
+                cliente = get_object_or_404(Cliente, id=cliente_id)
+                form_cliente = ClienteForm(request.POST, instance=cliente)
+                if form_cliente.is_valid():
+                    cliente = form_cliente.save(commit=False)
+                    cliente.actualizado_por = user
+                    cliente.save()
+                    messages.success(request, f'Cliente "{cliente.nombre}" actualizado exitosamente.')
+                    return redirect('website:perfil')
+            elif 'activar_cliente_id' in request.POST:
+                cliente_id = request.POST.get('activar_cliente_id')
+                cliente = get_object_or_404(Cliente, id=cliente_id)
+                cliente.activo = True
+                cliente.actualizado_por = user
+                cliente.save()
+                messages.success(request, f'Cliente "{cliente.nombre}" reactivado exitosamente.')
+                return redirect('website:perfil')
+            elif 'desactivar_cliente_id' in request.POST:
+                cliente_id = request.POST.get('desactivar_cliente_id')
+                cliente = get_object_or_404(Cliente, id=cliente_id)
+                cliente.activo = False
+                cliente.actualizado_por = user
+                cliente.save()
+                messages.success(request, f'Cliente "{cliente.nombre}" desactivado exitosamente.')
+                return redirect('website:perfil')
+
         form = PerfilUsuarioForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, '¡Perfil actualizado exitosamente!')
+            messages.success(request, 'Perfil actualizado exitosamente.')
             return redirect('website:perfil')
     else:
         form = PerfilUsuarioForm(instance=user)
-    
+
     context = {
         'form': form,
         'usuario': user,
     }
-    
+
+    if user.rol == 'admin':
+        clientes = Cliente.objects.all().order_by('-fecha_registro')
+        form_cliente = ClienteForm()
+        clientes_con_form = []
+        for cliente in clientes:
+            clientes_con_form.append((cliente, ClienteForm(instance=cliente)))
+
+        context.update({
+            'clientes': clientes,
+            'clientes_con_form': clientes_con_form,
+            'form_cliente': form_cliente,
+        })
+
     return render(request, 'website/perfil.html', context)
 
 

@@ -35,5 +35,220 @@
             </div>
         </div>
     </div>
+
+    {% if usuario.rol == 'admin' %}
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-12">
+            <div class="card-custom">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h2><i class="fas fa-users-cog"></i> Gestión de Clientes</h2>
+                        <p>Administra los clientes desde tu perfil</p>
+                    </div>
+                    <a href="{% url 'website:home' %}" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Volver a Home
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form method="POST" class="row g-3 mb-4 p-3 bg-light rounded border">
+                        {% csrf_token %}
+                        <input type="hidden" name="crear_cliente" value="1">
+                        <h5 class="mb-3">Nuevo Cliente</h5>
+                        <div class="col-md-3">
+                            <label class="form-label">Identificación *</label>
+                            {{ form_cliente.identificacion }}
+                            {% for error in form_cliente.identificacion.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Nombre *</label>
+                            {{ form_cliente.nombre }}
+                            {% for error in form_cliente.nombre.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Apellido</label>
+                            {{ form_cliente.apellido }}
+                            {% for error in form_cliente.apellido.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Email</label>
+                            {{ form_cliente.email }}
+                            {% for error in form_cliente.email.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Teléfono</label>
+                            {{ form_cliente.telefono }}
+                            {% for error in form_cliente.telefono.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Dirección</label>
+                            {{ form_cliente.direccion }}
+                            {% for error in form_cliente.direccion.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Ciudad</label>
+                            {{ form_cliente.ciudad }}
+                            {% for error in form_cliente.ciudad.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Tipo</label>
+                            {{ form_cliente.tipo_cliente }}
+                            {% for error in form_cliente.tipo_cliente.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Identificación</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cliente, form_edicion in clientes_con_form %}
+                                <tr>
+                                    <td>{{ cliente.identificacion }}</td>
+                                    <td>{{ cliente.nombre_completo }}</td>
+                                    <td>{{ cliente.email|default:"—" }}</td>
+                                    <td>{{ cliente.telefono|default:"—" }}</td>
+                                    <td>{{ cliente.get_tipo_cliente_display }}</td>
+                                    <td>
+                                        {% if cliente.activo %}
+                                            <span class="badge bg-success">Activo</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inactivo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editar{{ cliente.id }}" aria-expanded="false">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </button>
+                                        {% if cliente.activo %}
+                                            <form method="POST" class="d-inline" onsubmit="return confirm('¿Desactivar este cliente?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="desactivar_cliente_id" value="{{ cliente.id }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Desactivar">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form method="POST" class="d-inline" onsubmit="return confirm('¿Reactivar este cliente?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="activar_cliente_id" value="{{ cliente.id }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Activar">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr class="collapse" id="editar{{ cliente.id }}">
+                                    <td colspan="7">
+                                        <form method="POST" class="row g-3 p-3 bg-light rounded border">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="editar_cliente_id" value="{{ cliente.id }}">
+                                            <div class="col-md-3">
+                                                <label class="form-label">Identificación</label>
+                                                {{ form_edicion.identificacion }}
+                                                {% for error in form_edicion.identificacion.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Nombre</label>
+                                                {{ form_edicion.nombre }}
+                                                {% for error in form_edicion.nombre.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Apellido</label>
+                                                {{ form_edicion.apellido }}
+                                                {% for error in form_edicion.apellido.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Email</label>
+                                                {{ form_edicion.email }}
+                                                {% for error in form_edicion.email.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Teléfono</label>
+                                                {{ form_edicion.telefono }}
+                                                {% for error in form_edicion.telefono.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Dirección</label>
+                                                {{ form_edicion.direccion }}
+                                                {% for error in form_edicion.direccion.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Ciudad</label>
+                                                {{ form_edicion.ciudad }}
+                                                {% for error in form_edicion.ciudad.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">Tipo</label>
+                                                {{ form_edicion.tipo_cliente }}
+                                                {% for error in form_edicion.tipo_cliente.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-1 d-flex align-items-end">
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-save"></i> Guardar
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">No hay clientes registrados.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -669,6 +669,24 @@
 <!-- ===== DATOS JSON DE PRODUCTOS ===== -->
 {{ productos_json|json_script:"productos-data" }}
 
+{% if user.is_authenticated %}
+<script>
+    window.ANGELOW = {
+        isAuthenticated: true,
+        userId: {{ user.id }},
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+    };
+</script>
+{% else %}
+<script>
+    window.ANGELOW = {
+        isAuthenticated: false,
+        userId: null,
+        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}",
+    };
+</script>
+{% endif %}
+
 <!-- ===== DEBUG: Verificar que los datos se están pasando ===== -->
 <script>
     console.log('=== DEBUG FAVORITOS ===');

@@ -691,6 +691,22 @@
 </div>
 
 {{ producto_json|json_script:"producto-data" }}
+
+{% if user.is_authenticated %}
+<script>
+    window.ANGELOW = {
+        isAuthenticated: true,
+        userId: {{ user.id }},
+    };
+</script>
+{% else %}
+<script>
+    window.ANGELOW = {
+        isAuthenticated: false,
+        userId: null,
+    };
+</script>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}

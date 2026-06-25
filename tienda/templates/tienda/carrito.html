@@ -9,12 +9,13 @@
     --primary: #5E9DE6;
     --primary-light: #7FBBF2;
     --success: #10b981;
-    --error: #ef4444;
+    --danger: #ef4444;
     --warning: #f59e0b;
-    --gray: #64748b;
-    --white: #ffffff;
-    --border-light: #e0e7f5;
-    --bg-soft: #f8fafc;
+    --text-dark: #1E3A8A;
+    --text-secondary: #4B6A9B;
+    --border-light: #E0E7F5;
+    --bg-light: #F8FBFE;
+    --shadow: rgba(94, 157, 230, 0.12);
 }
 
 .cart-header {
@@ -54,54 +55,89 @@
     opacity: 0.7;
 }
 
-.cart-table {
-    background: var(--white);
+.cart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 10px 0 30px;
+}
+
+.cart-card {
+    background: white;
     border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    margin-bottom: 2rem;
+    border: 1px solid var(--border-light);
+    padding: 20px 18px 18px;
+    transition: all 0.35s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
-.cart-table th {
-    background: var(--bg-soft);
+.cart-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(94, 157, 230, 0.15);
+    border-color: var(--primary);
+}
+
+.cart-card .cart-img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 12px;
+    transition: transform 0.4s ease;
+}
+
+.cart-card:hover .cart-img {
+    transform: scale(1.03);
+}
+
+.cart-card .product-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+    line-height: 1.3;
+}
+
+.cart-card .product-category {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.cart-card .product-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.cart-card .product-subtotal {
+    font-size: 16px;
+    font-weight: 700;
     color: var(--primary);
-    padding: 1rem;
-    font-weight: 600;
-    border: none;
+    margin-bottom: 10px;
 }
 
-.cart-table td {
-    padding: 1.2rem 1rem;
-    vertical-align: middle;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.cart-table tr:last-child td {
-    border-bottom: none;
-}
-
-.cart-item-image {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.quantity-wrapper {
+.cart-card .quantity-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: var(--bg-soft);
-    border-radius: 12px;
-    padding: 0.5rem;
+    gap: 8px;
+    background: var(--bg-light);
+    border-radius: 10px;
+    padding: 0.4rem;
     width: fit-content;
+    margin-bottom: 10px;
 }
 
-.quantity-btn {
-    width: 32px;
-    height: 32px;
-    background: var(--white);
+.cart-card .quantity-btn {
+    width: 28px;
+    height: 28px;
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: 8px;
     display: flex;
@@ -109,25 +145,60 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 12px;
 }
 
-.quantity-btn:hover {
+.cart-card .quantity-btn:hover {
     background: var(--primary);
     color: white;
     border-color: var(--primary);
 }
 
-.quantity-input {
-    width: 50px;
+.cart-card .quantity-input {
+    width: 44px;
     text-align: center;
     border: none;
     background: transparent;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
-.total-card {
-    background: var(--white);
+.cart-card .btn-remove {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--border-light);
+    background: white;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    width: 100%;
+}
+
+.cart-card .btn-remove:hover {
+    border-color: var(--danger);
+    background: #FEF2F2;
+    color: var(--danger);
+}
+
+.cart-card .btn-remove:active {
+    transform: scale(0.95);
+}
+
+.cart-card .card-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.cart-summary-card {
+    background: white;
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -135,18 +206,18 @@
     top: 20px;
 }
 
-.total-row {
+.cart-summary-card .total-row {
     display: flex;
     justify-content: space-between;
     padding: 0.75rem 0;
     border-bottom: 1px dashed var(--border-light);
 }
 
-.total-row:last-of-type {
+.cart-summary-card .total-row:last-of-type {
     border-bottom: none;
 }
 
-.total-final {
+.cart-summary-card .total-final {
     font-size: 1.8rem;
     font-weight: 800;
     color: var(--primary);
@@ -172,7 +243,7 @@
 .empty-cart {
     text-align: center;
     padding: 4rem 2rem;
-    background: var(--white);
+    background: white;
     border-radius: 24px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
@@ -183,15 +254,8 @@
 }
 
 @media (max-width: 768px) {
-    .cart-item-image {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .cart-table th,
-    .cart-table td {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.9rem;
+    .cart-card .cart-img {
+        height: 140px;
     }
 }
 </style>
@@ -218,104 +282,62 @@
             </div>
         {% endfor %}
     {% endif %}
-    
+
     {% if items %}
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="table-responsive cart-table">
-                <table class="table mb-0">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th class="text-center">Precio</th>
-                            <th class="text-center">Cantidad</th>
-                            <th class="text-end">Subtotal</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items %}
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <img src="{{ item.producto.get_imagen_principal_url }}" 
-                                         class="cart-item-image" 
-                                         alt="{{ item.producto.nombre }}">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">{{ item.producto.nombre }}</h6>
-                                        <small class="text-muted">Talla: {{ item.talla }}</small>
-                                        <div class="mt-1">
-                                            <span class="badge bg-light text-dark">
-                                                <i class="fas fa-box me-1"></i>Stock: {{ item.producto.stock }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text-center align-middle">
-                                <span class="fw-semibold">COP ${{ item.producto.precio|floatformat:0 }}</span>
-                            </td>
-                            <td class="text-center align-middle">
-                                <form method="post" action="{% url 'tienda:actualizar_carrito' item.id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <div class="quantity-wrapper">
-                                        <button type="button" class="quantity-btn" 
-                                                onclick="changeQty({{ item.id }}, -1)">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" name="cantidad" id="qty-{{ item.id }}" 
-                                               value="{{ item.cantidad }}" min="1" max="{{ item.producto.stock }}" 
-                                               class="quantity-input" onchange="this.form.submit()">
-                                        <button type="button" class="quantity-btn" 
-                                                onclick="changeQty({{ item.id }}, 1)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </td>
-                            <td class="text-end align-middle">
-                                <strong class="fs-5">COP ${{ item.subtotal|floatformat:0 }}</strong>
-                            </td>
-                            <td class="text-center align-middle">
-                                <a href="{% url 'tienda:eliminar_del_carrito' item.id %}" 
-                                   class="btn btn-sm btn-outline-danger rounded-circle"
-                                   title="Eliminar del carrito">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="cart-grid">
+                {% for item in items %}
+                <div class="cart-card">
+                    <a href="{% url 'tienda:detalle_producto' item.producto.slug %}" class="card-overlay"></a>
+                    <img src="{{ item.producto.get_imagen_principal_url }}" class="cart-img" alt="{{ item.producto.nombre }}" loading="lazy" onerror="this.src='/static/img/productos/default.jpg'">
+                    <div class="product-name">{{ item.producto.nombre }}</div>
+                    <div class="product-category">{{ item.producto.categoria.nombre }}</div>
+                    <div class="product-price">COP ${{ item.producto.precio|floatformat:0 }}</div>
+                    <div class="product-subtotal">Subtotal: COP ${{ item.subtotal|floatformat:0 }}</div>
+                    <form method="post" action="{% url 'tienda:actualizar_carrito' item.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <div class="quantity-wrapper">
+                            <button type="button" class="quantity-btn" onclick="changeQty({{ item.id }}, -1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" name="cantidad" id="qty-{{ item.id }}" value="{{ item.cantidad }}" min="1" max="{{ item.producto.stock }}" class="quantity-input" onchange="this.form.submit()">
+                            <button type="button" class="quantity-btn" onclick="changeQty({{ item.id }}, 1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <form method="post" action="{% url 'tienda:eliminar_del_carrito' item.id %}" class="d-inline mt-2" onsubmit="return confirm('¿Eliminar este producto del carrito?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-remove">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
             </div>
         </div>
-        
+
         <div class="col-lg-4">
-            <div class="total-card">
+            <div class="cart-summary-card">
                 <h5 class="mb-4 fw-bold">Resumen de Compra</h5>
-                
                 <div class="total-row">
                     <span>Subtotal</span>
                     <strong>COP ${{ total|floatformat:0 }}</strong>
                 </div>
-                
                 <div class="total-row">
                     <span>Envío</span>
                     <strong class="text-success">Gratis</strong>
                 </div>
-                
                 <div class="total-row">
                     <span>IVA (19%)</span>
                     <strong>COP {{ total_iva|floatformat:0 }}</strong>
                 </div>
-                
                 <hr class="my-3">
-                
                 <div class="total-row">
                     <span>Total</span>
                     <span class="total-final">COP {{ total_final|floatformat:0 }}</span>
                 </div>
-                
                 <div class="d-grid gap-2 mt-4">
                     <button class="btn btn-checkout btn-action btn-lg" type="button">
                         <i class="fas fa-credit-card me-2"></i>Finalizar compra
@@ -323,6 +345,11 @@
                     <a href="{% url 'tienda:lista_productos' %}" class="btn btn-outline-secondary btn-action">
                         <i class="fas fa-arrow-left me-2"></i>Seguir comprando
                     </a>
+                    {% if user.is_authenticated and user.rol == 'admin' %}
+                    <a href="{% url 'website:perfil' %}" class="btn btn-outline-secondary btn-action">
+                        <i class="fas fa-home me-2"></i>Volver a Home
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -347,7 +374,7 @@ function changeQty(itemId, delta) {
     const currentValue = parseInt(input.value) || 1;
     const newValue = Math.max(1, currentValue + delta);
     const maxValue = parseInt(input.max);
-    
+
     if (newValue <= maxValue) {
         input.value = newValue;
         input.form.submit();
