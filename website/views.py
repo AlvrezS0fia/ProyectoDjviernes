@@ -16,7 +16,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_protect, csrf_exempt, ensure_csrf_cookie
 from django.db import models
 import logging
 import json
@@ -54,7 +55,7 @@ def role_required(allowed_roles=[]):
 
 
 # ============================================================
-# 2. VISTA DE INICIO (HOME) - CON TODOS LOS PRODUCTOS
+# 2. VISTA DE INICIO (HOME)
 # ============================================================
 
 @never_cache
@@ -62,13 +63,10 @@ def home(request):
     """
     Vista principal del sitio - Página de inicio con todos los productos
     """
-    # Obtener query de búsqueda
     query = request.GET.get('q', '').strip()
     
-    # TODOS los productos activos
     productos = Producto.objects.filter(esta_activo=True)
     
-    # Filtrar por búsqueda si existe
     if query:
         productos = productos.filter(
             models.Q(nombre__icontains=query) |
@@ -78,18 +76,14 @@ def home(request):
         )
     
     productos = productos.order_by('-fecha_creacion')
-    
-    # Productos destacados para sección especial
     productos_destacados = productos.filter(es_destacado=True)[:4]
     
-    # IDs de productos favoritos para el usuario
     favoritos_ids = []
     if request.user.is_authenticated:
         favoritos_ids = list(Favorito.objects.filter(
             usuario=request.user
         ).values_list('producto_id', flat=True))
     
-    # Convertir productos a JSON para JavaScript
     productos_json = []
     for p in productos:
         productos_json.append({
@@ -125,76 +119,49 @@ def home(request):
 def login_view(request):
     """
     Vista de inicio de sesión con protección contra fuerza bruta
-    
-    Capas de seguridad:
-    - Capa 1: Autenticación de usuario
-    - Capa 2: Limitador de intentos
-    - Capa 3: Validación CSRF
-    - Capa 4: Auditoría de intentos
     """
-    # Redirigir si ya está autenticado
     if request.user.is_authenticated:
         return redirect('website:home')
     
-    # Obtener IP del cliente
     ip = request.META.get('REMOTE_ADDR', 'unknown')
     key = 'login_attempts_' + ip
-    
-    # Verificar intentos fallidos (Capa 2)
     attempts = cache.get(key, 0)
     
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         
-        # Verificar límite de intentos
         if attempts >= settings.LOGIN_ATTEMPTS_LIMIT:
             logger.warning('Demasiados intentos de login desde IP: ' + ip)
-            messages.error(
-                request,
-                'Demasiados intentos fallidos. Espera ' + str(settings.LOGIN_ATTEMPTS_TIMEOUT // 60) + ' minutos.'
-            )
+            messages.error(request, 'Demasiados intentos fallidos. Espera ' + str(settings.LOGIN_ATTEMPTS_TIMEOUT // 60) + ' minutos.')
             return render(request, 'website/login.html', {'form': form})
         
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            
-            # Autenticar usuario
             user = authenticate(request, username=username, password=password)
             
             if user is not None:
-                # Verificar si el usuario está activo
                 if not user.is_active:
                     messages.error(request, 'Esta cuenta está deshabilitada.')
                     logger.warning('Intento de login a cuenta deshabilitada: ' + username + ' - IP: ' + ip)
                     return render(request, 'website/login.html', {'form': form})
                 
-                # Verificar si el usuario está bloqueado
                 if user.esta_bloqueado():
                     tiempo_restante = (user.bloqueado_hasta - timezone.now()).seconds // 60
-                    messages.error(
-                        request,
-                        'Cuenta bloqueada temporalmente. Espera ' + str(tiempo_restante) + ' minutos.'
-                    )
+                    messages.error(request, 'Cuenta bloqueada temporalmente. Espera ' + str(tiempo_restante) + ' minutos.')
                     logger.warning('Intento de login a cuenta bloqueada: ' + username + ' - IP: ' + ip)
                     return render(request, 'website/login.html', {'form': form})
                 
-                # Login exitoso
                 login(request, user)
-                
-                # Resetear intentos fallidos (Capa 4)
                 cache.delete(key)
                 user.resetear_intentos()
                 
-                # Registrar sesión (Capa 4 - Auditoría)
                 request.session['last_activity'] = timezone.now().isoformat()
                 request.session['ip_address'] = ip
                 request.session['user_agent'] = request.META.get('HTTP_USER_AGENT', '')
                 
-                # Registrar actividad (Capa 4)
                 logger.info('Login exitoso: ' + user.username + ' desde IP: ' + ip)
                 
-                # Crear registro de actividad
                 ActividadUsuario.objects.create(
                     usuario=user,
                     tipo='login',
@@ -203,18 +170,11 @@ def login_view(request):
                     user_agent=request.META.get('HTTP_USER_AGENT', '')
                 )
                 
-                messages.success(
-                    request,
-                    '¡Bienvenido de vuelta, ' + user.get_nombre_completo() + '!'
-                )
-                
-                # Redirigir a la página principal (HOME)
+                messages.success(request, '¡Bienvenido de vuelta, ' + user.get_nombre_completo() + '!')
                 return redirect('website:home')
             
-            # Login fallido - incrementar contador (Capa 2)
             attempts = cache.get(key, 0) + 1
             cache.set(key, attempts, settings.LOGIN_ATTEMPTS_TIMEOUT)
-            
             logger.warning('Intento de login fallido desde IP: ' + ip + ' - Intento #' + str(attempts))
             messages.error(request, 'Usuario o contraseña incorrectos.')
         else:
@@ -234,13 +194,7 @@ def login_view(request):
 def register_view(request):
     """
     Vista de registro de nuevos usuarios
-    
-    Capas de seguridad:
-    - Capa 1: Creación de usuario
-    - Capa 3: Validaciones con expresiones regulares
-    - Capa 4: Auditoría de registro
     """
-    # Redirigir si ya está autenticado
     if request.user.is_authenticated:
         return redirect('website:home')
     
@@ -248,13 +202,9 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             try:
-                # Guardar usuario
                 user = form.save()
-                
-                # Iniciar sesión automáticamente
                 login(request, user)
                 
-                # Registrar actividad (Capa 4)
                 ip = request.META.get('REMOTE_ADDR', 'unknown')
                 logger.info('Nuevo usuario registrado: ' + user.email + ' desde IP: ' + ip)
                 
@@ -266,19 +216,12 @@ def register_view(request):
                     user_agent=request.META.get('HTTP_USER_AGENT', '')
                 )
                 
-                messages.success(
-                    request,
-                    '¡Registro exitoso! Bienvenido a ANGELOW, ' + user.get_nombre_completo() + '.'
-                )
-                
-                # Redirigir a la página principal (HOME)
+                messages.success(request, '¡Registro exitoso! Bienvenido a ANGELOW, ' + user.get_nombre_completo() + '.')
                 return redirect('website:home')
-                
             except Exception as e:
                 logger.error('Error en registro: ' + str(e))
-                messages.error(request, 'Ocurrió un error durante el registro. Por favor, intenta nuevamente.')
+                messages.error(request, 'Ocurrió un error durante el registro.')
         else:
-            # Mostrar errores específicos
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, field.capitalize() + ': ' + error)
@@ -298,7 +241,6 @@ def logout_view(request):
     Vista de cierre de sesión con auditoría
     """
     if request.user.is_authenticated:
-        # Registrar actividad (Capa 4)
         logger.info('Logout: ' + request.user.username)
         
         ActividadUsuario.objects.create(
@@ -309,7 +251,6 @@ def logout_view(request):
             user_agent=request.META.get('HTTP_USER_AGENT', '')
         )
         
-        # Cerrar sesión
         logout(request)
         messages.info(request, 'Has cerrado sesión exitosamente.')
     
@@ -317,55 +258,139 @@ def logout_view(request):
 
 
 # ============================================================
-# 6. DASHBOARD ADMIN (Capa 2 - Autorización)
+# 6. DASHBOARD ADMIN (Capa 2 - Autorización) - CON CRUD COMPLETO
 # ============================================================
 
 @login_required(login_url='website:login')
 @role_required(allowed_roles=['admin'])
 def dashboard_admin(request):
     """
-    Dashboard para administradores
-    
-    Capas de seguridad:
-    - Capa 1: Autenticación requerida
-    - Capa 2: Autorización (solo admin)
-    - Capa 4: Auditoría de acceso
+    Dashboard para administradores con gestión de clientes
     """
-    # Estadísticas para el dashboard
-    total_usuarios = Usuario.objects.count()
-    total_clientes = Cliente.objects.count()
-    total_productos = Producto.objects.count()
-    total_pedidos = 0  # Implementar con modelo de pedidos
+    # ============================================================
+    # PROCESAR POST (Crear, Editar, Desactivar, Activar)
+    # ============================================================
     
-    # Últimos registros
-    ultimos_usuarios = Usuario.objects.order_by('-date_joined')[:5]
-    ultimos_clientes = Cliente.objects.order_by('-fecha_registro')[:5]
+    if request.method == 'POST':
+        # ---------- CREAR CLIENTE ----------
+        if 'crear_cliente' in request.POST:
+            identificacion = request.POST.get('identificacion')
+            nombre = request.POST.get('nombre')
+            apellido = request.POST.get('apellido', '')
+            email = request.POST.get('email', '')
+            telefono = request.POST.get('telefono', '')
+            direccion = request.POST.get('direccion', '')
+            ciudad = request.POST.get('ciudad', '')
+            tipo_cliente = request.POST.get('tipo_cliente', 'regular')
+            
+            if identificacion and nombre:
+                if Cliente.objects.filter(identificacion=identificacion).exists():
+                    messages.error(request, 'Ya existe un cliente con esta identificación')
+                else:
+                    cliente = Cliente.objects.create(
+                        identificacion=identificacion,
+                        nombre=nombre,
+                        apellido=apellido,
+                        email=email,
+                        telefono=telefono,
+                        direccion=direccion,
+                        ciudad=ciudad,
+                        tipo_cliente=tipo_cliente,
+                        activo=True
+                    )
+                    messages.success(request, f'Cliente "{cliente.nombre_completo}" creado')
+            else:
+                messages.error(request, 'Identificación y nombre son obligatorios')
+            return redirect('website:dashboard_admin')
+        
+        # ---------- EDITAR CLIENTE ----------
+        elif 'editar_cliente_id' in request.POST:
+            cliente_id = request.POST.get('editar_cliente_id')
+            cliente = get_object_or_404(Cliente, id=cliente_id)
+            
+            identificacion = request.POST.get('identificacion')
+            nombre = request.POST.get('nombre')
+            apellido = request.POST.get('apellido', '')
+            email = request.POST.get('email', '')
+            telefono = request.POST.get('telefono', '')
+            direccion = request.POST.get('direccion', '')
+            ciudad = request.POST.get('ciudad', '')
+            tipo_cliente = request.POST.get('tipo_cliente', 'regular')
+            
+            if identificacion and nombre:
+                if Cliente.objects.exclude(id=cliente_id).filter(identificacion=identificacion).exists():
+                    messages.error(request, 'La identificación ya está en uso por otro cliente')
+                else:
+                    cliente.identificacion = identificacion
+                    cliente.nombre = nombre
+                    cliente.apellido = apellido
+                    cliente.email = email
+                    cliente.telefono = telefono
+                    cliente.direccion = direccion
+                    cliente.ciudad = ciudad
+                    cliente.tipo_cliente = tipo_cliente
+                    cliente.save()
+                    messages.success(request, f'Cliente "{cliente.nombre_completo}" actualizado')
+            else:
+                messages.error(request, 'Identificación y nombre son obligatorios')
+            return redirect('website:dashboard_admin')
+        
+        # ---------- DESACTIVAR CLIENTE ----------
+        elif 'desactivar_cliente_id' in request.POST:
+            cliente_id = request.POST.get('desactivar_cliente_id')
+            cliente = get_object_or_404(Cliente, id=cliente_id)
+            cliente.activo = False
+            cliente.save()
+            messages.success(request, f'Cliente desactivado')
+            return redirect('website:dashboard_admin')
+        
+        # ---------- ACTIVAR CLIENTE ----------
+        elif 'activar_cliente_id' in request.POST:
+            cliente_id = request.POST.get('activar_cliente_id')
+            cliente = get_object_or_404(Cliente, id=cliente_id)
+            cliente.activo = True
+            cliente.save()
+            messages.success(request, f'Cliente reactivado')
+            return redirect('website:dashboard_admin')
     
-    # Productos con bajo stock
-    productos_bajo_stock = Producto.objects.filter(
-        stock__lte=5,
-        esta_activo=True
-    ).order_by('stock')[:10]
+    # ============================================================
+    # GET - Mostrar Dashboard
+    # ============================================================
     
-    # Actividades recientes (Capa 4 - Auditoría)
-    actividades_recientes = ActividadUsuario.objects.select_related('usuario').order_by('-fecha')[:10]
+    clientes = Cliente.objects.all().order_by('-fecha_registro')
+    
+    q = request.GET.get('q', '')
+    if q:
+        clientes = clientes.filter(
+            models.Q(nombre__icontains=q) |
+            models.Q(apellido__icontains=q) |
+            models.Q(email__icontains=q) |
+            models.Q(telefono__icontains=q) |
+            models.Q(identificacion__icontains=q)
+        )
+    
+    estado = request.GET.get('estado')
+    if estado and estado != 'todos':
+        if estado == 'activo':
+            clientes = clientes.filter(activo=True)
+        elif estado == 'inactivo':
+            clientes = clientes.filter(activo=False)
     
     context = {
-        'total_usuarios': total_usuarios,
-        'total_clientes': total_clientes,
-        'total_productos': total_productos,
-        'total_pedidos': total_pedidos,
-        'ultimos_usuarios': ultimos_usuarios,
-        'ultimos_clientes': ultimos_clientes,
-        'productos_bajo_stock': productos_bajo_stock,
-        'actividades_recientes': actividades_recientes,
+        'clientes': clientes,
+        'total_clientes': Cliente.objects.count(),
+        'clientes_activos': Cliente.objects.filter(activo=True).count(),
+        'clientes_inactivos': Cliente.objects.filter(activo=False).count(),
+        'clientes_nuevos': Cliente.objects.filter(fecha_registro__gte=timezone.now() - timezone.timedelta(days=30)).count(),
+        'busqueda': q,
+        'filtro_estado': estado or 'todos',
     }
     
     return render(request, 'website/dashboard_admin.html', context)
 
 
 # ============================================================
-# 7. DASHBOARD USUARIO (Capa 2 - Autorización)
+# 7. DASHBOARD USUARIO
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -373,20 +398,14 @@ def dashboard_admin(request):
 def dashboard_user(request):
     """
     Dashboard para usuarios regulares
-    
-    Capas de seguridad:
-    - Capa 1: Autenticación requerida
-    - Capa 2: Autorización (user o vendedor)
     """
     user = request.user
     
-    # Obtener favoritos del usuario
     favoritos = Favorito.objects.filter(
         usuario=user,
         producto__esta_activo=True
     ).select_related('producto')[:8]
     
-    # Últimas actividades (Capa 4 - Auditoría)
     actividades = ActividadUsuario.objects.filter(
         usuario=user
     ).order_by('-fecha')[:5]
@@ -416,21 +435,20 @@ def dashboard_view(request):
 
 
 # ============================================================
-# 9. VISTA DE FAVORITOS (Para usuarios) - CON FAVORITOS DEL USUARIO
+# 9. VISTA DE FAVORITOS
 # ============================================================
 
 @login_required(login_url='website:login')
+@ensure_csrf_cookie
 def favorites_view(request):
     """
     Vista de productos favoritos del usuario
     """
-    # Obtener los favoritos del usuario autenticado
     favoritos_usuario = Favorito.objects.filter(
         usuario=request.user,
         producto__esta_activo=True
     ).select_related('producto')
     
-    # Convertir favoritos a JSON para JavaScript
     productos_data = []
     for fav in favoritos_usuario:
         producto = fav.producto
@@ -448,7 +466,8 @@ def favorites_view(request):
     context = {
         'productos': favoritos_usuario,
         'productos_json': json.dumps(productos_data, ensure_ascii=False),
-        'favoritos_ids': [p.id for p in favoritos_usuario]
+        'favoritos_ids': [p.id for p in favoritos_usuario],
+        'csrf_token': get_token(request)
     }
     
     return render(request, 'website/favorites.html', context)
@@ -540,55 +559,23 @@ def api_toggle_favorito(request):
 
 
 # ============================================================
-# 12. VISTA DE PERFIL DE USUARIO
+# 12. VISTA DE PERFIL DE USUARIO - CON CRUD DE CLIENTES
 # ============================================================
 
 @login_required(login_url='website:login')
 def perfil_view(request):
     """
     Vista para ver y editar el perfil del usuario.
-    Si el usuario es admin, también gestiona clientes desde el perfil.
+    Si el usuario es admin, redirige a la gestión de clientes.
     """
     user = request.user
-
+    
+    # ✅ Si es admin, redirigir directamente a gestión de clientes
+    if user.rol == 'admin':
+        return redirect('website:gestion_clientes')
+    
+    # Usuarios normales ven su perfil
     if request.method == 'POST':
-        if user.rol == 'admin':
-            if 'crear_cliente' in request.POST:
-                form_cliente = ClienteForm(request.POST)
-                if form_cliente.is_valid():
-                    cliente = form_cliente.save(commit=False)
-                    cliente.usuario = user
-                    cliente.actualizado_por = user
-                    cliente.save()
-                    messages.success(request, f'Cliente "{cliente.nombre}" creado exitosamente.')
-                    return redirect('website:perfil')
-            elif 'editar_cliente_id' in request.POST:
-                cliente_id = request.POST.get('editar_cliente_id')
-                cliente = get_object_or_404(Cliente, id=cliente_id)
-                form_cliente = ClienteForm(request.POST, instance=cliente)
-                if form_cliente.is_valid():
-                    cliente = form_cliente.save(commit=False)
-                    cliente.actualizado_por = user
-                    cliente.save()
-                    messages.success(request, f'Cliente "{cliente.nombre}" actualizado exitosamente.')
-                    return redirect('website:perfil')
-            elif 'activar_cliente_id' in request.POST:
-                cliente_id = request.POST.get('activar_cliente_id')
-                cliente = get_object_or_404(Cliente, id=cliente_id)
-                cliente.activo = True
-                cliente.actualizado_por = user
-                cliente.save()
-                messages.success(request, f'Cliente "{cliente.nombre}" reactivado exitosamente.')
-                return redirect('website:perfil')
-            elif 'desactivar_cliente_id' in request.POST:
-                cliente_id = request.POST.get('desactivar_cliente_id')
-                cliente = get_object_or_404(Cliente, id=cliente_id)
-                cliente.activo = False
-                cliente.actualizado_por = user
-                cliente.save()
-                messages.success(request, f'Cliente "{cliente.nombre}" desactivado exitosamente.')
-                return redirect('website:perfil')
-
         form = PerfilUsuarioForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
@@ -596,25 +583,12 @@ def perfil_view(request):
             return redirect('website:perfil')
     else:
         form = PerfilUsuarioForm(instance=user)
-
+    
     context = {
         'form': form,
         'usuario': user,
     }
-
-    if user.rol == 'admin':
-        clientes = Cliente.objects.all().order_by('-fecha_registro')
-        form_cliente = ClienteForm()
-        clientes_con_form = []
-        for cliente in clientes:
-            clientes_con_form.append((cliente, ClienteForm(instance=cliente)))
-
-        context.update({
-            'clientes': clientes,
-            'clientes_con_form': clientes_con_form,
-            'form_cliente': form_cliente,
-        })
-
+    
     return render(request, 'website/perfil.html', context)
 
 
@@ -631,7 +605,6 @@ def actividades_view(request):
     """
     actividades = ActividadUsuario.objects.select_related('usuario').order_by('-fecha')
     
-    # Filtros
     tipo = request.GET.get('tipo')
     if tipo:
         actividades = actividades.filter(tipo=tipo)
@@ -641,7 +614,7 @@ def actividades_view(request):
         actividades = actividades.filter(usuario_id=usuario_id)
     
     context = {
-        'actividades': actividades[:100],  # Últimas 100
+        'actividades': actividades[:100],
         'tipos': ActividadUsuario.TIPOS_ACTIVIDAD,
         'usuarios': Usuario.objects.all(),
         'filtro_tipo': tipo,
@@ -670,7 +643,36 @@ def session_status(request):
 
 
 # ============================================================
-# 15. GESTIÓN DE CLIENTES (CRUD - Solo admin)
+# 15. FUNCIONES DE UTILIDAD - AUDITORÍA (DRY)
+# ============================================================
+
+def _get_client_ip(request):
+    """
+    Obtiene la IP real del cliente (DRY)
+    """
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR', 'unknown')
+
+
+def _registrar_actividad(request, tipo, descripcion, datos_adicionales=None):
+    """
+    Registra actividad en el sistema de auditoría (DRY - Capa 4)
+    """
+    if request.user.is_authenticated:
+        ActividadUsuario.objects.create(
+            usuario=request.user,
+            tipo=tipo,
+            descripcion=descripcion,
+            ip=_get_client_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            datos_adicionales=datos_adicionales or {}
+        )
+
+
+# ============================================================
+# 16. GESTIÓN DE CLIENTES (CRUD - Solo admin)
 # ============================================================
 
 @login_required(login_url='website:login')
@@ -678,11 +680,9 @@ def session_status(request):
 def gestion_clientes(request):
     """
     Vista para que el administrador gestione todos los clientes
-    Permite ver, buscar y filtrar clientes
     """
     clientes = Cliente.objects.all().order_by('-fecha_registro')
     
-    # Búsqueda
     q = request.GET.get('q', '')
     if q:
         clientes = clientes.filter(
@@ -693,7 +693,6 @@ def gestion_clientes(request):
             models.Q(identificacion__icontains=q)
         )
     
-    # Filtro por estado
     estado = request.GET.get('estado')
     if estado and estado != 'todos':
         if estado == 'activo':
@@ -721,17 +720,8 @@ def cliente_crear(request):
         form = ClienteForm(request.POST)
         if form.is_valid():
             cliente = form.save()
-            messages.success(request, f'<i class="fas fa-check-circle me-2"></i>Cliente "{cliente.nombre_completo}" creado exitosamente.')
-            
-            # Registrar actividad
-            ActividadUsuario.objects.create(
-                usuario=request.user,
-                tipo='creacion',
-                descripcion=f'Creó el cliente: {cliente.nombre_completo}',
-                ip=request.META.get('REMOTE_ADDR', 'unknown'),
-                user_agent=request.META.get('HTTP_USER_AGENT', '')
-            )
-            
+            messages.success(request, f'Cliente "{cliente.nombre_completo}" creado exitosamente.')
+            _registrar_actividad(request, 'creacion', f'Creó el cliente: {cliente.nombre_completo}')
             return redirect('website:gestion_clientes')
     else:
         form = ClienteForm()
@@ -757,17 +747,8 @@ def cliente_editar(request, cliente_id):
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
             cliente_actualizado = form.save()
-            messages.success(request, f'<i class="fas fa-check-circle me-2"></i>Cliente "{cliente_actualizado.nombre_completo}" actualizado exitosamente.')
-            
-            # Registrar actividad
-            ActividadUsuario.objects.create(
-                usuario=request.user,
-                tipo='edicion',
-                descripcion=f'Editó el cliente: {cliente_actualizado.nombre_completo}',
-                ip=request.META.get('REMOTE_ADDR', 'unknown'),
-                user_agent=request.META.get('HTTP_USER_AGENT', '')
-            )
-            
+            messages.success(request, f'Cliente "{cliente_actualizado.nombre_completo}" actualizado exitosamente.')
+            _registrar_actividad(request, 'edicion', f'Editó el cliente: {cliente_actualizado.nombre_completo}')
             return redirect('website:gestion_clientes')
     else:
         form = ClienteForm(instance=cliente)
@@ -792,21 +773,10 @@ def cliente_eliminar(request, cliente_id):
     nombre_cliente = cliente.nombre_completo
     
     if request.method == 'POST':
-        # Soft delete - desactivar en lugar de eliminar
         cliente.activo = False
         cliente.save()
-        
-        messages.success(request, f'<i class="fas fa-trash-alt me-2"></i>Cliente "{nombre_cliente}" desactivado exitosamente.')
-        
-        # Registrar actividad
-        ActividadUsuario.objects.create(
-            usuario=request.user,
-            tipo='eliminacion',
-            descripcion=f'Desactivó el cliente: {nombre_cliente}',
-            ip=request.META.get('REMOTE_ADDR', 'unknown'),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')
-        )
-        
+        messages.success(request, f'Cliente "{nombre_cliente}" desactivado exitosamente.')
+        _registrar_actividad(request, 'eliminacion', f'Desactivó el cliente: {nombre_cliente}')
         return redirect('website:gestion_clientes')
     
     context = {
@@ -829,18 +799,8 @@ def cliente_activar(request, cliente_id):
     if request.method == 'POST':
         cliente.activo = True
         cliente.save()
-        
-        messages.success(request, f'<i class="fas fa-check-circle me-2"></i>Cliente "{nombre_cliente}" reactivado exitosamente.')
-        
-        # Registrar actividad
-        ActividadUsuario.objects.create(
-            usuario=request.user,
-            tipo='edicion',
-            descripcion=f'Reactivó el cliente: {nombre_cliente}',
-            ip=request.META.get('REMOTE_ADDR', 'unknown'),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')
-        )
-        
+        messages.success(request, f'Cliente "{nombre_cliente}" reactivado exitosamente.')
+        _registrar_actividad(request, 'edicion', f'Reactivó el cliente: {nombre_cliente}')
         return redirect('website:gestion_clientes')
     
     return redirect('website:gestion_clientes')

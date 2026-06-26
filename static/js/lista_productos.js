@@ -49,7 +49,7 @@ function toggleFavorite(productId, event) {
             var icon = btn.querySelector('i');
             if (icon) icon.style.color = '#ef4444';
         }
-        showToast('Agregado a favoritos ❤️', 'success');
+        showToast('Agregado a favoritos ', 'success');
     }
     saveFavorites(favs);
     updateHeaderBadges();

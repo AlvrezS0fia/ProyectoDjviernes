@@ -138,7 +138,7 @@ function toggleFavorite(productId, productName, button) {
                         if (favs.indexOf(productId) === -1) {
                             favs.push(productId);
                         }
-                        showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos ❤️');
+                        showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos ');
                         if (button) button.classList.add('active');
                         createHeartParticles(button);
                     } else {
@@ -185,7 +185,7 @@ function toggleFavorite(productId, productName, button) {
             if (button) button.classList.remove('active');
         } else {
             favorites.push(productId);
-            showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos ❤️');
+            showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos ');
             if (button) button.classList.add('active');
             createHeartParticles(button);
         }

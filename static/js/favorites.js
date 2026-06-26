@@ -1,6 +1,29 @@
 // static/js/favorites.js
 
 // ============================================================
+// UTILIDADES
+// ============================================================
+function getCSRFToken() {
+    // Primero intentar desde ANGELOW
+    if (window.ANGELOW && window.ANGELOW.csrfToken) {
+        return window.ANGELOW.csrfToken;
+    }
+    // Fallback: obtener token CSRF de la cookie
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, 'csrftoken'.length + 1) === 'csrftoken=') {
+                cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// ============================================================
 // OBTENER FAVORITOS DEL SERVIDOR
 // ============================================================
 function getFavoritesFromServer(callback) {
@@ -10,15 +33,13 @@ function getFavoritesFromServer(callback) {
     }
 
     var url = window.ANGELOW.apiFavoritos;
-    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-    var token = csrfToken ? csrfToken.value : '';
-
+    
     console.log('🔍 Obteniendo favoritos del servidor...', url);
 
     fetch(url, {
         method: 'GET',
         headers: {
-            'X-CSRFToken': token,
+            'X-CSRFToken': getCSRFToken(),
             'Content-Type': 'application/json'
         }
     })
@@ -54,16 +75,15 @@ function saveFavoriteOnServer(productId, callback) {
     }
 
     var url = window.ANGELOW.apiToggleFavorito;
-    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-    var token = csrfToken ? csrfToken.value : '';
 
     console.log('💾 Guardando favorito en el servidor...', url, productId);
+    console.log('🔑 CSRF Token:', getCSRFToken());
 
     fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': token
+            'X-CSRFToken': getCSRFToken() || ''
         },
         body: JSON.stringify({
             producto_id: productId
@@ -294,11 +314,19 @@ function updateHeaderBadges() {
 // RENDERIZAR PRODUCTOS FAVORITOS
 // ============================================================
 function renderFavorites() {
+    console.log('🎨 renderFavorites() ejecutándose...');
+    
     var grid = document.getElementById('favoritesGrid');
     var emptyState = document.getElementById('emptyFavorites');
     var favCountSpan = document.getElementById('favCount');
     
-    if (!grid) return;
+    console.log('🔍 Grid:', grid ? 'encontrado' : 'NO ENCONTRADO');
+    console.log('🔍 EmptyState:', emptyState ? 'encontrado' : 'NO ENCONTRADO');
+    
+    if (!grid) {
+        console.error('❌ No se encontró el grid de favoritos');
+        return;
+    }
     
     var productsData = [];
     var scriptElement = document.getElementById('productos-data');
@@ -310,6 +338,8 @@ function renderFavorites() {
         } catch(e) {
             console.error('❌ Error al parsear productos:', e);
         }
+    } else {
+        console.error('❌ Script productos-data no encontrado');
     }
     
     if (favCountSpan) {
@@ -329,22 +359,28 @@ function renderFavorites() {
     }
 
     var html = '';
+    console.log('🔄 Renderizando', productsData.length, 'productos');
     for (var i = 0; i < productsData.length; i++) {
         var p = productsData[i];
+        if (!p) {
+            console.error('❌ Producto en índice', i, 'es undefined');
+            continue;
+        }
+        console.log('📦 Producto', i, ':', p.nombre || 'sin nombre');
         var stockClass = p.stock > 10 ? 'in-stock' : (p.stock > 0 ? 'low-stock' : 'out-of-stock');
         var stockText = p.stock > 10 ? 'En stock' : (p.stock > 0 ? 'Solo ' + p.stock + ' unidades' : 'Sin stock');
 
         html += '<div class="fav-product-card" data-id="' + p.id + '">';
-        html += '<img src="' + (p.imagen || '/static/img/productos/default.jpg') + '" class="card-img-top" alt="' + p.nombre + '" onerror="this.src=\'/static/img/productos/default.jpg\'">';
-        html += '<div class="card-body" style="cursor:pointer;" onclick="window.location.href=\'/producto/' + p.slug + '\'">';
-        html += '<h3 class="product-name">' + p.nombre + '</h3>';
-        html += '<p class="product-category">' + p.categoria + '</p>';
+        html += '<img src="' + (p.imagen || '/static/img/productos/default.jpg') + '" class="card-img-top" alt="' + (p.nombre || 'Producto') + '" onerror="this.src=\'/static/img/productos/default.jpg\'">';
+        html += '<div class="card-body" style="cursor:pointer;" onclick="window.location.href=\'/tienda/producto/' + (p.slug || '') + '\'">';
+        html += '<h3 class="product-name">' + (p.nombre || 'Sin nombre') + '</h3>';
+        html += '<p class="product-category">' + (p.categoria || '') + '</p>';
         html += '<div class="product-price">';
         if (p.precio_oferta) {
-            html += '<span class="old-price">$' + Math.round(p.precio) + '</span>';
+            html += '<span class="old-price">$' + Math.round(p.precio || 0) + '</span>';
             html += '$' + Math.round(p.precio_oferta);
         } else {
-            html += '$' + Math.round(p.precio);
+            html += '$' + Math.round(p.precio || 0);
         }
         html += '</div>';
         html += '<div class="product-stock">';
@@ -355,7 +391,7 @@ function renderFavorites() {
         html += '<button class="btn-cart" onclick="addToCart(' + p.id + ', event)" ' + (p.stock === 0 ? 'disabled' : '') + '>';
         html += '<i class="fas fa-shopping-cart"></i> Agregar';
         html += '</button>';
-        html += '<button class="btn-remove-fav" onclick="toggleFavorite(' + p.id + ', \'' + p.nombre.replace(/'/g, "\\'").replace(/'/g, "\\'") + '\', this)">';
+        html += '<button class="btn-remove-fav" onclick="toggleFavorite(' + p.id + ', \'' + (p.nombre ? p.nombre.replace(/'/g, "\\'").replace(/'/g, "\\'") : '') + '\', this)">';
         html += '<i class="fas fa-times"></i> <span class="remove-text">Quitar</span>';
         html += '</button>';
         html += '</div>';
@@ -370,17 +406,22 @@ function renderFavorites() {
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Inicializando favorites.js...');
-
-    updateHeaderBadges();
     
+    var grid = document.getElementById('favoritesGrid');
+    console.log('🔍 Grid element:', grid ? 'found' : 'NOT FOUND');
+    
+    // Los datos ya vienen del servidor en el template (productos-data)
+    // Solo renderizar, no hacer petición AJAX adicional
+    renderFavorites();
+    
+    // Si está autenticado, sincronizar con localStorage para consistencia
     if (window.ANGELOW && window.ANGELOW.isAuthenticated) {
         getFavoritesFromServer(function(favoritos) {
             console.log('✅ Favoritos sincronizados desde el servidor:', favoritos);
+            // Actualizar localStorage con los IDs recibidos
+            localStorage.setItem('angelow_favorites', JSON.stringify(favoritos));
             updateHeaderBadges();
-            renderFavorites();
         });
-    } else {
-        renderFavorites();
     }
 });
 

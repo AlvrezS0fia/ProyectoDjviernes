@@ -1,10 +1,368 @@
+<!-- website/templates/website/perfil.html -->
 {% extends 'website/base.html' %}
 {% load static %}
 
 {% block title %}Mi Perfil | ANGELOW{% endblock %}
 
+{% block extra_css %}
+<style>
+:root {
+    --primary: #5E9DE6;
+    --primary-dark: #3A7BC8;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --text-dark: #1E3A8A;
+    --text-secondary: #4B6A9B;
+    --border-light: #E0E7F5;
+    --bg-light: #F8FBFE;
+    --shadow: rgba(94, 157, 230, 0.12);
+}
+
+/* ===== CARD DE PERFIL ===== */
+.card-custom {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 4px 20px var(--shadow);
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #1E3A8A 0%, #3A7BC8 100%);
+    padding: 24px 30px;
+    color: white;
+}
+
+.card-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.card-header p {
+    margin: 4px 0 0;
+    opacity: 0.8;
+    font-size: 14px;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* ===== FORMULARIOS ===== */
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s;
+    background: var(--bg-light);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(94, 157, 230, 0.1);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 13px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.btn-primary {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #5E9DE6 0%, #7FBBF2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(94, 157, 230, 0.4);
+}
+
+.btn-secondary {
+    padding: 10px 24px;
+    background: white;
+    color: var(--text-secondary);
+    border: 2px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--bg-light);
+}
+
+/* ===== BOTONES DEL CRUD ===== */
+.btn-success {
+    padding: 8px 20px;
+    background: #D1FAE5;
+    color: #065F46;
+    border: 2px solid #A7F3D0;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background: #A7F3D0;
+    border-color: #10b981;
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    padding: 8px 20px;
+    background: #FEF2F2;
+    color: #DC2626;
+    border: 2px solid #FEE2E2;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: #FEE2E2;
+    border-color: #DC2626;
+    transform: scale(1.05);
+}
+
+.btn-warning {
+    padding: 8px 20px;
+    background: #FEF3C7;
+    color: #92400E;
+    border: 2px solid #FDE68A;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    background: #FDE68A;
+    border-color: #D97706;
+    transform: scale(1.05);
+}
+
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+/* ===== BADGES ===== */
+.badge-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-status.activo {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.badge-status.inactivo {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.badge-tipo {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-tipo.vip { background: #FEF3C7; color: #92400E; }
+.badge-tipo.empresa { background: #DBEAFE; color: #1D4ED8; }
+.badge-tipo.regular { background: #E5E7EB; color: #4B5563; }
+
+/* ===== TABLA ===== */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead {
+    background: var(--bg-light);
+    border-bottom: 2px solid var(--border-light);
+}
+
+.table thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--border-light);
+    transition: background 0.2s;
+}
+
+.table tbody tr:hover {
+    background: var(--bg-light);
+}
+
+.table tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text-dark);
+    vertical-align: middle;
+}
+
+/* ===== ACCIONES ===== */
+.acciones {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* ===== ESTADO VACÍO ===== */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-state i {
+    font-size: 48px;
+    opacity: 0.3;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.empty-state h4 {
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* ===== TOAST ===== */
+#toastContainer {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast-item {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 18px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid var(--primary);
+    animation: slideIn 0.35s ease;
+    min-width: 240px;
+    max-width: 360px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.toast-item.success { border-left-color: var(--success); }
+.toast-item.error { border-left-color: var(--danger); }
+.toast-item.warning { border-left-color: var(--warning); }
+.toast-item.info { border-left-color: var(--primary); }
+
+.toast-item i { font-size: 18px; width: 22px; text-align: center; }
+.toast-item .toast-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #94a3b8;
+    margin-left: auto;
+    padding: 4px;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .card-body { padding: 20px; }
+    .card-header { padding: 20px; }
+    .card-header h2 { font-size: 20px; }
+    
+    .table-responsive { overflow-x: auto; }
+    .table { min-width: 700px; }
+    
+    .acciones { justify-content: center; }
+    
+    .row.g-3 { gap: 12px; }
+    .col-md-1, .col-md-2, .col-md-3 { width: 100%; }
+}
+
+@media (max-width: 480px) {
+    .card-body { padding: 16px; }
+    .card-header { padding: 16px; }
+    .card-header h2 { font-size: 18px; }
+    
+    .btn-sm { padding: 4px 8px; font-size: 11px; }
+    .table tbody td { font-size: 13px; padding: 10px 12px; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
+<!-- ===== TOAST CONTAINER ===== -->
+<div id="toastContainer"></div>
+
 <div class="container">
+    <!-- ============================================================
+    PERFIL DE USUARIO
+    ============================================================ -->
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card-custom">
@@ -27,7 +385,7 @@
                                 {% endfor %}
                             </div>
                         {% endfor %}
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn-primary">
                             <i class="fas fa-save"></i> Guardar Cambios
                         </button>
                     </form>
@@ -36,6 +394,9 @@
         </div>
     </div>
 
+    <!-- ============================================================
+    GESTIÓN DE CLIENTES (SOLO ADMIN)
+    ============================================================ -->
     {% if usuario.rol == 'admin' %}
     <div class="row justify-content-center mt-4">
         <div class="col-md-12">
@@ -45,81 +406,77 @@
                         <h2><i class="fas fa-users-cog"></i> Gestión de Clientes</h2>
                         <p>Administra los clientes desde tu perfil</p>
                     </div>
-                    <a href="{% url 'website:home' %}" class="btn btn-secondary">
-                        <i class="fas fa-home"></i> Volver a Home
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'website:dashboard_admin' %}" class="btn-secondary">
+                            <i class="fas fa-chart-bar"></i> Dashboard
+                        </a>
+                        <a href="{% url 'website:home' %}" class="btn-secondary">
+                            <i class="fas fa-home"></i> Volver a Home
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
+                    
+                    <!-- ============================================================
+                    FORMULARIO: CREAR CLIENTE
+                    ============================================================ -->
                     <form method="POST" class="row g-3 mb-4 p-3 bg-light rounded border">
                         {% csrf_token %}
                         <input type="hidden" name="crear_cliente" value="1">
-                        <h5 class="mb-3">Nuevo Cliente</h5>
+                        
+                        <h5 class="mb-3">
+                            <i class="fas fa-plus-circle text-success"></i> Nuevo Cliente
+                        </h5>
+                        
                         <div class="col-md-3">
                             <label class="form-label">Identificación *</label>
-                            {{ form_cliente.identificacion }}
-                            {% for error in form_cliente.identificacion.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <input type="text" name="identificacion" class="form-control" placeholder="Ej: 1234567890" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Nombre *</label>
-                            {{ form_cliente.nombre }}
-                            {% for error in form_cliente.nombre.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <input type="text" name="nombre" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Apellido</label>
-                            {{ form_cliente.apellido }}
-                            {% for error in form_cliente.apellido.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <input type="text" name="apellido" class="form-control" placeholder="Apellido">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Email</label>
-                            {{ form_cliente.email }}
-                            {% for error in form_cliente.email.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <input type="email" name="email" class="form-control" placeholder="correo@ejemplo.com">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Teléfono</label>
-                            {{ form_cliente.telefono }}
-                            {% for error in form_cliente.telefono.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <input type="text" name="telefono" class="form-control" placeholder="3001234567">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Dirección</label>
-                            {{ form_cliente.direccion }}
-                            {% for error in form_cliente.direccion.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <input type="text" name="direccion" class="form-control" placeholder="Dirección">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Ciudad</label>
-                            {{ form_cliente.ciudad }}
-                            {% for error in form_cliente.ciudad.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <input type="text" name="ciudad" class="form-control" placeholder="Ciudad">
                         </div>
                         <div class="col-md-2">
                             <label class="form-label">Tipo</label>
-                            {{ form_cliente.tipo_cliente }}
-                            {% for error in form_cliente.tipo_cliente.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                            {% endfor %}
+                            <select name="tipo_cliente" class="form-control">
+                                <option value="regular">Regular</option>
+                                <option value="vip">VIP</option>
+                                <option value="empresa">Empresa</option>
+                            </select>
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
-                            <button type="submit" class="btn btn-success w-100">
-                                <i class="fas fa-plus"></i> Agregar
+                            <button type="submit" class="btn-success w-100" title="Agregar cliente">
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </form>
 
+                    <!-- ============================================================
+                    TABLA: LISTA DE CLIENTES
+                    ============================================================ -->
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th>Identificación</th>
                                     <th>Nombre</th>
@@ -131,115 +488,123 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for cliente, form_edicion in clientes_con_form %}
+                                {% for cliente in clientes %}
                                 <tr>
-                                    <td>{{ cliente.identificacion }}</td>
+                                    <td><strong>{{ cliente.identificacion }}</strong></td>
                                     <td>{{ cliente.nombre_completo }}</td>
                                     <td>{{ cliente.email|default:"—" }}</td>
                                     <td>{{ cliente.telefono|default:"—" }}</td>
-                                    <td>{{ cliente.get_tipo_cliente_display }}</td>
                                     <td>
-                                        {% if cliente.activo %}
-                                            <span class="badge bg-success">Activo</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">Inactivo</span>
-                                        {% endif %}
+                                        <span class="badge-tipo {{ cliente.tipo_cliente|default:'regular' }}">
+                                            {{ cliente.get_tipo_cliente_display|default:"Regular" }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status {% if cliente.activo %}activo{% else %}inactivo{% endif %}">
+                                            {% if cliente.activo %}
+                                                <i class="fas fa-check-circle"></i> Activo
+                                            {% else %}
+                                                <i class="fas fa-times-circle"></i> Inactivo
+                                            {% endif %}
+                                        </span>
                                     </td>
                                     <td class="text-end">
-                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editar{{ cliente.id }}" aria-expanded="false">
-                                            <i class="fas fa-edit"></i> Editar
-                                        </button>
-                                        {% if cliente.activo %}
-                                            <form method="POST" class="d-inline" onsubmit="return confirm('¿Desactivar este cliente?');">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="desactivar_cliente_id" value="{{ cliente.id }}">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Desactivar">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <form method="POST" class="d-inline" onsubmit="return confirm('¿Reactivar este cliente?');">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="activar_cliente_id" value="{{ cliente.id }}">
-                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Activar">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                            </form>
-                                        {% endif %}
+                                        <div class="acciones">
+                                            <!-- Botón Editar -->
+                                            <button class="btn-warning btn-sm" type="button" onclick="toggleEdit({{ cliente.id }})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            
+                                            {% if cliente.activo %}
+                                                <!-- Botón Desactivar -->
+                                                <form method="POST" class="d-inline" onsubmit="return confirm('¿Desactivar este cliente?');">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="desactivar_cliente_id" value="{{ cliente.id }}">
+                                                    <button type="submit" class="btn-danger btn-sm">
+                                                        <i class="fas fa-user-slash"></i>
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <!-- Botón Reactivar -->
+                                                <form method="POST" class="d-inline" onsubmit="return confirm('¿Reactivar este cliente?');">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="activar_cliente_id" value="{{ cliente.id }}">
+                                                    <button type="submit" class="btn-success btn-sm">
+                                                        <i class="fas fa-user-check"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
                                     </td>
                                 </tr>
-                                <tr class="collapse" id="editar{{ cliente.id }}">
-                                    <td colspan="7">
-                                        <form method="POST" class="row g-3 p-3 bg-light rounded border">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="editar_cliente_id" value="{{ cliente.id }}">
-                                            <div class="col-md-3">
-                                                <label class="form-label">Identificación</label>
-                                                {{ form_edicion.identificacion }}
-                                                {% for error in form_edicion.identificacion.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label">Nombre</label>
-                                                {{ form_edicion.nombre }}
-                                                {% for error in form_edicion.nombre.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label">Apellido</label>
-                                                {{ form_edicion.apellido }}
-                                                {% for error in form_edicion.apellido.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label">Email</label>
-                                                {{ form_edicion.email }}
-                                                {% for error in form_edicion.email.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label">Teléfono</label>
-                                                {{ form_edicion.telefono }}
-                                                {% for error in form_edicion.telefono.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label">Dirección</label>
-                                                {{ form_edicion.direccion }}
-                                                {% for error in form_edicion.direccion.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label">Ciudad</label>
-                                                {{ form_edicion.ciudad }}
-                                                {% for error in form_edicion.ciudad.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label">Tipo</label>
-                                                {{ form_edicion.tipo_cliente }}
-                                                {% for error in form_edicion.tipo_cliente.errors %}
-                                                    <div class="text-danger small">{{ error }}</div>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="col-md-1 d-flex align-items-end">
-                                                <button type="submit" class="btn btn-primary w-100">
-                                                    <i class="fas fa-save"></i> Guardar
-                                                </button>
-                                            </div>
-                                        </form>
+
+                                <!-- ============================================================
+                                FILA DE EDICIÓN (colapsable)
+                                ============================================================ -->
+                                <tr id="edit-row-{{ cliente.id }}" style="display: none;">
+                                    <td colspan="7" style="padding: 0;">
+                                        <div style="background: var(--bg-light); padding: 20px; border: 1px solid var(--border-light); border-radius: 8px; margin: 8px;">
+                                            <form method="POST" class="row g-3">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="editar_cliente_id" value="{{ cliente.id }}">
+
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Identificación *</label>
+                                                    <input type="text" name="identificacion" class="form-control" value="{{ cliente.identificacion }}" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Nombre *</label>
+                                                    <input type="text" name="nombre" class="form-control" value="{{ cliente.nombre }}" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Apellido</label>
+                                                    <input type="text" name="apellido" class="form-control" value="{{ cliente.apellido|default:'' }}">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="email" name="email" class="form-control" value="{{ cliente.email|default:'' }}">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Teléfono</label>
+                                                    <input type="text" name="telefono" class="form-control" value="{{ cliente.telefono|default:'' }}">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Dirección</label>
+                                                    <input type="text" name="direccion" class="form-control" value="{{ cliente.direccion|default:'' }}">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Ciudad</label>
+                                                    <input type="text" name="ciudad" class="form-control" value="{{ cliente.ciudad|default:'' }}">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Tipo</label>
+                                                    <select name="tipo_cliente" class="form-control">
+                                                        <option value="regular" {% if cliente.tipo_cliente == 'regular' %}selected{% endif %}>Regular</option>
+                                                        <option value="vip" {% if cliente.tipo_cliente == 'vip' %}selected{% endif %}>VIP</option>
+                                                        <option value="empresa" {% if cliente.tipo_cliente == 'empresa' %}selected{% endif %}>Empresa</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-1 d-flex align-items-end gap-2">
+                                                    <button type="submit" class="btn-success w-100" title="Guardar cambios">
+                                                        <i class="fas fa-save"></i>
+                                                    </button>
+                                                    <button type="button" class="btn-danger" title="Cancelar" onclick="toggleEdit({{ cliente.id }})">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">No hay clientes registrados.</td>
+                                    <td colspan="7">
+                                        <div class="empty-state">
+                                            <i class="fas fa-users"></i>
+                                            <h4>No hay clientes registrados</h4>
+                                            <p>Comienza agregando tu primer cliente.</p>
+                                        </div>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -251,4 +616,68 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ============================================================
+// TOGGLE EDIT - Mostrar/Ocultar formulario de edición
+// ============================================================
+function toggleEdit(clienteId) {
+    var row = document.getElementById('edit-row-' + clienteId);
+    if (row) {
+        if (row.style.display === 'none' || row.style.display === '') {
+            row.style.display = 'table-row';
+            setTimeout(function() {
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        } else {
+            row.style.display = 'none';
+        }
+    }
+}
+
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+function showToast(message, type) {
+    type = type || 'info';
+    var container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    var colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#5E9DE6'
+    };
+    var icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+
+    var toast = document.createElement('div');
+    toast.className = 'toast-item ' + type;
+    toast.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '" style="color: ' + (colors[type] || colors.info) + ';"></i><span style="flex:1;">' + message + '</span><button class="toast-close" onclick="this.parentElement.remove()">×</button>';
+    container.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3500);
+}
+
+// ============================================================
+// AUTO-CERRAR MENSAJES DE DJANGO
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    var alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            if (alert) {
+                var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                bsAlert.close();
+            }
+        }, 5000);
+    });
+});
+</script>
 {% endblock %}

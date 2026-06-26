@@ -651,3 +651,120 @@ INFO 2026-06-25 21:25:20,391 middleware 18724 20956 Actividad: admin - GET /favo
 INFO 2026-06-25 21:25:21,461 middleware 18724 20956 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
 INFO 2026-06-25 21:26:20,475 middleware 18724 20956 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-25 21:26:20,886 middleware 18724 20956 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:47:42,271 middleware 17812 9000 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:47:46,923 middleware 17812 9000 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:47:49,812 middleware 17812 9000 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:47:52,272 middleware 17812 9000 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:47:52,306 views 17812 9000 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 21:47:52,880 middleware 17812 9000 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:47:56,205 middleware 17812 9000 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:48:02,750 middleware 17812 9000 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:16:36,084 middleware 17812 22532 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:16:38,815 middleware 17812 22532 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:16:41,913 middleware 17812 22532 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:17:03,410 middleware 17812 22532 Actividad: admin - GET /tienda/producto/chaqueta-bebe/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:17:03,735 views 17812 22532 Producto visualizado: Chaqueta Bebé por admin
+INFO 2026-06-25 22:17:06,243 middleware 17812 22532 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 22:17:07,692 middleware 17812 22532 Actividad: admin - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 22:17:10,789 middleware 17812 22532 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:17:20,202 middleware 17812 22532 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:18:22,298 middleware 17812 22532 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:18:22,382 views 17812 22532 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 22:18:23,976 middleware 17812 22532 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 22:18:25,396 middleware 17812 22532 Actividad: admin - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 22:18:27,858 middleware 17812 22532 Actividad: admin - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 22:19:25,908 middleware 17812 22532 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:19:25,974 views 17812 22532 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 22:19:26,720 middleware 17812 22532 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 22:19:27,585 middleware 17812 22532 Actividad: admin - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 22:19:28,447 middleware 17812 22532 Actividad: admin - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+WARNING 2026-06-25 22:21:14,760 middleware 17812 17992 Sesión expirada por inactividad: admin (Inactivo por 3400 segundos)
+INFO 2026-06-25 22:22:07,766 views 17812 16172 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 22:22:07,826 middleware 17812 16172 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 22:22:08,292 middleware 17812 16172 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:22:15,635 middleware 17812 16172 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:24:49,447 middleware 17812 16172 Actividad: admin - GET /admin - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:36:17,467 middleware 17812 4592 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:36:22,227 middleware 17812 4592 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:36:34,808 middleware 17812 20552 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:47:01,899 middleware 17812 7980 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:47:07,455 middleware 17812 7980 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:47:10,070 middleware 17812 7980 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:57:25,381 middleware 17812 21496 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:57:33,326 middleware 17812 6320 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:57:36,007 middleware 17812 6320 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:57:40,140 middleware 17812 6320 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:57:45,626 middleware 17812 6320 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:57:51,364 middleware 17812 6320 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:59:06,957 middleware 17812 21496 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:59:08,787 middleware 17812 21496 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 22:59:40,674 middleware 17812 6320 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:08:30,945 middleware 17812 18540 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:08:32,082 middleware 17812 18540 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:08:35,606 middleware 17812 22380 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:08:39,420 middleware 17812 22380 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:08:40,751 middleware 17812 22380 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:09:26,842 middleware 17812 13452 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:09:28,581 middleware 17812 13452 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:09:34,520 middleware 17812 13452 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:09:36,349 middleware 17812 13452 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:09:46,766 middleware 17812 22380 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:27:32,695 middleware 22284 3484 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:27:36,341 middleware 22284 3484 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:27:47,477 middleware 22284 23064 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:27:48,180 middleware 22284 23064 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:27:48,880 middleware 22284 13868 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:27:56,480 middleware 22284 13868 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:27:57,587 middleware 22284 13868 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:37:42,353 middleware 22284 4372 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:37:43,554 middleware 22284 17940 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:37:46,319 middleware 22284 17940 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 23:37:56,343 middleware 22284 17940 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+WARNING 2026-06-26 00:14:46,815 middleware 4280 18132 Sesión expirada por inactividad: admin (Inactivo por 2210 segundos)
+WARNING 2026-06-26 00:17:51,911 middleware 15472 14680 Sesión expirada por inactividad: admin (Inactivo por 2994 segundos)
+INFO 2026-06-26 00:19:04,550 views 21348 13368 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-26 00:19:04,592 middleware 21348 13368 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-26 00:19:04,690 middleware 21348 13368 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:19:10,535 middleware 21348 13368 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:19:12,748 middleware 21348 13368 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:19:16,473 middleware 21348 13368 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:19:18,694 middleware 21348 13368 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:19:51,341 middleware 21348 13368 Actividad: admin - GET /admin - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:19:53,971 middleware 21348 13368 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:20:53,065 middleware 21348 13368 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:20:56,209 middleware 21348 13368 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:20:57,610 middleware 21348 13368 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:22:50,641 middleware 21348 13368 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:22:56,544 middleware 21348 12188 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:22:58,073 middleware 21348 23220 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:22:59,089 middleware 21348 12188 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:23:04,851 middleware 21348 23220 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:23:57,859 middleware 22276 21732 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:23:59,695 middleware 22276 21732 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:24:08,773 middleware 22276 21732 Actividad: admin - GET /admin - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:26:06,371 middleware 17348 23472 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:26:17,129 middleware 17348 23472 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:26:17,420 middleware 17348 23472 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:26:20,794 middleware 17348 23472 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:27:00,535 middleware 17348 23472 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:27:17,593 middleware 17348 22168 Actividad: admin - POST /api/favoritos/toggle/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:31:39,770 middleware 17348 22168 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:31:41,293 middleware 17348 22168 Actividad: admin - GET /.well-known/appspecific/com.chrome.devtools.json - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:31:44,397 middleware 17348 21896 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:31:45,164 middleware 17348 4108 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:31:51,444 middleware 14924 14744 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:36:51,228 middleware 1708 20252 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:36:54,381 middleware 1708 20252 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:36:58,455 middleware 1708 20252 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:36:58,923 middleware 1708 20252 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:37:38,518 middleware 1708 20252 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:37:40,276 middleware 1708 20252 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:38:07,924 views 1708 22216 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-26 00:38:08,062 middleware 1708 22216 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-26 00:38:08,167 middleware 1708 22216 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:38:16,047 middleware 1708 18172 Actividad: admin - GET /tienda/producto/falda-nina/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:38:16,196 views 1708 18172 Producto visualizado: Falda Niña por admin
+INFO 2026-06-26 00:38:16,795 middleware 1708 18172 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-26 00:38:18,531 middleware 1708 18172 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:38:18,810 middleware 1708 18172 Actividad: admin - GET /api/favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-26 00:38:20,825 middleware 1708 18172 Actividad: admin - GET /perfil/ - Tipo: general - IP: 127.0.0.1

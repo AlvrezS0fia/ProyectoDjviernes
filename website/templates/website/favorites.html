@@ -678,8 +678,9 @@
     window.ANGELOW = {
         isAuthenticated: true,
         userId: {{ user.id }},
-        apiFavoritos: "{% url 'tienda:api_favoritos' %}",
-        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}"
+        apiFavoritos: "{% url 'website:api_favoritos' %}",
+        apiToggleFavorito: "{% url 'website:api_toggle_favorito' %}",
+        csrfToken: "{{ csrf_token }}"
     };
     console.log('✅ ANGELOW configurado (autenticado):', window.ANGELOW);
 </script>
@@ -688,8 +689,9 @@
     window.ANGELOW = {
         isAuthenticated: false,
         userId: null,
-        apiFavoritos: "{% url 'tienda:api_favoritos' %}",
-        apiToggleFavorito: "{% url 'tienda:api_toggle_favorito' %}"
+        apiFavoritos: "{% url 'website:api_favoritos' %}",
+        apiToggleFavorito: "{% url 'website:api_toggle_favorito' %}",
+        csrfToken: "{{ csrf_token }}"
     };
     console.log('✅ ANGELOW configurado (anónimo):', window.ANGELOW);
 </script>

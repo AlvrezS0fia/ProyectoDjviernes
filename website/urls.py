@@ -7,7 +7,7 @@ app_name = 'website'
 
 urlpatterns = [
     # ===== PÁGINAS PRINCIPALES =====
-    path('', views.home, name='home'),  # Página de inicio
+    path('', views.home, name='home'),
     
     # ===== AUTENTICACIÓN =====
     path('login/', views.login_view, name='login'),
@@ -26,7 +26,7 @@ urlpatterns = [
     # ===== ADMIN - AUDITORÍA =====
     path('actividades/', views.actividades_view, name='actividades'),
     
-    # ===== GESTIÓN CLIENTES =====
+    # ===== GESTIÓN CLIENTES (Admin) =====
     path('gestion-clientes/', views.gestion_clientes, name='gestion_clientes'),
     path('gestion-clientes/nuevo/', views.cliente_crear, name='cliente_crear'),
     path('gestion-clientes/editar/<int:cliente_id>/', views.cliente_editar, name='cliente_editar'),

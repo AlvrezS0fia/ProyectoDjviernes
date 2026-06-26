@@ -4212,3 +4212,191 @@ WARNING 2026-06-25 09:12:57,985 log 17588 22060 Method Not Allowed (GET): /tiend
 WARNING 2026-06-25 09:12:58,146 log 17588 22060 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
 WARNING 2026-06-25 09:12:59,175 log 17588 22060 Method Not Allowed (GET): /tienda/api/favoritos/toggle/
 WARNING 2026-06-25 09:12:59,269 log 17588 22060 "GET /tienda/api/favoritos/toggle/ HTTP/1.1" 405 0
+ERROR 2026-06-25 22:21:17,073 log 17812 17992 Internal Server Error: /perfil/
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 27, in add_message
+    messages = request._messages
+               ^^^^^^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute '_messages'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\website\middleware.py", line 72, in __call__
+    return self._redirect_with_message(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+        'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'warning'
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\website\middleware.py", line 182, in _redirect_with_message
+    getattr(messages, level)(request, message)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 110, in warning
+    add_message(
+    ~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<3 lines>...
+        fail_silently=fail_silently,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 35, in add_message
+    raise MessageFailure(
+    ...<2 lines>...
+    )
+django.contrib.messages.api.MessageFailure: You cannot add messages without installing django.contrib.messages.middleware.MessageMiddleware
+WARNING 2026-06-25 22:24:49,776 log 17812 16172 Not Found: /admin
+WARNING 2026-06-25 22:24:49,863 log 17812 16172 "GET /admin HTTP/1.1" 404 8175
+WARNING 2026-06-25 22:59:42,450 log 17812 21800 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-25 22:59:42,644 log 17812 6320 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-25 22:59:42,644 log 17812 20516 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-25 22:59:42,663 log 17812 6320 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-25 23:08:37,608 log 17812 18540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-25 23:08:39,527 log 17812 22380 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-25 23:08:39,528 log 17812 22380 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-25 23:08:41,294 log 17812 22380 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-25 23:08:41,312 log 17812 22380 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-25 23:09:34,559 log 17812 13452 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-25 23:09:34,560 log 17812 13452 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-25 23:09:36,385 log 17812 13452 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-25 23:09:36,387 log 17812 13452 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-25 23:09:47,986 log 17812 20776 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-25 23:09:48,307 log 17812 22380 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-25 23:09:48,312 log 17812 22380 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-25 23:10:01,459 log 17812 17616 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-25 23:27:50,229 log 22284 18628 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-25 23:27:50,438 log 22284 3620 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-25 23:27:50,492 log 22284 23064 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-25 23:27:50,511 log 22284 23064 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-25 23:27:56,660 log 22284 13868 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-25 23:27:56,661 log 22284 13868 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-25 23:27:57,809 log 22284 13868 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-25 23:27:57,810 log 22284 13868 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-25 23:37:46,369 log 22284 17940 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-25 23:37:46,370 log 22284 17940 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+ERROR 2026-06-26 00:14:46,961 log 4280 18132 Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 27, in add_message
+    messages = request._messages
+               ^^^^^^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute '_messages'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\website\middleware.py", line 72, in __call__
+    return self._redirect_with_message(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+        'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'warning'
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\website\middleware.py", line 182, in _redirect_with_message
+    getattr(messages, level)(request, message)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 110, in warning
+    add_message(
+    ~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<3 lines>...
+        fail_silently=fail_silently,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 35, in add_message
+    raise MessageFailure(
+    ...<2 lines>...
+    )
+django.contrib.messages.api.MessageFailure: You cannot add messages without installing django.contrib.messages.middleware.MessageMiddleware
+ERROR 2026-06-26 00:14:46,966 log 4280 18132 "GET / HTTP/1.1" 500 89031
+ERROR 2026-06-26 00:17:52,974 log 15472 14680 Internal Server Error: /favoritos/
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 27, in add_message
+    messages = request._messages
+               ^^^^^^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute '_messages'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\website\middleware.py", line 72, in __call__
+    return self._redirect_with_message(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+        'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'warning'
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\website\middleware.py", line 182, in _redirect_with_message
+    getattr(messages, level)(request, message)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 110, in warning
+    add_message(
+    ~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<3 lines>...
+        fail_silently=fail_silently,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sofia\OneDrive\Documentos\ProyectoDjviernes\entorno\Lib\site-packages\django\contrib\messages\api.py", line 35, in add_message
+    raise MessageFailure(
+    ...<2 lines>...
+    )
+django.contrib.messages.api.MessageFailure: You cannot add messages without installing django.contrib.messages.middleware.MessageMiddleware
+ERROR 2026-06-26 00:17:53,025 log 15472 14680 "GET /favoritos/ HTTP/1.1" 500 89735
+WARNING 2026-06-26 00:17:54,430 log 15472 14680 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-26 00:17:54,446 log 15472 14680 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-26 00:19:16,664 log 21348 13368 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-26 00:19:16,666 log 21348 13368 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-26 00:19:51,553 log 21348 13368 Not Found: /admin
+WARNING 2026-06-26 00:19:51,679 log 21348 13368 "GET /admin HTTP/1.1" 404 8175
+WARNING 2026-06-26 00:22:51,627 log 21348 17768 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-26 00:22:51,732 log 21348 20324 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-26 00:22:52,199 log 21348 13368 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-26 00:22:52,226 log 21348 13368 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-26 00:22:58,887 log 21348 21408 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-26 00:22:58,945 log 21348 19112 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-26 00:22:59,254 log 21348 12188 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-26 00:22:59,261 log 21348 12188 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-26 00:23:04,923 log 21348 23220 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-26 00:23:04,926 log 21348 23220 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-26 00:23:59,689 log 22276 15336 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-26 00:23:59,690 log 22276 10936 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-26 00:23:59,905 log 22276 21732 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-26 00:23:59,906 log 22276 21732 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-26 00:24:09,000 log 22276 21732 Not Found: /admin
+WARNING 2026-06-26 00:24:09,073 log 22276 21732 "GET /admin HTTP/1.1" 404 8175
+WARNING 2026-06-26 00:26:20,906 log 17348 23472 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-26 00:26:20,920 log 17348 23472 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-26 00:27:01,064 log 17348 7980 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-26 00:27:15,113 log 17348 23472 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-26 00:27:18,267 log 17348 23472 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
+WARNING 2026-06-26 00:27:20,841 log 17348 20956 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-26 00:27:20,908 log 17348 22168 Bad Request: /api/favoritos/toggle/
+WARNING 2026-06-26 00:27:20,909 log 17348 22168 "POST /api/favoritos/toggle/ HTTP/1.1" 400 57
+WARNING 2026-06-26 00:31:44,394 log 17348 15508 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2026-06-26 00:31:44,967 log 17348 15836 "GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 2017
+WARNING 2026-06-26 00:31:45,103 log 17348 22168 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-26 00:31:45,162 log 17348 22168 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8304
