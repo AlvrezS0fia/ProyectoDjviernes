@@ -7,6 +7,7 @@ Aplicando principios SOLID, DRY y 4 capas de seguridad
 """
 
 import os
+import sys
 from pathlib import Path
 
 # ============================================================
@@ -108,6 +109,9 @@ MIDDLEWARE = [
 # ============================================================
 
 ROOT_URLCONF = 'dcrm.urls'
+
+# Evitar redirecciones de slash que pueden causar logs duplicados
+APPEND_SLASH = False
 
 TEMPLATES = [
     {
@@ -366,6 +370,7 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
+            'stream': sys.stdout,
         },
         'file': {
             'level': 'WARNING',
@@ -381,10 +386,16 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'propagate': True,
-            'level': 'INFO',
+        # Desactivar el logger 'django.server' para evitar logs duplicados de peticiones HTTP
+        'django.server': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': False,
         },
         'website.security': {
             'handlers': ['console', 'security_file'],
@@ -395,7 +406,7 @@ LOGGING = {
     'root': {
         'handlers': ['console'],
         'level': 'WARNING',
-    },
+    }
 }
 
 # ============================================================

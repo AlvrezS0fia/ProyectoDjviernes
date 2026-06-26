@@ -589,3 +589,65 @@ INFO 2026-06-25 09:15:55,172 views 17588 22060 Producto visualizado: Falda Niña 
 INFO 2026-06-25 09:15:55,189 middleware 17588 22060 Actividad: admin - GET /tienda/producto/falda-nina/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-25 09:15:58,047 middleware 17588 22060 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
 INFO 2026-06-25 09:15:58,225 middleware 17588 22060 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 11:46:17,606 views 19596 22236 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 11:46:17,800 middleware 19596 22236 Actividad: admin - POST /login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:46:17,820 middleware 19596 22236 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 11:46:19,098 middleware 19596 22236 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:46:27,974 views 19596 22236 Producto visualizado: Falda Niña por admin
+INFO 2026-06-25 11:46:28,260 middleware 19596 22236 Actividad: admin - GET /tienda/producto/falda-nina/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:46:36,065 middleware 19596 20632 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:47:01,003 views 19596 20632 Producto visualizado: Falda Niña por admin
+INFO 2026-06-25 11:47:01,477 middleware 19596 20632 Actividad: admin - GET /tienda/producto/falda-nina/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:47:10,030 middleware 19596 20632 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:47:12,780 middleware 19596 20632 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:47:24,750 middleware 19596 20632 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:51:28,761 middleware 19596 20632 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 11:51:35,784 views 19596 20632 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 11:51:36,088 middleware 19596 20632 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 18:51:34,216 views 19596 1288 Producto visualizado: Body Bebé Algodón por visitante anónimo
+INFO 2026-06-25 19:46:10,897 views 22136 11340 Producto visualizado: Falda Niña por visitante anónimo
+INFO 2026-06-25 19:49:42,799 views 22136 11340 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 19:49:42,836 middleware 22136 11340 Actividad: admin - POST /login/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:49:42,866 middleware 22136 11340 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 19:49:43,058 middleware 22136 11340 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:49:46,678 views 22136 11340 Producto visualizado: Falda Niña por admin
+INFO 2026-06-25 19:49:46,688 middleware 22136 11340 Actividad: admin - GET /tienda/producto/falda-nina/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:49:51,179 middleware 22136 11340 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:49:53,843 views 22136 11340 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 19:49:53,857 middleware 22136 11340 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:53:05,403 views 22136 11340 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 19:53:05,438 middleware 22136 11340 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:53:10,147 middleware 22136 11340 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:53:12,014 views 22136 11340 Producto visualizado: Falda Niña por admin
+INFO 2026-06-25 19:53:12,049 middleware 22136 11340 Actividad: admin - GET /tienda/producto/falda-nina/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:53:28,675 middleware 22136 11340 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:53:29,225 middleware 22136 11340 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 19:54:53,464 middleware 22136 11340 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:54:55,727 views 22136 11340 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 19:54:55,760 middleware 22136 11340 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 19:54:59,560 middleware 22136 11340 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:23:26,564 views 18724 20956 Producto visualizado: Pantalón Niño por visitante anónimo
+INFO 2026-06-25 21:23:55,410 views 18724 17852 Producto visualizado: Chaqueta Bebé por visitante anónimo
+INFO 2026-06-25 21:24:25,703 views 18724 22544 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 21:24:25,737 middleware 18724 22544 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 21:24:25,858 middleware 18724 22544 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:24:30,951 middleware 18724 22544 Actividad: admin - GET /tienda/producto/falda-nina/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:24:31,043 views 18724 22544 Producto visualizado: Falda Niña por admin
+INFO 2026-06-25 21:24:31,541 middleware 18724 22544 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:24:32,900 middleware 18724 22544 Actividad: admin - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:24:34,354 middleware 18724 22544 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:24:34,614 middleware 18724 22544 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:25:06,773 views 18724 20956 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 21:25:06,863 middleware 18724 20956 Login exitoso: admin desde IP: 127.0.0.1
+INFO 2026-06-25 21:25:07,654 middleware 18724 20956 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:25:11,053 middleware 18724 20956 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:25:11,409 middleware 18724 20956 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:25:13,592 middleware 18724 20956 Actividad: admin - GET / - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:25:16,260 middleware 18724 20956 Actividad: admin - GET /tienda/producto/pantalon-nino/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:25:16,270 views 18724 20956 Producto visualizado: Pantalón Niño por admin
+INFO 2026-06-25 21:25:16,846 middleware 18724 20956 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:25:18,653 middleware 18724 20956 Actividad: admin - POST /tienda/api/favoritos/toggle/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:25:20,391 middleware 18724 20956 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:25:21,461 middleware 18724 20956 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1
+INFO 2026-06-25 21:26:20,475 middleware 18724 20956 Actividad: admin - GET /favoritos/ - Tipo: general - IP: 127.0.0.1
+INFO 2026-06-25 21:26:20,886 middleware 18724 20956 Actividad: admin - GET /tienda/api/favoritos/ - Tipo: favoritos - IP: 127.0.0.1

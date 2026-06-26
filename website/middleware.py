@@ -266,12 +266,12 @@ class ActivityLogMiddleware:
         self.get_response = get_response
     
     def __call__(self, request):
-        response = self.get_response(request)
-        
-        # Registrar solo si el usuario está autenticado
-        if request.user.is_authenticated:
+        # Registrar solo si el usuario está autenticado y NO es una solicitud AJAX
+        # evitando registrar la misma solicitud múltiples veces
+        if request.user.is_authenticated and not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             self._log_activity(request)
         
+        response = self.get_response(request)
         return response
     
     def _log_activity(self, request):

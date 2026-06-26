@@ -25,7 +25,7 @@ function changeImage(element, src) {
 // ============================================================
 function getFavoritesFromServer(callback) {
     if (!window.ANGELOW || !window.ANGELOW.isAuthenticated) {
-        callback([]);
+        if (callback) callback([]);
         return;
     }
     
@@ -52,24 +52,24 @@ function getFavoritesFromServer(callback) {
         console.log('📦 Datos recibidos del servidor:', data);
         if (data.success && data.favoritos !== undefined) {
             localStorage.setItem('angelow_favorites', JSON.stringify(data.favoritos));
-            callback(data.favoritos);
+            if (callback) callback(data.favoritos);
         } else {
             console.error('❌ Error en la respuesta:', data);
-            callback([]);
+            if (callback) callback([]);
         }
     })
     .catch(function(error) {
         console.error('❌ Error al obtener favoritos:', error);
-        callback([]);
+        if (callback) callback([]);
     });
 }
 
 // ============================================================
 // GUARDAR FAVORITO EN EL SERVIDOR
 // ============================================================
-function saveFavoriteOnServer(productId, action, callback) {
+function saveFavoriteOnServer(productId, callback) {
     if (!window.ANGELOW || !window.ANGELOW.isAuthenticated) {
-        callback(true);
+        if (callback) callback(true);
         return;
     }
     
@@ -77,7 +77,7 @@ function saveFavoriteOnServer(productId, action, callback) {
     var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
     var token = csrfToken ? csrfToken.value : '';
     
-    console.log('💾 Guardando favorito en el servidor...', url, productId, action);
+    console.log('💾 Guardando favorito en el servidor...', url, productId);
     
     fetch(url, {
         method: 'POST',
@@ -95,15 +95,15 @@ function saveFavoriteOnServer(productId, action, callback) {
     .then(function(data) {
         console.log('📦 Respuesta del servidor:', data);
         if (data.success) {
-            callback(true, data);
+            if (callback) callback(true, data);
         } else {
             console.error('❌ Error del servidor:', data.message);
-            callback(false);
+            if (callback) callback(false);
         }
     })
     .catch(function(error) {
         console.error('❌ Error en la petición:', error);
-        callback(false);
+        if (callback) callback(false);
     });
 }
 
@@ -114,12 +114,10 @@ function toggleFavorite(productId, productName, button) {
     console.log('🔄 Toggle favorito:', productId, productName);
     
     var favorites = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
-    var index = favorites.indexOf(productId);
-    var isFavorite = index !== -1;
-    var action = isFavorite ? 'quitar' : 'agregar';
+    var isFavorite = favorites.indexOf(productId) !== -1;
     
     console.log('📌 Estado actual:', isFavorite ? 'Favorito' : 'No favorito');
-    console.log('📌 Acción:', action);
+    console.log('🔑 Usuario autenticado:', window.ANGELOW && window.ANGELOW.isAuthenticated);
     
     // Si el usuario está autenticado, guardar en el servidor
     if (window.ANGELOW && window.ANGELOW.isAuthenticated) {
@@ -129,25 +127,39 @@ function toggleFavorite(productId, productName, button) {
             button.style.opacity = '0.6';
         }
         
-        saveFavoriteOnServer(productId, action, function(success, data) {
+        saveFavoriteOnServer(productId, function(success, data) {
             if (success) {
-                // Actualizar localStorage
-                if (isFavorite) {
-                    favorites.splice(index, 1);
-                    showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
-                } else {
-                    favorites.push(productId);
-                    showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
-                    createHeartParticles(button);
-                }
-                localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
+                // Actualizar localStorage basado en la respuesta del servidor
+                var favs = JSON.parse(localStorage.getItem('angelow_favorites') || '[]');
                 
-                // Actualizar UI del botón
+                if (data && data.es_favorito !== undefined) {
+                    if (data.es_favorito) {
+                        // Agregado a favoritos
+                        if (favs.indexOf(productId) === -1) {
+                            favs.push(productId);
+                        }
+                        showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos ❤️');
+                        if (button) button.classList.add('active');
+                        createHeartParticles(button);
+                    } else {
+                        // Eliminado de favoritos
+                        var idx = favs.indexOf(productId);
+                        if (idx !== -1) {
+                            favs.splice(idx, 1);
+                        }
+                        showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+                        if (button) button.classList.remove('active');
+                    }
+                }
+                
+                localStorage.setItem('angelow_favorites', JSON.stringify(favs));
+                
+                // Actualizar texto del botón
                 if (button) {
-                    button.classList.toggle('active');
                     var textSpan = button.querySelector('.fav-text');
                     if (textSpan) {
-                        textSpan.textContent = button.classList.contains('active') ? 'Favorito' : 'Favoritos';
+                        var isFav = favs.indexOf(productId) !== -1;
+                        textSpan.textContent = isFav ? 'Favorito' : 'Favoritos';
                     }
                     button.disabled = false;
                     button.style.opacity = '1';
@@ -156,7 +168,7 @@ function toggleFavorite(productId, productName, button) {
                 updateHeaderBadges();
                 window.dispatchEvent(new Event('storage'));
             } else {
-                showToast('error', 'fa-exclamation-triangle', 'Error al procesar favorito');
+                showToast('error', 'fa-exclamation-triangle', '❌ Error al procesar favorito');
                 if (button) {
                     button.disabled = false;
                     button.style.opacity = '1';
@@ -165,19 +177,22 @@ function toggleFavorite(productId, productName, button) {
         });
     } else {
         // Usuario no autenticado - solo localStorage
+        console.log('📌 Usuario no autenticado, usando solo localStorage');
+        
         if (isFavorite) {
-            favorites.splice(index, 1);
+            favorites.splice(favorites.indexOf(productId), 1);
             showToast('success', 'fa-heart', '"' + productName + '" eliminado de favoritos');
+            if (button) button.classList.remove('active');
         } else {
             favorites.push(productId);
-            showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos');
+            showToast('success', 'fa-heart', '"' + productName + '" agregado a favoritos ❤️');
+            if (button) button.classList.add('active');
             createHeartParticles(button);
         }
         
         localStorage.setItem('angelow_favorites', JSON.stringify(favorites));
         
         if (button) {
-            button.classList.toggle('active');
             var textSpan = button.querySelector('.fav-text');
             if (textSpan) {
                 textSpan.textContent = button.classList.contains('active') ? 'Favorito' : 'Favoritos';
@@ -257,11 +272,11 @@ function showToast(type, icon, message) {
 // CARRITO
 // ============================================================
 function addToCart(productId) {
-    showToast('success', 'fa-shopping-cart', 'Producto agregado al carrito');
+    showToast('success', 'fa-shopping-cart', '🛒 Producto agregado al carrito');
 }
 
 function buyNow(productId) {
-    showToast('info', 'fa-bolt', 'Redirigiendo al checkout...');
+    showToast('info', 'fa-bolt', '⚡ Redirigiendo al checkout...');
 }
 
 // ============================================================
@@ -276,12 +291,6 @@ function updateHeaderBadges() {
         if (favBadge) {
             favBadge.textContent = count;
             favBadge.style.display = count > 0 ? 'flex' : 'none';
-        }
-        
-        var favBadgeDropdown = document.getElementById('favBadgeDropdown');
-        if (favBadgeDropdown) {
-            favBadgeDropdown.textContent = count;
-            favBadgeDropdown.style.display = count > 0 ? 'inline' : 'none';
         }
     } catch(e) {}
 }
@@ -402,3 +411,5 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+console.log('✅ detalle_producto.js cargado correctamente');
